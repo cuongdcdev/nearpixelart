@@ -16,7 +16,7 @@ import {
 
 //pages 
 import CreateImagePage from './pages/create-image';
-import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min'
+import { BrowserRouter, HashRouter } from 'react-router-dom/cjs/react-router-dom.min'
 import HomePage from './pages/homepage'
 import ViewImagePage from './pages/view-image'
 
@@ -55,7 +55,7 @@ export default function App() {
   if (!window.walletConnection.isSignedIn()) {
     return (
       <main>
-        <h3 style={{textAlign:'center'}}>
+        <h3 style={{ textAlign: 'center' }}>
           Singin with your NEAR account!
         </h3>
 
@@ -63,8 +63,9 @@ export default function App() {
           <button onClick={login}> Start to discover and create pixel arts</button>
         </p>
 
-        <iframe style={{margin:'0 auto', display:'block'}} src="https://giphy.com/embed/yENldFXGfK0jDERFT6" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/wedomedias-yENldFXGfK0jDERFT6"></a></p>
- 
+        <iframe style={{ margin: '0 auto', display: 'block', maxWidth: '100%' }} src="https://giphy.com/embed/yENldFXGfK0jDERFT6" 
+        width="480" height="480" frameBorder="0" className="giphy-embed" allowFullScreen></iframe><p></p>
+
       </main>
     )
   }
@@ -83,13 +84,12 @@ export default function App() {
               <a href="/">PIXEL ME</a>
             </h2>
 
-
             <div className="header-right">
 
               <nav className="header-menu-right">
                 <Link to="/">Browse</Link>
                 <Link to="/create">Create</Link>
-                <a className="link" style={{color:"red"}} onClick={logout}><i className="fas fa-sign-out-alt"></i> Sign out  </a>
+                <a className="link" style={{ color: "red" }} onClick={logout}><i className="fas fa-sign-out-alt"></i> Sign out  </a>
               </nav>
             </div>
 

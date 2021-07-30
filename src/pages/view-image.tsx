@@ -60,7 +60,9 @@ const  ViewImagePage = () => {
 
                                 <h3 className="post_title fw-bolder col-12" {useRef("post_title")} >{entity.title}</h3>
 
-                              
+                                <div className="author">
+                                    Artist: <span>{entity.author} </span>
+                                </div>
 
                                 <div className="post_content col-12"
                                     {useRef("post_content")} >{entity.content}</div>

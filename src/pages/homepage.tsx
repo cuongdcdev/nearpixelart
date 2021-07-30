@@ -51,18 +51,19 @@ const HomePage = () => {
 
 
 
-        <div id="home_list_image" className="row">
+        <div id="home_list_image" className="row" data-masonry='{"percentPosition": true }'>
           {
             posts.length > 0 ? 
             posts.map(entity => (
               <div className="col-md-4" key={Math.random()}>
 
                 <div className="card" href={`/v/${entity.url}`}>
-                  <a href={`/v/${entity.url}` title={entity.title}>
-                    <img className="card-img-top" src={entity.image} alt='{entity.title}' />
+                  <a href={`/v/${entity.url}`}>
+                    <img className="card-img-top" src={entity.image} alt={`entity.title`} />
                   </a>
                   <div className="card-body">
                     <h5 className="card-title border-bottom">{entity.title}</h5>
+                    <div className="author"> <span>{entity.author} </span></div>
                     <p className="card-text"> {shortenContent(entity.content)} </p>
                   </div>
                 </div>
