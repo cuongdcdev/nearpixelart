@@ -194,6 +194,7 @@ aside footer *:last-child {
   width: auto;
 }
 
+/* VIEW ITEM PAGE */
 
 #imgPreview{
   margin-bottom:25px;
@@ -235,11 +236,23 @@ aside footer *:last-child {
   font-size: 25px;
 }
 
+.view-image-page .author{
+  font-size: 12px;
+}
+.view-image-page .author span{
+  font-weight: bold;
+}
+
 .view-image-page{
   max-width: 1200px;
 }
 
 /* HOME PAGE section */
+
+#homepage .author {
+  font-size:12px;
+}
+
 #header_top_intro{
   margin-bottom:25px;
   background:lightgray;
@@ -396,12 +409,21 @@ header .header-right{
 }
 
 #homepage .card img{
-  height: 300px;
-  max-width: 100%;
+  max-height: 250px;
   display: block;
   margin: 0 auto;
   width: auto !important;
+  max-width: 100%;
 }
+
+/* @media screen and ( min-width: 1200px ){
+  #homepage .card img{
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+    width: auto !important;
+  }
+} */
 
 #btn-home-load-more{
   margin-top:50px;

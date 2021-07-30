@@ -96502,7 +96502,8 @@ var HomePage = function () {
     className: " mb-4 font-italic"
   }, " Discover, Create and Share your pixel arts to the world! \uD83C\uDF0E "), /*#__PURE__*/React.createElement("h5", null, "Powered by NEAR  blockchain \uD83D\uDE80\uD83D\uDE80\uD83D\uDE80")), /*#__PURE__*/React.createElement("div", {
     id: "home_list_image",
-    className: "row"
+    className: "row",
+    "data-masonry": "{\"percentPosition\": true }"
   }, posts.length > 0 ? posts.map(function (entity) {
     return /*#__PURE__*/React.createElement("div", {
       className: "col-md-4",
@@ -96521,7 +96522,9 @@ var HomePage = function () {
       className: "card-body"
     }, /*#__PURE__*/React.createElement("h5", {
       className: "card-title border-bottom"
-    }, entity.title), /*#__PURE__*/React.createElement("p", {
+    }, entity.title), /*#__PURE__*/React.createElement("div", {
+      className: "author"
+    }, " ", /*#__PURE__*/React.createElement("span", null, entity.author, " ")), /*#__PURE__*/React.createElement("p", {
       className: "card-text"
     }, " ", shortenContent(entity.content), " "))));
   }) : /*#__PURE__*/React.createElement("a", {
@@ -97961,7 +97964,9 @@ var ViewImagePage = function () {
       className: "fas fa-envelope-open"
     }))), /*#__PURE__*/React.createElement("h3", _extends({
       className: "post_title fw-bolder col-12"
-    }, react_1.useRef("post_title")), entity.title), /*#__PURE__*/React.createElement("div", _extends({
+    }, react_1.useRef("post_title")), entity.title), /*#__PURE__*/React.createElement("div", {
+      className: "author"
+    }, "Artist: ", /*#__PURE__*/React.createElement("span", null, entity.author, " ")), /*#__PURE__*/React.createElement("div", _extends({
       className: "post_content col-12"
     }, react_1.useRef("post_content")), entity.content))), /*#__PURE__*/React.createElement("div", {
       className: "commentList"
@@ -98046,13 +98051,14 @@ function App() {
     }, " Start to discover and create pixel arts")), /*#__PURE__*/_react.default.createElement("iframe", {
       style: {
         margin: '0 auto',
-        display: 'block'
+        display: 'block',
+        'max-width': '100%'
       },
       src: "https://giphy.com/embed/yENldFXGfK0jDERFT6",
       width: "480",
       height: "480",
       frameBorder: "0",
-      class: "giphy-embed",
+      className: "giphy-embed",
       allowFullScreen: true
     }), /*#__PURE__*/_react.default.createElement("p", null, /*#__PURE__*/_react.default.createElement("a", {
       href: "https://giphy.com/gifs/wedomedias-yENldFXGfK0jDERFT6"
@@ -98153,7 +98159,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53249" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62626" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
