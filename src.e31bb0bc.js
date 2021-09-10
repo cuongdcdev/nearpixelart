@@ -46542,7 +46542,7 @@ __exportStar(require("./browser-connect"), exports);
 require("error-polyfill");
 
 },{"./key_stores/browser-index":"../node_modules/near-api-js/lib/key_stores/browser-index.js","./common-index":"../node_modules/near-api-js/lib/common-index.js","./browser-connect":"../node_modules/near-api-js/lib/browser-connect.js","error-polyfill":"../node_modules/error-polyfill/index.js"}],"config.js":[function(require,module,exports) {
-const CONTRACT_NAME = "tientien.testnet" || 'tientien.testnet';
+const CONTRACT_NAME = "tientien.testnet" || 'nft.tientien.testnet';
 
 function getConfig(env) {
   switch (env) {
@@ -46644,9 +46644,9 @@ async function initContract() {
 
   window.contract = await new _nearApiJs.Contract(window.walletConnection.account(), nearConfig.contractName, {
     // View methods are read only. They don't modify the state, but usually return some value.
-    viewMethods: ['getGreeting', 'getEntity', 'getEntities', 'getComments'],
+    viewMethods: ['getEntity', 'getEntities', 'getComments'],
     // Change methods can modify the state. But you don't receive the returned value when called.
-    changeMethods: ['setGreeting', 'addEntity', 'addComment']
+    changeMethods: ['addEntity', 'addComment']
   });
 }
 
@@ -96512,12 +96512,11 @@ var HomePage = function () {
       className: "card",
       href: "/v/" + entity.url
     }, /*#__PURE__*/React.createElement("a", {
-      href: "/v/" + entity.url,
-      title: entity.title
+      href: "/v/" + entity.url
     }, /*#__PURE__*/React.createElement("img", {
       className: "card-img-top",
       src: entity.image,
-      alt: "{entity.title}"
+      alt: "entity.title"
     })), /*#__PURE__*/React.createElement("div", {
       className: "card-body"
     }, /*#__PURE__*/React.createElement("h5", {
@@ -98052,7 +98051,7 @@ function App() {
       style: {
         margin: '0 auto',
         display: 'block',
-        'max-width': '100%'
+        maxWidth: '100%'
       },
       src: "https://giphy.com/embed/yENldFXGfK0jDERFT6",
       width: "480",
@@ -98060,9 +98059,7 @@ function App() {
       frameBorder: "0",
       className: "giphy-embed",
       allowFullScreen: true
-    }), /*#__PURE__*/_react.default.createElement("p", null, /*#__PURE__*/_react.default.createElement("a", {
-      href: "https://giphy.com/gifs/wedomedias-yENldFXGfK0jDERFT6"
-    })));
+    }), /*#__PURE__*/_react.default.createElement("p", null));
   }
 
   return (
@@ -98159,7 +98156,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62353" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62949" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
