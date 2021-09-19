@@ -46541,11 +46541,1908 @@ __exportStar(require("./common-index"), exports);
 __exportStar(require("./browser-connect"), exports);
 require("error-polyfill");
 
-},{"./key_stores/browser-index":"../node_modules/near-api-js/lib/key_stores/browser-index.js","./common-index":"../node_modules/near-api-js/lib/common-index.js","./browser-connect":"../node_modules/near-api-js/lib/browser-connect.js","error-polyfill":"../node_modules/error-polyfill/index.js"}],"config.js":[function(require,module,exports) {
-const CONTRACT_NAME = "tientien.testnet" || 'nft.tientien.testnet';
+},{"./key_stores/browser-index":"../node_modules/near-api-js/lib/key_stores/browser-index.js","./common-index":"../node_modules/near-api-js/lib/common-index.js","./browser-connect":"../node_modules/near-api-js/lib/browser-connect.js","error-polyfill":"../node_modules/error-polyfill/index.js"}],"../node_modules/axios/lib/helpers/bind.js":[function(require,module,exports) {
+'use strict';
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+},{}],"../node_modules/axios/lib/utils.js":[function(require,module,exports) {
+'use strict';
+
+var bind = require('./helpers/bind');
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is a Buffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Buffer, otherwise false
+ */
+function isBuffer(val) {
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)
+    && typeof val.constructor.isBuffer === 'function' && val.constructor.isBuffer(val);
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a plain Object
+ *
+ * @param {Object} val The value to test
+ * @return {boolean} True if value is a plain Object, otherwise false
+ */
+function isPlainObject(val) {
+  if (toString.call(val) !== '[object Object]') {
+    return false;
+  }
+
+  var prototype = Object.getPrototypeOf(val);
+  return prototype === null || prototype === Object.prototype;
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  navigator.product -> 'ReactNative'
+ * nativescript
+ *  navigator.product -> 'NativeScript' or 'NS'
+ */
+function isStandardBrowserEnv() {
+  if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
+                                           navigator.product === 'NativeScript' ||
+                                           navigator.product === 'NS')) {
+    return false;
+  }
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined'
+  );
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object') {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (isPlainObject(result[key]) && isPlainObject(val)) {
+      result[key] = merge(result[key], val);
+    } else if (isPlainObject(val)) {
+      result[key] = merge({}, val);
+    } else if (isArray(val)) {
+      result[key] = val.slice();
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ *
+ * @param {string} content with BOM
+ * @return {string} content value without BOM
+ */
+function stripBOM(content) {
+  if (content.charCodeAt(0) === 0xFEFF) {
+    content = content.slice(1);
+  }
+  return content;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isBuffer: isBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isPlainObject: isPlainObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  extend: extend,
+  trim: trim,
+  stripBOM: stripBOM
+};
+
+},{"./helpers/bind":"../node_modules/axios/lib/helpers/bind.js"}],"../node_modules/axios/lib/helpers/buildURL.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      } else {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    var hashmarkIndex = url.indexOf('#');
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+},{"./../utils":"../node_modules/axios/lib/utils.js"}],"../node_modules/axios/lib/core/InterceptorManager.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected, options) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected,
+    synchronous: options ? options.synchronous : false,
+    runWhen: options ? options.runWhen : null
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+},{"./../utils":"../node_modules/axios/lib/utils.js"}],"../node_modules/axios/lib/helpers/normalizeHeaderName.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('../utils');
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+},{"../utils":"../node_modules/axios/lib/utils.js"}],"../node_modules/axios/lib/core/enhanceError.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, request, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+
+  error.request = request;
+  error.response = response;
+  error.isAxiosError = true;
+
+  error.toJSON = function toJSON() {
+    return {
+      // Standard
+      message: this.message,
+      name: this.name,
+      // Microsoft
+      description: this.description,
+      number: this.number,
+      // Mozilla
+      fileName: this.fileName,
+      lineNumber: this.lineNumber,
+      columnNumber: this.columnNumber,
+      stack: this.stack,
+      // Axios
+      config: this.config,
+      code: this.code
+    };
+  };
+  return error;
+};
+
+},{}],"../node_modules/axios/lib/core/createError.js":[function(require,module,exports) {
+'use strict';
+
+var enhanceError = require('./enhanceError');
+
+/**
+ * Create an Error with the specified message, config, error code, request and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, request, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, request, response);
+};
+
+},{"./enhanceError":"../node_modules/axios/lib/core/enhanceError.js"}],"../node_modules/axios/lib/core/settle.js":[function(require,module,exports) {
+'use strict';
+
+var createError = require('./createError');
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response.request,
+      response
+    ));
+  }
+};
+
+},{"./createError":"../node_modules/axios/lib/core/createError.js"}],"../node_modules/axios/lib/helpers/cookies.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+    (function standardBrowserEnv() {
+      return {
+        write: function write(name, value, expires, path, domain, secure) {
+          var cookie = [];
+          cookie.push(name + '=' + encodeURIComponent(value));
+
+          if (utils.isNumber(expires)) {
+            cookie.push('expires=' + new Date(expires).toGMTString());
+          }
+
+          if (utils.isString(path)) {
+            cookie.push('path=' + path);
+          }
+
+          if (utils.isString(domain)) {
+            cookie.push('domain=' + domain);
+          }
+
+          if (secure === true) {
+            cookie.push('secure');
+          }
+
+          document.cookie = cookie.join('; ');
+        },
+
+        read: function read(name) {
+          var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+          return (match ? decodeURIComponent(match[3]) : null);
+        },
+
+        remove: function remove(name) {
+          this.write(name, '', Date.now() - 86400000);
+        }
+      };
+    })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+    (function nonStandardBrowserEnv() {
+      return {
+        write: function write() {},
+        read: function read() { return null; },
+        remove: function remove() {}
+      };
+    })()
+);
+
+},{"./../utils":"../node_modules/axios/lib/utils.js"}],"../node_modules/axios/lib/helpers/isAbsoluteURL.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+},{}],"../node_modules/axios/lib/helpers/combineURLs.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
+};
+
+},{}],"../node_modules/axios/lib/core/buildFullPath.js":[function(require,module,exports) {
+'use strict';
+
+var isAbsoluteURL = require('../helpers/isAbsoluteURL');
+var combineURLs = require('../helpers/combineURLs');
+
+/**
+ * Creates a new URL by combining the baseURL with the requestedURL,
+ * only when the requestedURL is not already an absolute URL.
+ * If the requestURL is absolute, this function returns the requestedURL untouched.
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} requestedURL Absolute or relative URL to combine
+ * @returns {string} The combined full path
+ */
+module.exports = function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL(requestedURL)) {
+    return combineURLs(baseURL, requestedURL);
+  }
+  return requestedURL;
+};
+
+},{"../helpers/isAbsoluteURL":"../node_modules/axios/lib/helpers/isAbsoluteURL.js","../helpers/combineURLs":"../node_modules/axios/lib/helpers/combineURLs.js"}],"../node_modules/axios/lib/helpers/parseHeaders.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+// Headers whose duplicates are ignored by node
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+var ignoreDuplicateOf = [
+  'age', 'authorization', 'content-length', 'content-type', 'etag',
+  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
+  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
+  'referer', 'retry-after', 'user-agent'
+];
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+        return;
+      }
+      if (key === 'set-cookie') {
+        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
+      } else {
+        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+      }
+    }
+  });
+
+  return parsed;
+};
+
+},{"./../utils":"../node_modules/axios/lib/utils.js"}],"../node_modules/axios/lib/helpers/isURLSameOrigin.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+    (function standardBrowserEnv() {
+      var msie = /(msie|trident)/i.test(navigator.userAgent);
+      var urlParsingNode = document.createElement('a');
+      var originURL;
+
+      /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+      function resolveURL(url) {
+        var href = url;
+
+        if (msie) {
+        // IE needs attribute set twice to normalize properties
+          urlParsingNode.setAttribute('href', href);
+          href = urlParsingNode.href;
+        }
+
+        urlParsingNode.setAttribute('href', href);
+
+        // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+        return {
+          href: urlParsingNode.href,
+          protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+          host: urlParsingNode.host,
+          search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+          hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+          hostname: urlParsingNode.hostname,
+          port: urlParsingNode.port,
+          pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+            urlParsingNode.pathname :
+            '/' + urlParsingNode.pathname
+        };
+      }
+
+      originURL = resolveURL(window.location.href);
+
+      /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+      return function isURLSameOrigin(requestURL) {
+        var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+        return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+      };
+    })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+    (function nonStandardBrowserEnv() {
+      return function isURLSameOrigin() {
+        return true;
+      };
+    })()
+);
+
+},{"./../utils":"../node_modules/axios/lib/utils.js"}],"../node_modules/axios/lib/adapters/xhr.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+var settle = require('./../core/settle');
+var cookies = require('./../helpers/cookies');
+var buildURL = require('./../helpers/buildURL');
+var buildFullPath = require('../core/buildFullPath');
+var parseHeaders = require('./../helpers/parseHeaders');
+var isURLSameOrigin = require('./../helpers/isURLSameOrigin');
+var createError = require('../core/createError');
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+    var responseType = config.responseType;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    var fullPath = buildFullPath(config.baseURL, config.url);
+    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    function onloadend() {
+      if (!request) {
+        return;
+      }
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !responseType || responseType === 'text' ||  responseType === 'json' ?
+        request.responseText : request.response;
+      var response = {
+        data: responseData,
+        status: request.status,
+        statusText: request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    }
+
+    if ('onloadend' in request) {
+      // Use onloadend if available
+      request.onloadend = onloadend;
+    } else {
+      // Listen for ready state to emulate onloadend
+      request.onreadystatechange = function handleLoad() {
+        if (!request || request.readyState !== 4) {
+          return;
+        }
+
+        // The request errored out and we didn't get a response, this will be
+        // handled by onerror instead
+        // With one exception: request that using file: protocol, most browsers
+        // will return status as 0 even though it's a successful request
+        if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+          return;
+        }
+        // readystate handler is calling before onerror or ontimeout handlers,
+        // so we should call onloadend on the next 'tick'
+        setTimeout(onloadend);
+      };
+    }
+
+    // Handle browser request cancellation (as opposed to a manual cancellation)
+    request.onabort = function handleAbort() {
+      if (!request) {
+        return;
+      }
+
+      reject(createError('Request aborted', config, 'ECONNABORTED', request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config, null, request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+      if (config.timeoutErrorMessage) {
+        timeoutErrorMessage = config.timeoutErrorMessage;
+      }
+      reject(createError(
+        timeoutErrorMessage,
+        config,
+        config.transitional && config.transitional.clarifyTimeoutError ? 'ETIMEDOUT' : 'ECONNABORTED',
+        request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
+        cookies.read(config.xsrfCookieName) :
+        undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (!utils.isUndefined(config.withCredentials)) {
+      request.withCredentials = !!config.withCredentials;
+    }
+
+    // Add responseType to request if needed
+    if (responseType && responseType !== 'json') {
+      request.responseType = config.responseType;
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (!requestData) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+},{"./../utils":"../node_modules/axios/lib/utils.js","./../core/settle":"../node_modules/axios/lib/core/settle.js","./../helpers/cookies":"../node_modules/axios/lib/helpers/cookies.js","./../helpers/buildURL":"../node_modules/axios/lib/helpers/buildURL.js","../core/buildFullPath":"../node_modules/axios/lib/core/buildFullPath.js","./../helpers/parseHeaders":"../node_modules/axios/lib/helpers/parseHeaders.js","./../helpers/isURLSameOrigin":"../node_modules/axios/lib/helpers/isURLSameOrigin.js","../core/createError":"../node_modules/axios/lib/core/createError.js"}],"../node_modules/axios/lib/defaults.js":[function(require,module,exports) {
+var process = require("process");
+'use strict';
+
+var utils = require('./utils');
+var normalizeHeaderName = require('./helpers/normalizeHeaderName');
+var enhanceError = require('./core/enhanceError');
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = require('./adapters/xhr');
+  } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+    // For node use HTTP adapter
+    adapter = require('./adapters/http');
+  }
+  return adapter;
+}
+
+function stringifySafely(rawValue, parser, encoder) {
+  if (utils.isString(rawValue)) {
+    try {
+      (parser || JSON.parse)(rawValue);
+      return utils.trim(rawValue);
+    } catch (e) {
+      if (e.name !== 'SyntaxError') {
+        throw e;
+      }
+    }
+  }
+
+  return (encoder || JSON.stringify)(rawValue);
+}
+
+var defaults = {
+
+  transitional: {
+    silentJSONParsing: true,
+    forcedJSONParsing: true,
+    clarifyTimeoutError: false
+  },
+
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Accept');
+    normalizeHeaderName(headers, 'Content-Type');
+
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data) || (headers && headers['Content-Type'] === 'application/json')) {
+      setContentTypeIfUnset(headers, 'application/json');
+      return stringifySafely(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    var transitional = this.transitional;
+    var silentJSONParsing = transitional && transitional.silentJSONParsing;
+    var forcedJSONParsing = transitional && transitional.forcedJSONParsing;
+    var strictJSONParsing = !silentJSONParsing && this.responseType === 'json';
+
+    if (strictJSONParsing || (forcedJSONParsing && utils.isString(data) && data.length)) {
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        if (strictJSONParsing) {
+          if (e.name === 'SyntaxError') {
+            throw enhanceError(e, this, 'E_JSON_PARSE');
+          }
+          throw e;
+        }
+      }
+    }
+
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+  maxBodyLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+},{"./utils":"../node_modules/axios/lib/utils.js","./helpers/normalizeHeaderName":"../node_modules/axios/lib/helpers/normalizeHeaderName.js","./core/enhanceError":"../node_modules/axios/lib/core/enhanceError.js","./adapters/xhr":"../node_modules/axios/lib/adapters/xhr.js","./adapters/http":"../node_modules/axios/lib/adapters/xhr.js","process":"../node_modules/process/browser.js"}],"../node_modules/axios/lib/core/transformData.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+var defaults = require('./../defaults');
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  var context = this || defaults;
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn.call(context, data, headers);
+  });
+
+  return data;
+};
+
+},{"./../utils":"../node_modules/axios/lib/utils.js","./../defaults":"../node_modules/axios/lib/defaults.js"}],"../node_modules/axios/lib/cancel/isCancel.js":[function(require,module,exports) {
+'use strict';
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+},{}],"../node_modules/axios/lib/core/dispatchRequest.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+var transformData = require('./transformData');
+var isCancel = require('../cancel/isCancel');
+var defaults = require('../defaults');
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData.call(
+    config,
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData.call(
+      config,
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData.call(
+          config,
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+},{"./../utils":"../node_modules/axios/lib/utils.js","./transformData":"../node_modules/axios/lib/core/transformData.js","../cancel/isCancel":"../node_modules/axios/lib/cancel/isCancel.js","../defaults":"../node_modules/axios/lib/defaults.js"}],"../node_modules/axios/lib/core/mergeConfig.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('../utils');
+
+/**
+ * Config-specific merge-function which creates a new config-object
+ * by merging two configuration objects together.
+ *
+ * @param {Object} config1
+ * @param {Object} config2
+ * @returns {Object} New object resulting from merging config2 to config1
+ */
+module.exports = function mergeConfig(config1, config2) {
+  // eslint-disable-next-line no-param-reassign
+  config2 = config2 || {};
+  var config = {};
+
+  var valueFromConfig2Keys = ['url', 'method', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy', 'params'];
+  var defaultToConfig2Keys = [
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'timeoutMessage', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'decompress',
+    'maxContentLength', 'maxBodyLength', 'maxRedirects', 'transport', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath', 'responseEncoding'
+  ];
+  var directMergeKeys = ['validateStatus'];
+
+  function getMergedValue(target, source) {
+    if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
+      return utils.merge(target, source);
+    } else if (utils.isPlainObject(source)) {
+      return utils.merge({}, source);
+    } else if (utils.isArray(source)) {
+      return source.slice();
+    }
+    return source;
+  }
+
+  function mergeDeepProperties(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  }
+
+  utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    }
+  });
+
+  utils.forEach(mergeDeepPropertiesKeys, mergeDeepProperties);
+
+  utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  utils.forEach(directMergeKeys, function merge(prop) {
+    if (prop in config2) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (prop in config1) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  var axiosKeys = valueFromConfig2Keys
+    .concat(mergeDeepPropertiesKeys)
+    .concat(defaultToConfig2Keys)
+    .concat(directMergeKeys);
+
+  var otherKeys = Object
+    .keys(config1)
+    .concat(Object.keys(config2))
+    .filter(function filterAxiosKeys(key) {
+      return axiosKeys.indexOf(key) === -1;
+    });
+
+  utils.forEach(otherKeys, mergeDeepProperties);
+
+  return config;
+};
+
+},{"../utils":"../node_modules/axios/lib/utils.js"}],"../node_modules/axios/package.json":[function(require,module,exports) {
+module.exports = {
+  "name": "axios",
+  "version": "0.21.4",
+  "description": "Promise based HTTP client for the browser and node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test",
+    "start": "node ./sandbox/server.js",
+    "build": "NODE_ENV=production grunt build",
+    "preversion": "npm test",
+    "version": "npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json",
+    "postversion": "git push && git push --tags",
+    "examples": "node ./examples/server.js",
+    "coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "fix": "eslint --fix lib/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/axios/axios.git"
+  },
+  "keywords": [
+    "xhr",
+    "http",
+    "ajax",
+    "promise",
+    "node"
+  ],
+  "author": "Matt Zabriskie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/axios/axios/issues"
+  },
+  "homepage": "https://axios-http.com",
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "es6-promise": "^4.2.4",
+    "grunt": "^1.3.0",
+    "grunt-banner": "^0.6.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-eslint": "^23.0.0",
+    "grunt-karma": "^4.0.0",
+    "grunt-mocha-test": "^0.13.3",
+    "grunt-ts": "^6.0.0-beta.19",
+    "grunt-webpack": "^4.0.2",
+    "istanbul-instrumenter-loader": "^1.0.0",
+    "jasmine-core": "^2.4.1",
+    "karma": "^6.3.2",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-firefox-launcher": "^2.1.0",
+    "karma-jasmine": "^1.1.1",
+    "karma-jasmine-ajax": "^0.1.13",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sauce-launcher": "^4.3.6",
+    "karma-sinon": "^1.0.5",
+    "karma-sourcemap-loader": "^0.3.8",
+    "karma-webpack": "^4.0.2",
+    "load-grunt-tasks": "^3.5.2",
+    "minimist": "^1.2.0",
+    "mocha": "^8.2.1",
+    "sinon": "^4.5.0",
+    "terser-webpack-plugin": "^4.2.3",
+    "typescript": "^4.0.5",
+    "url-search-params": "^0.10.0",
+    "webpack": "^4.44.2",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "browser": {
+    "./lib/adapters/http.js": "./lib/adapters/xhr.js"
+  },
+  "jsdelivr": "dist/axios.min.js",
+  "unpkg": "dist/axios.min.js",
+  "typings": "./index.d.ts",
+  "dependencies": {
+    "follow-redirects": "^1.14.0"
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/axios.min.js",
+      "threshold": "5kB"
+    }
+  ]
+}
+;
+},{}],"../node_modules/axios/lib/helpers/validator.js":[function(require,module,exports) {
+'use strict';
+
+var pkg = require('./../../package.json');
+
+var validators = {};
+
+// eslint-disable-next-line func-names
+['object', 'boolean', 'number', 'function', 'string', 'symbol'].forEach(function(type, i) {
+  validators[type] = function validator(thing) {
+    return typeof thing === type || 'a' + (i < 1 ? 'n ' : ' ') + type;
+  };
+});
+
+var deprecatedWarnings = {};
+var currentVerArr = pkg.version.split('.');
+
+/**
+ * Compare package versions
+ * @param {string} version
+ * @param {string?} thanVersion
+ * @returns {boolean}
+ */
+function isOlderVersion(version, thanVersion) {
+  var pkgVersionArr = thanVersion ? thanVersion.split('.') : currentVerArr;
+  var destVer = version.split('.');
+  for (var i = 0; i < 3; i++) {
+    if (pkgVersionArr[i] > destVer[i]) {
+      return true;
+    } else if (pkgVersionArr[i] < destVer[i]) {
+      return false;
+    }
+  }
+  return false;
+}
+
+/**
+ * Transitional option validator
+ * @param {function|boolean?} validator
+ * @param {string?} version
+ * @param {string} message
+ * @returns {function}
+ */
+validators.transitional = function transitional(validator, version, message) {
+  var isDeprecated = version && isOlderVersion(version);
+
+  function formatMessage(opt, desc) {
+    return '[Axios v' + pkg.version + '] Transitional option \'' + opt + '\'' + desc + (message ? '. ' + message : '');
+  }
+
+  // eslint-disable-next-line func-names
+  return function(value, opt, opts) {
+    if (validator === false) {
+      throw new Error(formatMessage(opt, ' has been removed in ' + version));
+    }
+
+    if (isDeprecated && !deprecatedWarnings[opt]) {
+      deprecatedWarnings[opt] = true;
+      // eslint-disable-next-line no-console
+      console.warn(
+        formatMessage(
+          opt,
+          ' has been deprecated since v' + version + ' and will be removed in the near future'
+        )
+      );
+    }
+
+    return validator ? validator(value, opt, opts) : true;
+  };
+};
+
+/**
+ * Assert object's properties type
+ * @param {object} options
+ * @param {object} schema
+ * @param {boolean?} allowUnknown
+ */
+
+function assertOptions(options, schema, allowUnknown) {
+  if (typeof options !== 'object') {
+    throw new TypeError('options must be an object');
+  }
+  var keys = Object.keys(options);
+  var i = keys.length;
+  while (i-- > 0) {
+    var opt = keys[i];
+    var validator = schema[opt];
+    if (validator) {
+      var value = options[opt];
+      var result = value === undefined || validator(value, opt, options);
+      if (result !== true) {
+        throw new TypeError('option ' + opt + ' must be ' + result);
+      }
+      continue;
+    }
+    if (allowUnknown !== true) {
+      throw Error('Unknown option ' + opt);
+    }
+  }
+}
+
+module.exports = {
+  isOlderVersion: isOlderVersion,
+  assertOptions: assertOptions,
+  validators: validators
+};
+
+},{"./../../package.json":"../node_modules/axios/package.json"}],"../node_modules/axios/lib/core/Axios.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./../utils');
+var buildURL = require('../helpers/buildURL');
+var InterceptorManager = require('./InterceptorManager');
+var dispatchRequest = require('./dispatchRequest');
+var mergeConfig = require('./mergeConfig');
+var validator = require('../helpers/validator');
+
+var validators = validator.validators;
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
+  }
+
+  config = mergeConfig(this.defaults, config);
+
+  // Set config.method
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = 'get';
+  }
+
+  var transitional = config.transitional;
+
+  if (transitional !== undefined) {
+    validator.assertOptions(transitional, {
+      silentJSONParsing: validators.transitional(validators.boolean, '1.0.0'),
+      forcedJSONParsing: validators.transitional(validators.boolean, '1.0.0'),
+      clarifyTimeoutError: validators.transitional(validators.boolean, '1.0.0')
+    }, false);
+  }
+
+  // filter out skipped interceptors
+  var requestInterceptorChain = [];
+  var synchronousRequestInterceptors = true;
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    if (typeof interceptor.runWhen === 'function' && interceptor.runWhen(config) === false) {
+      return;
+    }
+
+    synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;
+
+    requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  var responseInterceptorChain = [];
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  var promise;
+
+  if (!synchronousRequestInterceptors) {
+    var chain = [dispatchRequest, undefined];
+
+    Array.prototype.unshift.apply(chain, requestInterceptorChain);
+    chain = chain.concat(responseInterceptorChain);
+
+    promise = Promise.resolve(config);
+    while (chain.length) {
+      promise = promise.then(chain.shift(), chain.shift());
+    }
+
+    return promise;
+  }
+
+
+  var newConfig = config;
+  while (requestInterceptorChain.length) {
+    var onFulfilled = requestInterceptorChain.shift();
+    var onRejected = requestInterceptorChain.shift();
+    try {
+      newConfig = onFulfilled(newConfig);
+    } catch (error) {
+      onRejected(error);
+      break;
+    }
+  }
+
+  try {
+    promise = dispatchRequest(newConfig);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+
+  while (responseInterceptorChain.length) {
+    promise = promise.then(responseInterceptorChain.shift(), responseInterceptorChain.shift());
+  }
+
+  return promise;
+};
+
+Axios.prototype.getUri = function getUri(config) {
+  config = mergeConfig(this.defaults, config);
+  return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(mergeConfig(config || {}, {
+      method: method,
+      url: url,
+      data: (config || {}).data
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(mergeConfig(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+},{"./../utils":"../node_modules/axios/lib/utils.js","../helpers/buildURL":"../node_modules/axios/lib/helpers/buildURL.js","./InterceptorManager":"../node_modules/axios/lib/core/InterceptorManager.js","./dispatchRequest":"../node_modules/axios/lib/core/dispatchRequest.js","./mergeConfig":"../node_modules/axios/lib/core/mergeConfig.js","../helpers/validator":"../node_modules/axios/lib/helpers/validator.js"}],"../node_modules/axios/lib/cancel/Cancel.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+},{}],"../node_modules/axios/lib/cancel/CancelToken.js":[function(require,module,exports) {
+'use strict';
+
+var Cancel = require('./Cancel');
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+},{"./Cancel":"../node_modules/axios/lib/cancel/Cancel.js"}],"../node_modules/axios/lib/helpers/spread.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+},{}],"../node_modules/axios/lib/helpers/isAxiosError.js":[function(require,module,exports) {
+'use strict';
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+module.exports = function isAxiosError(payload) {
+  return (typeof payload === 'object') && (payload.isAxiosError === true);
+};
+
+},{}],"../node_modules/axios/lib/axios.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./utils');
+var bind = require('./helpers/bind');
+var Axios = require('./core/Axios');
+var mergeConfig = require('./core/mergeConfig');
+var defaults = require('./defaults');
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(mergeConfig(axios.defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = require('./cancel/Cancel');
+axios.CancelToken = require('./cancel/CancelToken');
+axios.isCancel = require('./cancel/isCancel');
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = require('./helpers/spread');
+
+// Expose isAxiosError
+axios.isAxiosError = require('./helpers/isAxiosError');
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+},{"./utils":"../node_modules/axios/lib/utils.js","./helpers/bind":"../node_modules/axios/lib/helpers/bind.js","./core/Axios":"../node_modules/axios/lib/core/Axios.js","./core/mergeConfig":"../node_modules/axios/lib/core/mergeConfig.js","./defaults":"../node_modules/axios/lib/defaults.js","./cancel/Cancel":"../node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"../node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"../node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"../node_modules/axios/lib/helpers/spread.js","./helpers/isAxiosError":"../node_modules/axios/lib/helpers/isAxiosError.js"}],"../node_modules/axios/index.js":[function(require,module,exports) {
+module.exports = require('./lib/axios');
+},{"./lib/axios":"../node_modules/axios/lib/axios.js"}],"config.js":[function(require,module,exports) {
+const CONTRACT_NAME = 'mypixelart.tientien.testnet';
+const NFT_API_SERVER = 'http://45.76.163.84:8888'; // const NFT_API_SERVER = 'http://localhost/near/api/';
+
+const WP_ENDPOINT = 'http://near.loc/wp-json';
 
 function getConfig(env) {
   switch (env) {
+    case 'wp_endpoint':
+      return WP_ENDPOINT;
+
+    case 'nft_api_server':
+      return NFT_API_SERVER;
+
     case 'production':
     case 'mainnet':
       return {
@@ -46610,7 +48507,7972 @@ function getConfig(env) {
 }
 
 module.exports = getConfig;
-},{}],"utils.js":[function(require,module,exports) {
+},{}],"../node_modules/wpapi/lib/util/object-reduce.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Utility method to permit Array#reduce-like operations over objects
+ *
+ * This is likely to be slightly more inefficient than using lodash.reduce,
+ * but results in ~50kb less size in the resulting bundled code before
+ * minification and ~12kb of savings with minification.
+ *
+ * Unlike lodash.reduce(), the iterator and initial value properties are NOT
+ * optional: this is done to simplify the code, this module is not intended to
+ * be a full replacement for lodash.reduce and instead prioritizes simplicity
+ * for a specific common case.
+ *
+ * @module util/object-reduce
+ * @private
+ * @param {Object} obj An object of key-value pairs
+ * @param {Function} iterator A function to use to reduce the object
+ * @param {*} initialState The initial value to pass to the reducer function
+ * @returns The result of the reduction operation
+ */
+
+module.exports = (obj, iterator, initialState) => Object.keys(obj).reduce((memo, key) => iterator(memo, obj[key], key), initialState);
+},{}],"../node_modules/wpapi/lib/data/default-routes.json":[function(require,module,exports) {
+module.exports = {
+  "/": {
+    "namespace": "",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {}
+      }
+    }]
+  },
+  "/oembed/1.0": {
+    "namespace": "oembed/1.0",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "namespace": {},
+        "context": {}
+      }
+    }]
+  },
+  "/oembed/1.0/embed": {
+    "namespace": "oembed/1.0",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "url": {},
+        "format": {},
+        "maxwidth": {}
+      }
+    }]
+  },
+  "/oembed/1.0/proxy": {
+    "namespace": "oembed/1.0",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "url": {},
+        "format": {},
+        "maxwidth": {},
+        "maxheight": {},
+        "discover": {}
+      }
+    }]
+  },
+  "/wp/v2": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "namespace": {},
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/posts": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "after": {},
+        "author": {},
+        "author_exclude": {},
+        "before": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {},
+        "slug": {},
+        "status": {},
+        "categories": {},
+        "categories_exclude": {},
+        "tags": {},
+        "tags_exclude": {},
+        "sticky": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/posts/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {},
+        "password": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/posts/(?P<parent>[\\d]+)/revisions": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {}
+      }
+    }]
+  },
+  "/wp/v2/posts/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "id": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/posts/(?P<id>[\\d]+)/autosaves": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/posts/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "id": {},
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/pages": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "after": {},
+        "author": {},
+        "author_exclude": {},
+        "before": {},
+        "exclude": {},
+        "include": {},
+        "menu_order": {},
+        "offset": {},
+        "order": {},
+        "orderby": {},
+        "parent": {},
+        "parent_exclude": {},
+        "slug": {},
+        "status": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/pages/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {},
+        "password": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/pages/(?P<parent>[\\d]+)/revisions": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {}
+      }
+    }]
+  },
+  "/wp/v2/pages/(?P<parent>[\\d]+)/revisions/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "id": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/pages/(?P<id>[\\d]+)/autosaves": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/pages/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "id": {},
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/media": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "after": {},
+        "author": {},
+        "author_exclude": {},
+        "before": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {},
+        "parent": {},
+        "parent_exclude": {},
+        "slug": {},
+        "status": {},
+        "media_type": {},
+        "mime_type": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/media/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/blocks": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "after": {},
+        "before": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {},
+        "slug": {},
+        "status": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/blocks/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {},
+        "password": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/blocks/(?P<id>[\\d]+)/autosaves": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/blocks/(?P<parent>[\\d]+)/autosaves/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "parent": {},
+        "id": {},
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/types": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/types/(?P<type>[\\w-]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "type": {},
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/statuses": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/statuses/(?P<status>[\\w-]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "status": {},
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/taxonomies": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "type": {}
+      }
+    }]
+  },
+  "/wp/v2/taxonomies/(?P<taxonomy>[\\w-]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "taxonomy": {},
+        "context": {}
+      }
+    }]
+  },
+  "/wp/v2/categories": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "exclude": {},
+        "include": {},
+        "order": {},
+        "orderby": {},
+        "hide_empty": {},
+        "parent": {},
+        "post": {},
+        "slug": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/categories/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/tags": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {},
+        "hide_empty": {},
+        "post": {},
+        "slug": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/tags/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/users": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {},
+        "slug": {},
+        "roles": {},
+        "who": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/users/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/users/me": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/comments": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "after": {},
+        "author": {},
+        "author_exclude": {},
+        "author_email": {},
+        "before": {},
+        "exclude": {},
+        "include": {},
+        "offset": {},
+        "order": {},
+        "orderby": {},
+        "parent": {},
+        "parent_exclude": {},
+        "post": {},
+        "status": {},
+        "type": {},
+        "password": {}
+      }
+    }, {
+      "methods": ["POST"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/comments/(?P<id>[\\d]+)": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "id": {},
+        "context": {},
+        "password": {}
+      }
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }, {
+      "methods": ["DELETE"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/search": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "type": {},
+        "subtype": {}
+      }
+    }]
+  },
+  "/wp/v2/block-renderer/(?P<name>core/block)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "name": {},
+        "context": {},
+        "attributes": {},
+        "post_id": {}
+      }
+    }]
+  },
+  "/wp/v2/block-renderer/(?P<name>core/latest-comments)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "name": {},
+        "context": {},
+        "attributes": {},
+        "post_id": {}
+      }
+    }]
+  },
+  "/wp/v2/block-renderer/(?P<name>core/archives)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "name": {},
+        "context": {},
+        "attributes": {},
+        "post_id": {}
+      }
+    }]
+  },
+  "/wp/v2/block-renderer/(?P<name>core/categories)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "name": {},
+        "context": {},
+        "attributes": {},
+        "post_id": {}
+      }
+    }]
+  },
+  "/wp/v2/block-renderer/(?P<name>core/latest-posts)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "name": {},
+        "context": {},
+        "attributes": {},
+        "post_id": {}
+      }
+    }]
+  },
+  "/wp/v2/block-renderer/(?P<name>core/shortcode)": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "name": {},
+        "context": {},
+        "attributes": {},
+        "post_id": {}
+      }
+    }]
+  },
+  "/wp/v2/settings": {
+    "namespace": "wp/v2",
+    "methods": ["GET", "POST", "PUT", "PATCH"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {}
+    }, {
+      "methods": ["POST", "PUT", "PATCH"],
+      "args": {}
+    }]
+  },
+  "/wp/v2/themes": {
+    "namespace": "wp/v2",
+    "methods": ["GET"],
+    "endpoints": [{
+      "methods": ["GET"],
+      "args": {
+        "context": {},
+        "page": {},
+        "per_page": {},
+        "search": {},
+        "status": {}
+      }
+    }]
+  }
+};
+},{}],"../node_modules/wpapi/lib/util/named-group-regexp.js":[function(require,module,exports) {
+/**
+ * @module util/named-group-regexp
+ */
+'use strict';
+
+const pattern = [// Capture group start
+'\\(\\?', // Capture group name begins either `P<`, `<` or `'`
+'(?:P<|<|\')', // Everything up to the next `>`` or `'` (depending) will be the capture group name
+'([^>\']+)', // Capture group end
+'[>\']', // Get everything up to the end of the capture group: this is the RegExp used
+// when matching URLs to this route, which we can use for validation purposes.
+'([^\\)]*(\\))?\\??)', // Capture group end
+'\\)'].join('');
+module.exports = {
+  /**
+   * String representation of the exported Regular Expression; we construct this
+   * RegExp from a string to enable more detailed annotation and permutation
+   *
+   * @prop {String} pattern
+   */
+  pattern: pattern,
+
+  /**
+   * Regular Expression to identify a capture group in PCRE formats
+   * `(?<name>regex)`, `(?'name'regex)` or `(?P<name>regex)` (see
+   * regular-expressions.info/refext.html)
+   *
+   * @prop {RegExp} namedGroupRE
+   */
+  namedGroupRE: new RegExp(pattern)
+};
+},{}],"../node_modules/wpapi/lib/util/split-path.js":[function(require,module,exports) {
+/**
+ * @module util/split-path
+ */
+'use strict';
+
+const namedGroupPattern = require('./named-group-regexp').pattern; // Convert capture groups to non-matching groups, because all capture groups
+// are included in the resulting array when an RE is passed to `.split()`
+// (We re-use the existing named group's capture pattern instead of creating
+// a new RegExp just for this purpose)
+
+
+const patternWithoutSubgroups = namedGroupPattern.replace(/([^\\])\(([^?])/g, '$1(?:$2'); // Make a new RegExp using the same pattern as one single unified capture group,
+// so the match as a whole will be preserved after `.split()`. Permit non-slash
+// characters before or after the named capture group, although those components
+// will not yield functioning setters.
+
+const namedGroupRE = new RegExp('([^/]*' + patternWithoutSubgroups + '[^/]*)');
+/**
+ * Divide a route string up into hierarchical components by breaking it apart
+ * on forward slash characters.
+ *
+ * There are plugins (including Jetpack) that register routes with regex capture
+ * groups which also contain forward slashes, so those groups have to be pulled
+ * out first before the remainder of the string can be .split() as normal.
+ *
+ * @param {String} pathStr A route path string to break into components
+ * @returns {String[]} An array of route component strings
+ */
+
+module.exports = pathStr => pathStr // Divide a string like "/some/path/(?P<with_named_groups>)/etc" into an
+// array `[ "/some/path/", "(?P<with_named_groups>)", "/etc" ]`.
+.split(namedGroupRE) // Then, reduce through the array of parts, splitting any non-capture-group
+// parts on forward slashes and discarding empty strings to create the final
+// array of path components.
+.reduce((components, part) => {
+  if (!part) {
+    // Ignore empty strings parts
+    return components;
+  }
+
+  if (namedGroupRE.test(part)) {
+    // Include named capture groups as-is
+    return components.concat(part);
+  } // Split the part on / and filter out empty strings
+
+
+  return components.concat(part.split('/').filter(Boolean));
+}, []);
+},{"./named-group-regexp":"../node_modules/wpapi/lib/util/named-group-regexp.js"}],"../node_modules/wpapi/lib/util/ensure.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Ensure that a property is present in an object, initializing it to a default
+ * value if it is not already defined. Modifies the provided object by reference.
+ *
+ * @module util/ensure
+ * @param {object} obj              The object in which to ensure a property exists
+ * @param {string} prop             The property key to ensure
+ * @param {}       propDefaultValue The default value for the property
+ * @returns {void}
+ */
+
+module.exports = (obj, prop, propDefaultValue) => {
+  if (obj && obj[prop] === undefined) {
+    obj[prop] = propDefaultValue;
+  }
+};
+},{}],"../node_modules/wpapi/lib/route-tree.js":[function(require,module,exports) {
+/**
+ * @module route-tree
+ */
+'use strict';
+
+const namedGroupRE = require('./util/named-group-regexp').namedGroupRE;
+
+const splitPath = require('./util/split-path');
+
+const ensure = require('./util/ensure');
+
+const objectReduce = require('./util/object-reduce');
+/**
+ * Method to use when reducing route components array.
+ *
+ * @private
+ * @param {object} routeObj     A route definition object (set via .bind partial application)
+ * @param {object} topLevel     The top-level route tree object for this set of routes (set
+ *                              via .bind partial application)
+ * @param {object} parentLevel  The memo object, which is mutated as the reducer adds
+ *                              a new level handler for each level in the route
+ * @param {string} component    The string defining this route component
+ * @param {number} idx          The index of this component within the components array
+ * @param {string[]} components The array of all components
+ * @returns {object} The child object of the level being reduced
+ */
+
+
+function reduceRouteComponents(routeObj, topLevel, parentLevel, component, idx, components) {
+  // Check to see if this component is a dynamic URL segment (i.e. defined by
+  // a named capture group regular expression). namedGroup will be `null` if
+  // the regexp does not match, or else an array defining the RegExp match, e.g.
+  // [
+  //   'P<id>[\\d]+)',
+  //   'id', // Name of the group
+  //   '[\\d]+', // regular expression for this URL segment's contents
+  //   index: 15,
+  //   input: '/wp/v2/posts/(?P<id>[\\d]+)'
+  // ]
+  const namedGroup = component.match(namedGroupRE); // Pull out references to the relevant indices of the match, for utility:
+  // `null` checking is necessary in case the component did not match the RE,
+  // hence the `namedGroup &&`.
+
+  const groupName = namedGroup && namedGroup[1];
+  const groupPattern = namedGroup && namedGroup[2]; // When branching based on a dynamic capture group we used the group's RE
+  // pattern as the unique identifier: this is done because the same group
+  // could be assigned different names in different endpoint handlers, e.g.
+  // "id" for posts/:id vs "parent_id" for posts/:parent_id/revisions.
+  //
+  // There is an edge case where groupPattern will be "" if we are registering
+  // a custom route via `.registerRoute` that does not include parameter
+  // validation. In this case we assume the groupName is sufficiently unique,
+  // and fall back to `|| groupName` for the levelKey string.
+
+  const levelKey = namedGroup ? groupPattern || groupName : component; // Level name on the other hand takes its value from the group's name, if
+  // defined, and falls back to the component string to handle situations where
+  // `component` is a collection (e.g. "revisions")
+
+  const levelName = namedGroup ? groupName : component; // Check whether we have a preexisting node at this level of the tree, and
+  // create a new level object if not. The component string is included so that
+  // validators can throw meaningful errors as appropriate.
+
+  const currentLevel = parentLevel[levelKey] || {
+    component: component,
+    namedGroup: namedGroup ? true : false,
+    level: idx,
+    names: []
+  }; // A level's "names" correspond to the list of strings which could describe
+  // an endpoint's component setter functions: "id", "revisions", etc.
+
+  if (currentLevel.names.indexOf(levelName) < 0) {
+    currentLevel.names.push(levelName);
+  } // A level's validate method is called to check whether a value being set
+  // on the request URL is of the proper type for the location in which it
+  // is specified. If a group pattern was found, the validator checks whether
+  // the input string exactly matches the group pattern.
+
+
+  const groupPatternRE = groupPattern === '' ? // If groupPattern is an empty string, accept any input without validation
+  /.*/ : // Otherwise, validate against the group pattern or the component string
+  new RegExp(groupPattern ? '^' + groupPattern + '$' : component, 'i'); // Only one validate function is maintained for each node, because each node
+  // is defined either by a string literal or by a specific regular expression.
+
+  currentLevel.validate = input => groupPatternRE.test(input); // Check to see whether to expect more nodes within this branch of the tree,
+
+
+  if (components[idx + 1]) {
+    // and create a "children" object to hold those nodes if necessary
+    currentLevel.children = currentLevel.children || {};
+  } else {
+    // At leaf nodes, specify the method capabilities of this endpoint
+    currentLevel.methods = (routeObj.methods || []).map(str => str.toLowerCase()); // Ensure HEAD is included whenever GET is supported: the API automatically
+    // adds support for HEAD if you have GET
+
+    if (currentLevel.methods.indexOf('get') > -1 && currentLevel.methods.indexOf('head') === -1) {
+      currentLevel.methods.push('head');
+    } // At leaf nodes also flag (at the top level) what arguments are
+    // available to GET requests, so that we may automatically apply the
+    // appropriate parameter mixins
+
+
+    if (routeObj.endpoints) {
+      topLevel._getArgs = topLevel._getArgs || {};
+      routeObj.endpoints.forEach(endpoint => {
+        // `endpoint.methods` will be an array of methods like `[ 'GET' ]`: we
+        // only care about GET for this exercise. Validating POST and PUT args
+        // could be useful but is currently deemed to be out-of-scope.
+        endpoint.methods.forEach(method => {
+          if (method.toLowerCase() === 'get') {
+            Object.keys(endpoint.args).forEach(argKey => {
+              // Reference param definition objects in the top _getArgs dictionary
+              topLevel._getArgs[argKey] = endpoint.args[argKey];
+            });
+          }
+        });
+      });
+    }
+  } // Return the child node object as the new "level"
+
+
+  parentLevel[levelKey] = currentLevel;
+  return currentLevel.children;
+}
+/**
+ *
+ * @private
+ * @param {object}   namespaces The memo object that becomes a dictionary mapping API
+ *                              namespaces to an object of the namespace's routes
+ * @param {object}   routeObj   A route definition object
+ * @param {string}   route      The string key of the `routeObj` route object
+ * @returns {object} The namespaces dictionary memo object
+ */
+
+
+function reduceRouteTree(namespaces, routeObj, route) {
+  const nsForRoute = routeObj.namespace;
+  const routeString = route // Strip the namespace from the route string (all routes should have the
+  // format `/namespace/other/stuff`) @TODO: Validate this assumption
+  .replace('/' + nsForRoute + '/', '') // Also strip any trailing "/?": the slash is already optional and a single
+  // question mark would break the regex parser
+  .replace(/\/\?$/, ''); // Split the routes up into hierarchical route components
+
+  const routeComponents = splitPath(routeString); // Do not make a namespace group for the API root
+  // Do not add the namespace root to its own group
+  // Do not take any action if routeString is empty
+
+  if (!nsForRoute || '/' + nsForRoute === route || !routeString) {
+    return namespaces;
+  } // Ensure that the namespace object for this namespace exists
+
+
+  ensure(namespaces, nsForRoute, {}); // Get a local reference to namespace object
+
+  const ns = namespaces[nsForRoute]; // The first element of the route tells us what type of resource this route
+  // is for, e.g. "posts" or "comments": we build one handler per resource
+  // type, so we group like resource paths together.
+
+  const resource = routeComponents[0]; // @TODO: This code above currently precludes baseless routes, e.g.
+  // myplugin/v2/(?P<resource>\w+) -- should those be supported?
+  // Create an array to represent this resource, and ensure it is assigned
+  // to the namespace object. The array will structure the "levels" (path
+  // components and subresource types) of this resource's endpoint handler.
+
+  ensure(ns, resource, {});
+  const levels = ns[resource]; // Recurse through the route components, mutating levels with information about
+  // each child node encountered while walking through the routes tree and what
+  // arguments (parameters) are available for GET requests to this endpoint.
+
+  routeComponents.reduce(reduceRouteComponents.bind(null, routeObj, levels), levels);
+  return namespaces;
+}
+/**
+ * Build a route tree by reducing over a routes definition object from the API
+ * root endpoint response object
+ *
+ * @method build
+ * @param {object} routes A dictionary of routes keyed by route regex strings
+ * @returns {object} A dictionary, keyed by namespace, of resource handler
+ * factory methods for each namespace's resources
+ */
+
+
+function buildRouteTree(routes) {
+  return objectReduce(routes, reduceRouteTree, {});
+}
+
+module.exports = {
+  build: buildRouteTree
+};
+},{"./util/named-group-regexp":"../node_modules/wpapi/lib/util/named-group-regexp.js","./util/split-path":"../node_modules/wpapi/lib/util/split-path.js","./util/ensure":"../node_modules/wpapi/lib/util/ensure.js","./util/object-reduce":"../node_modules/wpapi/lib/util/object-reduce.js"}],"../node_modules/wpapi/lib/path-part-setter.js":[function(require,module,exports) {
+/**
+ * @module path-part-setter
+ */
+'use strict';
+/**
+ * Return a function to set part of the request URL path.
+ *
+ * Path part setter methods may be either dynamic (*i.e.* may represent a
+ * "named group") or non-dynamic (representing a static part of the URL, which
+ * is usually a collection endpoint of some sort). Which type of function is
+ * returned depends on whether a given route has one or many sub-resources.
+ *
+ * @alias module:lib/path-part-setter.create
+ * @param {Object} node An object representing a level of an endpoint path hierarchy
+ * @returns {Function} A path part setter function
+ */
+
+function createPathPartSetter(node) {
+  // Local references to `node` properties used by returned functions
+  const nodeLevel = node.level;
+  const nodeName = node.names[0];
+  const supportedMethods = node.methods || [];
+  const dynamicChildren = node.children ? Object.keys(node.children).map(key => node.children[key]).filter(childNode => childNode.namedGroup === true) : [];
+  const dynamicChild = dynamicChildren.length === 1 && dynamicChildren[0];
+  const dynamicChildLevel = dynamicChild && dynamicChild.level;
+
+  if (node.namedGroup) {
+    /**
+     * Set a dymanic (named-group) path part of a query URL.
+     *
+     * @example
+     *
+     *     // id() is a dynamic path part setter:
+     *     wp.posts().id( 7 ); // Get posts/7
+     *
+     * @chainable
+     * @param  {String|Number} val The path part value to set
+     * @returns {Object} The handler instance (for chaining)
+     */
+    return function (val) {
+      this.setPathPart(nodeLevel, val);
+
+      if (supportedMethods.length) {
+        this._supportedMethods = supportedMethods;
+      }
+
+      return this;
+    };
+  } else {
+    /**
+     * Set a non-dymanic (non-named-group) path part of a query URL, and
+     * set the value of a subresource if an input value is provided and
+     * exactly one named-group child node exists.
+     *
+     * @example
+     *
+     *     // revisions() is a non-dynamic path part setter:
+     *     wp.posts().id( 4 ).revisions();       // Get posts/4/revisions
+     *     wp.posts().id( 4 ).revisions( 1372 ); // Get posts/4/revisions/1372
+     *
+     * @chainable
+     * @param  {String|Number} [val] The path part value to set (if provided)
+     *                               for a subresource within this resource
+     * @returns {Object} The handler instance (for chaining)
+     */
+    return function (val) {
+      // If the path part is not a namedGroup, it should have exactly one
+      // entry in the names array: use that as the value for this setter,
+      // as it will usually correspond to a collection endpoint.
+      this.setPathPart(nodeLevel, nodeName); // If this node has exactly one dynamic child, this method may act as
+      // a setter for that child node. `dynamicChildLevel` will be falsy if the
+      // node does not have a child or has multiple children.
+
+      if (val !== undefined && dynamicChildLevel) {
+        this.setPathPart(dynamicChildLevel, val);
+      }
+
+      return this;
+    };
+  }
+}
+
+module.exports = {
+  create: createPathPartSetter
+};
+},{}],"../node_modules/wpapi/lib/resource-handler-spec.js":[function(require,module,exports) {
+/**
+ * @module resource-handler-spec
+ */
+'use strict';
+
+const createPathPartSetter = require('./path-part-setter').create;
+/** @private */
+
+
+function addLevelOption(levelsObj, level, obj) {
+  levelsObj[level] = levelsObj[level] || [];
+  levelsObj[level].push(obj);
+}
+/**
+ * Assign a setter function for the provided node to the provided route
+ * handler object setters dictionary (mutates handler by reference).
+ *
+ * @private
+ * @param {Object} handler A route handler definition object
+ * @param {Object} node    A route hierarchy level node object
+ */
+
+
+function assignSetterFnForNode(handler, node) {
+  let setterFn; // For each node, add its handler to the relevant "level" representation
+
+  addLevelOption(handler._levels, node.level, {
+    component: node.component,
+    validate: node.validate,
+    methods: node.methods
+  }); // First level is set implicitly, no dedicated setter needed
+
+  if (node.level > 0) {
+    setterFn = createPathPartSetter(node);
+    node.names.forEach(name => {
+      // Convert from snake_case to camelCase
+      const setterFnName = name.replace(/[_-]+\w/g, match => match.replace(/[_-]+/, '').toUpperCase()); // Don't overwrite previously-set methods
+
+      if (!handler._setters[setterFnName]) {
+        handler._setters[setterFnName] = setterFn;
+      }
+    });
+  }
+}
+/**
+ * Walk the tree of a specific resource node to create the setter methods
+ *
+ * The API we want to produce from the node tree looks like this:
+ *
+ *     wp.posts();                        /wp/v2/posts
+ *     wp.posts().id( 7 );                /wp/v2/posts/7
+ *     wp.posts().id( 7 ).revisions();    /wp/v2/posts/7/revisions
+ *     wp.posts().id( 7 ).revisions( 8 ); /wp/v2/posts/7/revisions/8
+ *
+ * ^ That last one's the tricky one: we can deduce that this parameter is "id", but
+ * that param will already be taken by the post ID, so sub-collections have to be
+ * set up as `.revisions()` to get the collection, and `.revisions( id )` to get a
+ * specific resource.
+ *
+ * @private
+ * @param  {Object} node            A node object
+ * @param  {Object} [node.children] An object of child nodes
+ * // @returns {isLeaf} A boolean indicating whether the processed node is a leaf
+ */
+
+
+function extractSetterFromNode(handler, node) {
+  assignSetterFnForNode(handler, node);
+
+  if (node.children) {
+    // Recurse down to this node's children
+    Object.keys(node.children).forEach(key => {
+      extractSetterFromNode(handler, node.children[key]);
+    });
+  }
+}
+/**
+ * Create a node handler specification object from a route definition object
+ *
+ * @name create
+ * @param {object} routeDefinition A route definition object
+ * @param {string} resource The string key of the resource for which to create a handler
+ * @returns {object} A handler spec object with _path, _levels and _setters properties
+ */
+
+
+function createNodeHandlerSpec(routeDefinition, resource) {
+  const handler = {
+    // A "path" is an ordered (by key) set of values composed into the final URL
+    _path: {
+      '0': resource
+    },
+    // A "level" is a level-keyed object representing the valid options for
+    // one level of the resource URL
+    _levels: {},
+    // Objects that hold methods and properties which will be copied to
+    // instances of this endpoint's handler
+    _setters: {},
+    // Arguments (query parameters) that may be set in GET requests to endpoints
+    // nested within this resource route tree, used to determine the mixins to
+    // add to the request handler
+    _getArgs: routeDefinition._getArgs
+  }; // Walk the tree
+
+  Object.keys(routeDefinition).forEach(routeDefProp => {
+    if (routeDefProp !== '_getArgs') {
+      extractSetterFromNode(handler, routeDefinition[routeDefProp]);
+    }
+  });
+  return handler;
+}
+
+module.exports = {
+  create: createNodeHandlerSpec
+};
+},{"./path-part-setter":"../node_modules/wpapi/lib/path-part-setter.js"}],"../node_modules/has-symbols/shams.js":[function(require,module,exports) {
+'use strict';
+/* eslint complexity: [2, 18], max-statements: [2, 33] */
+
+module.exports = function hasSymbols() {
+  if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') {
+    return false;
+  }
+
+  if (typeof Symbol.iterator === 'symbol') {
+    return true;
+  }
+
+  var obj = {};
+  var sym = Symbol('test');
+  var symObj = Object(sym);
+
+  if (typeof sym === 'string') {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(sym) !== '[object Symbol]') {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(symObj) !== '[object Symbol]') {
+    return false;
+  } // temp disabled per https://github.com/ljharb/object.assign/issues/17
+  // if (sym instanceof Symbol) { return false; }
+  // temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
+  // if (!(symObj instanceof Symbol)) { return false; }
+  // if (typeof Symbol.prototype.toString !== 'function') { return false; }
+  // if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
+
+
+  var symVal = 42;
+  obj[sym] = symVal;
+
+  for (sym in obj) {
+    return false;
+  } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
+
+
+  if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) {
+    return false;
+  }
+
+  if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) {
+    return false;
+  }
+
+  var syms = Object.getOwnPropertySymbols(obj);
+
+  if (syms.length !== 1 || syms[0] !== sym) {
+    return false;
+  }
+
+  if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) {
+    return false;
+  }
+
+  if (typeof Object.getOwnPropertyDescriptor === 'function') {
+    var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
+
+    if (descriptor.value !== symVal || descriptor.enumerable !== true) {
+      return false;
+    }
+  }
+
+  return true;
+};
+},{}],"../node_modules/has-symbols/index.js":[function(require,module,exports) {
+'use strict';
+
+var origSymbol = typeof Symbol !== 'undefined' && Symbol;
+
+var hasSymbolSham = require('./shams');
+
+module.exports = function hasNativeSymbols() {
+  if (typeof origSymbol !== 'function') {
+    return false;
+  }
+
+  if (typeof Symbol !== 'function') {
+    return false;
+  }
+
+  if (typeof origSymbol('foo') !== 'symbol') {
+    return false;
+  }
+
+  if (typeof Symbol('bar') !== 'symbol') {
+    return false;
+  }
+
+  return hasSymbolSham();
+};
+},{"./shams":"../node_modules/has-symbols/shams.js"}],"../node_modules/function-bind/implementation.js":[function(require,module,exports) {
+'use strict';
+
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var slice = Array.prototype.slice;
+var toStr = Object.prototype.toString;
+var funcType = '[object Function]';
+
+module.exports = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slice.call(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                args.concat(slice.call(arguments))
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        } else {
+            return target.apply(
+                that,
+                args.concat(slice.call(arguments))
+            );
+        }
+    };
+
+    var boundLength = Math.max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs.push('$' + i);
+    }
+
+    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+
+},{}],"../node_modules/function-bind/index.js":[function(require,module,exports) {
+'use strict';
+
+var implementation = require('./implementation');
+
+module.exports = Function.prototype.bind || implementation;
+
+},{"./implementation":"../node_modules/function-bind/implementation.js"}],"../node_modules/has/src/index.js":[function(require,module,exports) {
+'use strict';
+
+var bind = require('function-bind');
+
+module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
+},{"function-bind":"../node_modules/function-bind/index.js"}],"../node_modules/get-intrinsic/index.js":[function(require,module,exports) {
+'use strict';
+
+var undefined;
+
+var $SyntaxError = SyntaxError;
+var $Function = Function;
+var $TypeError = TypeError;
+
+// eslint-disable-next-line consistent-return
+var getEvalledConstructor = function (expressionSyntax) {
+	try {
+		return $Function('"use strict"; return (' + expressionSyntax + ').constructor;')();
+	} catch (e) {}
+};
+
+var $gOPD = Object.getOwnPropertyDescriptor;
+if ($gOPD) {
+	try {
+		$gOPD({}, '');
+	} catch (e) {
+		$gOPD = null; // this is IE 8, which has a broken gOPD
+	}
+}
+
+var throwTypeError = function () {
+	throw new $TypeError();
+};
+var ThrowTypeError = $gOPD
+	? (function () {
+		try {
+			// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
+			arguments.callee; // IE 8 does not throw here
+			return throwTypeError;
+		} catch (calleeThrows) {
+			try {
+				// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
+				return $gOPD(arguments, 'callee').get;
+			} catch (gOPDthrows) {
+				return throwTypeError;
+			}
+		}
+	}())
+	: throwTypeError;
+
+var hasSymbols = require('has-symbols')();
+
+var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
+
+var needsEval = {};
+
+var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
+
+var INTRINSICS = {
+	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined : AggregateError,
+	'%Array%': Array,
+	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
+	'%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
+	'%AsyncFromSyncIteratorPrototype%': undefined,
+	'%AsyncFunction%': needsEval,
+	'%AsyncGenerator%': needsEval,
+	'%AsyncGeneratorFunction%': needsEval,
+	'%AsyncIteratorPrototype%': needsEval,
+	'%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
+	'%BigInt%': typeof BigInt === 'undefined' ? undefined : BigInt,
+	'%Boolean%': Boolean,
+	'%DataView%': typeof DataView === 'undefined' ? undefined : DataView,
+	'%Date%': Date,
+	'%decodeURI%': decodeURI,
+	'%decodeURIComponent%': decodeURIComponent,
+	'%encodeURI%': encodeURI,
+	'%encodeURIComponent%': encodeURIComponent,
+	'%Error%': Error,
+	'%eval%': eval, // eslint-disable-line no-eval
+	'%EvalError%': EvalError,
+	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
+	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
+	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined : FinalizationRegistry,
+	'%Function%': $Function,
+	'%GeneratorFunction%': needsEval,
+	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
+	'%Int16Array%': typeof Int16Array === 'undefined' ? undefined : Int16Array,
+	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
+	'%isFinite%': isFinite,
+	'%isNaN%': isNaN,
+	'%IteratorPrototype%': hasSymbols ? getProto(getProto([][Symbol.iterator]())) : undefined,
+	'%JSON%': typeof JSON === 'object' ? JSON : undefined,
+	'%Map%': typeof Map === 'undefined' ? undefined : Map,
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols ? undefined : getProto(new Map()[Symbol.iterator]()),
+	'%Math%': Math,
+	'%Number%': Number,
+	'%Object%': Object,
+	'%parseFloat%': parseFloat,
+	'%parseInt%': parseInt,
+	'%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
+	'%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
+	'%RangeError%': RangeError,
+	'%ReferenceError%': ReferenceError,
+	'%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
+	'%RegExp%': RegExp,
+	'%Set%': typeof Set === 'undefined' ? undefined : Set,
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols ? undefined : getProto(new Set()[Symbol.iterator]()),
+	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
+	'%String%': String,
+	'%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
+	'%Symbol%': hasSymbols ? Symbol : undefined,
+	'%SyntaxError%': $SyntaxError,
+	'%ThrowTypeError%': ThrowTypeError,
+	'%TypedArray%': TypedArray,
+	'%TypeError%': $TypeError,
+	'%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array,
+	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
+	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
+	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
+	'%URIError%': URIError,
+	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
+	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined : WeakRef,
+	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet
+};
+
+var doEval = function doEval(name) {
+	var value;
+	if (name === '%AsyncFunction%') {
+		value = getEvalledConstructor('async function () {}');
+	} else if (name === '%GeneratorFunction%') {
+		value = getEvalledConstructor('function* () {}');
+	} else if (name === '%AsyncGeneratorFunction%') {
+		value = getEvalledConstructor('async function* () {}');
+	} else if (name === '%AsyncGenerator%') {
+		var fn = doEval('%AsyncGeneratorFunction%');
+		if (fn) {
+			value = fn.prototype;
+		}
+	} else if (name === '%AsyncIteratorPrototype%') {
+		var gen = doEval('%AsyncGenerator%');
+		if (gen) {
+			value = getProto(gen.prototype);
+		}
+	}
+
+	INTRINSICS[name] = value;
+
+	return value;
+};
+
+var LEGACY_ALIASES = {
+	'%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
+	'%ArrayPrototype%': ['Array', 'prototype'],
+	'%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
+	'%ArrayProto_forEach%': ['Array', 'prototype', 'forEach'],
+	'%ArrayProto_keys%': ['Array', 'prototype', 'keys'],
+	'%ArrayProto_values%': ['Array', 'prototype', 'values'],
+	'%AsyncFunctionPrototype%': ['AsyncFunction', 'prototype'],
+	'%AsyncGenerator%': ['AsyncGeneratorFunction', 'prototype'],
+	'%AsyncGeneratorPrototype%': ['AsyncGeneratorFunction', 'prototype', 'prototype'],
+	'%BooleanPrototype%': ['Boolean', 'prototype'],
+	'%DataViewPrototype%': ['DataView', 'prototype'],
+	'%DatePrototype%': ['Date', 'prototype'],
+	'%ErrorPrototype%': ['Error', 'prototype'],
+	'%EvalErrorPrototype%': ['EvalError', 'prototype'],
+	'%Float32ArrayPrototype%': ['Float32Array', 'prototype'],
+	'%Float64ArrayPrototype%': ['Float64Array', 'prototype'],
+	'%FunctionPrototype%': ['Function', 'prototype'],
+	'%Generator%': ['GeneratorFunction', 'prototype'],
+	'%GeneratorPrototype%': ['GeneratorFunction', 'prototype', 'prototype'],
+	'%Int8ArrayPrototype%': ['Int8Array', 'prototype'],
+	'%Int16ArrayPrototype%': ['Int16Array', 'prototype'],
+	'%Int32ArrayPrototype%': ['Int32Array', 'prototype'],
+	'%JSONParse%': ['JSON', 'parse'],
+	'%JSONStringify%': ['JSON', 'stringify'],
+	'%MapPrototype%': ['Map', 'prototype'],
+	'%NumberPrototype%': ['Number', 'prototype'],
+	'%ObjectPrototype%': ['Object', 'prototype'],
+	'%ObjProto_toString%': ['Object', 'prototype', 'toString'],
+	'%ObjProto_valueOf%': ['Object', 'prototype', 'valueOf'],
+	'%PromisePrototype%': ['Promise', 'prototype'],
+	'%PromiseProto_then%': ['Promise', 'prototype', 'then'],
+	'%Promise_all%': ['Promise', 'all'],
+	'%Promise_reject%': ['Promise', 'reject'],
+	'%Promise_resolve%': ['Promise', 'resolve'],
+	'%RangeErrorPrototype%': ['RangeError', 'prototype'],
+	'%ReferenceErrorPrototype%': ['ReferenceError', 'prototype'],
+	'%RegExpPrototype%': ['RegExp', 'prototype'],
+	'%SetPrototype%': ['Set', 'prototype'],
+	'%SharedArrayBufferPrototype%': ['SharedArrayBuffer', 'prototype'],
+	'%StringPrototype%': ['String', 'prototype'],
+	'%SymbolPrototype%': ['Symbol', 'prototype'],
+	'%SyntaxErrorPrototype%': ['SyntaxError', 'prototype'],
+	'%TypedArrayPrototype%': ['TypedArray', 'prototype'],
+	'%TypeErrorPrototype%': ['TypeError', 'prototype'],
+	'%Uint8ArrayPrototype%': ['Uint8Array', 'prototype'],
+	'%Uint8ClampedArrayPrototype%': ['Uint8ClampedArray', 'prototype'],
+	'%Uint16ArrayPrototype%': ['Uint16Array', 'prototype'],
+	'%Uint32ArrayPrototype%': ['Uint32Array', 'prototype'],
+	'%URIErrorPrototype%': ['URIError', 'prototype'],
+	'%WeakMapPrototype%': ['WeakMap', 'prototype'],
+	'%WeakSetPrototype%': ['WeakSet', 'prototype']
+};
+
+var bind = require('function-bind');
+var hasOwn = require('has');
+var $concat = bind.call(Function.call, Array.prototype.concat);
+var $spliceApply = bind.call(Function.apply, Array.prototype.splice);
+var $replace = bind.call(Function.call, String.prototype.replace);
+var $strSlice = bind.call(Function.call, String.prototype.slice);
+
+/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
+var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
+var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
+var stringToPath = function stringToPath(string) {
+	var first = $strSlice(string, 0, 1);
+	var last = $strSlice(string, -1);
+	if (first === '%' && last !== '%') {
+		throw new $SyntaxError('invalid intrinsic syntax, expected closing `%`');
+	} else if (last === '%' && first !== '%') {
+		throw new $SyntaxError('invalid intrinsic syntax, expected opening `%`');
+	}
+	var result = [];
+	$replace(string, rePropName, function (match, number, quote, subString) {
+		result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : number || match;
+	});
+	return result;
+};
+/* end adaptation */
+
+var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
+	var intrinsicName = name;
+	var alias;
+	if (hasOwn(LEGACY_ALIASES, intrinsicName)) {
+		alias = LEGACY_ALIASES[intrinsicName];
+		intrinsicName = '%' + alias[0] + '%';
+	}
+
+	if (hasOwn(INTRINSICS, intrinsicName)) {
+		var value = INTRINSICS[intrinsicName];
+		if (value === needsEval) {
+			value = doEval(intrinsicName);
+		}
+		if (typeof value === 'undefined' && !allowMissing) {
+			throw new $TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
+		}
+
+		return {
+			alias: alias,
+			name: intrinsicName,
+			value: value
+		};
+	}
+
+	throw new $SyntaxError('intrinsic ' + name + ' does not exist!');
+};
+
+module.exports = function GetIntrinsic(name, allowMissing) {
+	if (typeof name !== 'string' || name.length === 0) {
+		throw new $TypeError('intrinsic name must be a non-empty string');
+	}
+	if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
+		throw new $TypeError('"allowMissing" argument must be a boolean');
+	}
+
+	var parts = stringToPath(name);
+	var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
+
+	var intrinsic = getBaseIntrinsic('%' + intrinsicBaseName + '%', allowMissing);
+	var intrinsicRealName = intrinsic.name;
+	var value = intrinsic.value;
+	var skipFurtherCaching = false;
+
+	var alias = intrinsic.alias;
+	if (alias) {
+		intrinsicBaseName = alias[0];
+		$spliceApply(parts, $concat([0, 1], alias));
+	}
+
+	for (var i = 1, isOwn = true; i < parts.length; i += 1) {
+		var part = parts[i];
+		var first = $strSlice(part, 0, 1);
+		var last = $strSlice(part, -1);
+		if (
+			(
+				(first === '"' || first === "'" || first === '`')
+				|| (last === '"' || last === "'" || last === '`')
+			)
+			&& first !== last
+		) {
+			throw new $SyntaxError('property names with quotes must have matching quotes');
+		}
+		if (part === 'constructor' || !isOwn) {
+			skipFurtherCaching = true;
+		}
+
+		intrinsicBaseName += '.' + part;
+		intrinsicRealName = '%' + intrinsicBaseName + '%';
+
+		if (hasOwn(INTRINSICS, intrinsicRealName)) {
+			value = INTRINSICS[intrinsicRealName];
+		} else if (value != null) {
+			if (!(part in value)) {
+				if (!allowMissing) {
+					throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
+				}
+				return void undefined;
+			}
+			if ($gOPD && (i + 1) >= parts.length) {
+				var desc = $gOPD(value, part);
+				isOwn = !!desc;
+
+				// By convention, when a data property is converted to an accessor
+				// property to emulate a data property that does not suffer from
+				// the override mistake, that accessor's getter is marked with
+				// an `originalValue` property. Here, when we detect this, we
+				// uphold the illusion by pretending to see that original data
+				// property, i.e., returning the value rather than the getter
+				// itself.
+				if (isOwn && 'get' in desc && !('originalValue' in desc.get)) {
+					value = desc.get;
+				} else {
+					value = value[part];
+				}
+			} else {
+				isOwn = hasOwn(value, part);
+				value = value[part];
+			}
+
+			if (isOwn && !skipFurtherCaching) {
+				INTRINSICS[intrinsicRealName] = value;
+			}
+		}
+	}
+	return value;
+};
+
+},{"has-symbols":"../node_modules/has-symbols/index.js","function-bind":"../node_modules/function-bind/index.js","has":"../node_modules/has/src/index.js"}],"../node_modules/call-bind/index.js":[function(require,module,exports) {
+'use strict';
+
+var bind = require('function-bind');
+var GetIntrinsic = require('get-intrinsic');
+
+var $apply = GetIntrinsic('%Function.prototype.apply%');
+var $call = GetIntrinsic('%Function.prototype.call%');
+var $reflectApply = GetIntrinsic('%Reflect.apply%', true) || bind.call($call, $apply);
+
+var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%', true);
+var $defineProperty = GetIntrinsic('%Object.defineProperty%', true);
+var $max = GetIntrinsic('%Math.max%');
+
+if ($defineProperty) {
+	try {
+		$defineProperty({}, 'a', { value: 1 });
+	} catch (e) {
+		// IE 8 has a broken defineProperty
+		$defineProperty = null;
+	}
+}
+
+module.exports = function callBind(originalFunction) {
+	var func = $reflectApply(bind, $call, arguments);
+	if ($gOPD && $defineProperty) {
+		var desc = $gOPD(func, 'length');
+		if (desc.configurable) {
+			// original length, plus the receiver, minus any additional arguments (after the receiver)
+			$defineProperty(
+				func,
+				'length',
+				{ value: 1 + $max(0, originalFunction.length - (arguments.length - 1)) }
+			);
+		}
+	}
+	return func;
+};
+
+var applyBind = function applyBind() {
+	return $reflectApply(bind, $apply, arguments);
+};
+
+if ($defineProperty) {
+	$defineProperty(module.exports, 'apply', { value: applyBind });
+} else {
+	module.exports.apply = applyBind;
+}
+
+},{"function-bind":"../node_modules/function-bind/index.js","get-intrinsic":"../node_modules/get-intrinsic/index.js"}],"../node_modules/call-bind/callBound.js":[function(require,module,exports) {
+'use strict';
+
+var GetIntrinsic = require('get-intrinsic');
+
+var callBind = require('./');
+
+var $indexOf = callBind(GetIntrinsic('String.prototype.indexOf'));
+
+module.exports = function callBoundIntrinsic(name, allowMissing) {
+	var intrinsic = GetIntrinsic(name, !!allowMissing);
+	if (typeof intrinsic === 'function' && $indexOf(name, '.prototype.') > -1) {
+		return callBind(intrinsic);
+	}
+	return intrinsic;
+};
+
+},{"get-intrinsic":"../node_modules/get-intrinsic/index.js","./":"../node_modules/call-bind/index.js"}],"../node_modules/object-inspect/index.js":[function(require,module,exports) {
+var hasMap = typeof Map === 'function' && Map.prototype;
+var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, 'size') : null;
+var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === 'function' ? mapSizeDescriptor.get : null;
+var mapForEach = hasMap && Map.prototype.forEach;
+var hasSet = typeof Set === 'function' && Set.prototype;
+var setSizeDescriptor = Object.getOwnPropertyDescriptor && hasSet ? Object.getOwnPropertyDescriptor(Set.prototype, 'size') : null;
+var setSize = hasSet && setSizeDescriptor && typeof setSizeDescriptor.get === 'function' ? setSizeDescriptor.get : null;
+var setForEach = hasSet && Set.prototype.forEach;
+var hasWeakMap = typeof WeakMap === 'function' && WeakMap.prototype;
+var weakMapHas = hasWeakMap ? WeakMap.prototype.has : null;
+var hasWeakSet = typeof WeakSet === 'function' && WeakSet.prototype;
+var weakSetHas = hasWeakSet ? WeakSet.prototype.has : null;
+var hasWeakRef = typeof WeakRef === 'function' && WeakRef.prototype;
+var weakRefDeref = hasWeakRef ? WeakRef.prototype.deref : null;
+var booleanValueOf = Boolean.prototype.valueOf;
+var objectToString = Object.prototype.toString;
+var functionToString = Function.prototype.toString;
+var match = String.prototype.match;
+var bigIntValueOf = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
+var gOPS = Object.getOwnPropertySymbols;
+var symToString = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol' ? Symbol.prototype.toString : null;
+var hasShammedSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'object';
+var isEnumerable = Object.prototype.propertyIsEnumerable;
+
+var gPO = (typeof Reflect === 'function' ? Reflect.getPrototypeOf : Object.getPrototypeOf) || (
+    [].__proto__ === Array.prototype // eslint-disable-line no-proto
+        ? function (O) {
+            return O.__proto__; // eslint-disable-line no-proto
+        }
+        : null
+);
+
+var inspectCustom = require('./util.inspect').custom;
+var inspectSymbol = inspectCustom && isSymbol(inspectCustom) ? inspectCustom : null;
+var toStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag !== 'undefined' ? Symbol.toStringTag : null;
+
+module.exports = function inspect_(obj, options, depth, seen) {
+    var opts = options || {};
+
+    if (has(opts, 'quoteStyle') && (opts.quoteStyle !== 'single' && opts.quoteStyle !== 'double')) {
+        throw new TypeError('option "quoteStyle" must be "single" or "double"');
+    }
+    if (
+        has(opts, 'maxStringLength') && (typeof opts.maxStringLength === 'number'
+            ? opts.maxStringLength < 0 && opts.maxStringLength !== Infinity
+            : opts.maxStringLength !== null
+        )
+    ) {
+        throw new TypeError('option "maxStringLength", if provided, must be a positive integer, Infinity, or `null`');
+    }
+    var customInspect = has(opts, 'customInspect') ? opts.customInspect : true;
+    if (typeof customInspect !== 'boolean' && customInspect !== 'symbol') {
+        throw new TypeError('option "customInspect", if provided, must be `true`, `false`, or `\'symbol\'`');
+    }
+
+    if (
+        has(opts, 'indent')
+        && opts.indent !== null
+        && opts.indent !== '\t'
+        && !(parseInt(opts.indent, 10) === opts.indent && opts.indent > 0)
+    ) {
+        throw new TypeError('options "indent" must be "\\t", an integer > 0, or `null`');
+    }
+
+    if (typeof obj === 'undefined') {
+        return 'undefined';
+    }
+    if (obj === null) {
+        return 'null';
+    }
+    if (typeof obj === 'boolean') {
+        return obj ? 'true' : 'false';
+    }
+
+    if (typeof obj === 'string') {
+        return inspectString(obj, opts);
+    }
+    if (typeof obj === 'number') {
+        if (obj === 0) {
+            return Infinity / obj > 0 ? '0' : '-0';
+        }
+        return String(obj);
+    }
+    if (typeof obj === 'bigint') {
+        return String(obj) + 'n';
+    }
+
+    var maxDepth = typeof opts.depth === 'undefined' ? 5 : opts.depth;
+    if (typeof depth === 'undefined') { depth = 0; }
+    if (depth >= maxDepth && maxDepth > 0 && typeof obj === 'object') {
+        return isArray(obj) ? '[Array]' : '[Object]';
+    }
+
+    var indent = getIndent(opts, depth);
+
+    if (typeof seen === 'undefined') {
+        seen = [];
+    } else if (indexOf(seen, obj) >= 0) {
+        return '[Circular]';
+    }
+
+    function inspect(value, from, noIndent) {
+        if (from) {
+            seen = seen.slice();
+            seen.push(from);
+        }
+        if (noIndent) {
+            var newOpts = {
+                depth: opts.depth
+            };
+            if (has(opts, 'quoteStyle')) {
+                newOpts.quoteStyle = opts.quoteStyle;
+            }
+            return inspect_(value, newOpts, depth + 1, seen);
+        }
+        return inspect_(value, opts, depth + 1, seen);
+    }
+
+    if (typeof obj === 'function') {
+        var name = nameOf(obj);
+        var keys = arrObjKeys(obj, inspect);
+        return '[Function' + (name ? ': ' + name : ' (anonymous)') + ']' + (keys.length > 0 ? ' { ' + keys.join(', ') + ' }' : '');
+    }
+    if (isSymbol(obj)) {
+        var symString = hasShammedSymbols ? String(obj).replace(/^(Symbol\(.*\))_[^)]*$/, '$1') : symToString.call(obj);
+        return typeof obj === 'object' && !hasShammedSymbols ? markBoxed(symString) : symString;
+    }
+    if (isElement(obj)) {
+        var s = '<' + String(obj.nodeName).toLowerCase();
+        var attrs = obj.attributes || [];
+        for (var i = 0; i < attrs.length; i++) {
+            s += ' ' + attrs[i].name + '=' + wrapQuotes(quote(attrs[i].value), 'double', opts);
+        }
+        s += '>';
+        if (obj.childNodes && obj.childNodes.length) { s += '...'; }
+        s += '</' + String(obj.nodeName).toLowerCase() + '>';
+        return s;
+    }
+    if (isArray(obj)) {
+        if (obj.length === 0) { return '[]'; }
+        var xs = arrObjKeys(obj, inspect);
+        if (indent && !singleLineValues(xs)) {
+            return '[' + indentedJoin(xs, indent) + ']';
+        }
+        return '[ ' + xs.join(', ') + ' ]';
+    }
+    if (isError(obj)) {
+        var parts = arrObjKeys(obj, inspect);
+        if (parts.length === 0) { return '[' + String(obj) + ']'; }
+        return '{ [' + String(obj) + '] ' + parts.join(', ') + ' }';
+    }
+    if (typeof obj === 'object' && customInspect) {
+        if (inspectSymbol && typeof obj[inspectSymbol] === 'function') {
+            return obj[inspectSymbol]();
+        } else if (customInspect !== 'symbol' && typeof obj.inspect === 'function') {
+            return obj.inspect();
+        }
+    }
+    if (isMap(obj)) {
+        var mapParts = [];
+        mapForEach.call(obj, function (value, key) {
+            mapParts.push(inspect(key, obj, true) + ' => ' + inspect(value, obj));
+        });
+        return collectionOf('Map', mapSize.call(obj), mapParts, indent);
+    }
+    if (isSet(obj)) {
+        var setParts = [];
+        setForEach.call(obj, function (value) {
+            setParts.push(inspect(value, obj));
+        });
+        return collectionOf('Set', setSize.call(obj), setParts, indent);
+    }
+    if (isWeakMap(obj)) {
+        return weakCollectionOf('WeakMap');
+    }
+    if (isWeakSet(obj)) {
+        return weakCollectionOf('WeakSet');
+    }
+    if (isWeakRef(obj)) {
+        return weakCollectionOf('WeakRef');
+    }
+    if (isNumber(obj)) {
+        return markBoxed(inspect(Number(obj)));
+    }
+    if (isBigInt(obj)) {
+        return markBoxed(inspect(bigIntValueOf.call(obj)));
+    }
+    if (isBoolean(obj)) {
+        return markBoxed(booleanValueOf.call(obj));
+    }
+    if (isString(obj)) {
+        return markBoxed(inspect(String(obj)));
+    }
+    if (!isDate(obj) && !isRegExp(obj)) {
+        var ys = arrObjKeys(obj, inspect);
+        var isPlainObject = gPO ? gPO(obj) === Object.prototype : obj instanceof Object || obj.constructor === Object;
+        var protoTag = obj instanceof Object ? '' : 'null prototype';
+        var stringTag = !isPlainObject && toStringTag && Object(obj) === obj && toStringTag in obj ? toStr(obj).slice(8, -1) : protoTag ? 'Object' : '';
+        var constructorTag = isPlainObject || typeof obj.constructor !== 'function' ? '' : obj.constructor.name ? obj.constructor.name + ' ' : '';
+        var tag = constructorTag + (stringTag || protoTag ? '[' + [].concat(stringTag || [], protoTag || []).join(': ') + '] ' : '');
+        if (ys.length === 0) { return tag + '{}'; }
+        if (indent) {
+            return tag + '{' + indentedJoin(ys, indent) + '}';
+        }
+        return tag + '{ ' + ys.join(', ') + ' }';
+    }
+    return String(obj);
+};
+
+function wrapQuotes(s, defaultStyle, opts) {
+    var quoteChar = (opts.quoteStyle || defaultStyle) === 'double' ? '"' : "'";
+    return quoteChar + s + quoteChar;
+}
+
+function quote(s) {
+    return String(s).replace(/"/g, '&quot;');
+}
+
+function isArray(obj) { return toStr(obj) === '[object Array]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isDate(obj) { return toStr(obj) === '[object Date]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isRegExp(obj) { return toStr(obj) === '[object RegExp]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isError(obj) { return toStr(obj) === '[object Error]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isString(obj) { return toStr(obj) === '[object String]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isNumber(obj) { return toStr(obj) === '[object Number]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+function isBoolean(obj) { return toStr(obj) === '[object Boolean]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj)); }
+
+// Symbol and BigInt do have Symbol.toStringTag by spec, so that can't be used to eliminate false positives
+function isSymbol(obj) {
+    if (hasShammedSymbols) {
+        return obj && typeof obj === 'object' && obj instanceof Symbol;
+    }
+    if (typeof obj === 'symbol') {
+        return true;
+    }
+    if (!obj || typeof obj !== 'object' || !symToString) {
+        return false;
+    }
+    try {
+        symToString.call(obj);
+        return true;
+    } catch (e) {}
+    return false;
+}
+
+function isBigInt(obj) {
+    if (!obj || typeof obj !== 'object' || !bigIntValueOf) {
+        return false;
+    }
+    try {
+        bigIntValueOf.call(obj);
+        return true;
+    } catch (e) {}
+    return false;
+}
+
+var hasOwn = Object.prototype.hasOwnProperty || function (key) { return key in this; };
+function has(obj, key) {
+    return hasOwn.call(obj, key);
+}
+
+function toStr(obj) {
+    return objectToString.call(obj);
+}
+
+function nameOf(f) {
+    if (f.name) { return f.name; }
+    var m = match.call(functionToString.call(f), /^function\s*([\w$]+)/);
+    if (m) { return m[1]; }
+    return null;
+}
+
+function indexOf(xs, x) {
+    if (xs.indexOf) { return xs.indexOf(x); }
+    for (var i = 0, l = xs.length; i < l; i++) {
+        if (xs[i] === x) { return i; }
+    }
+    return -1;
+}
+
+function isMap(x) {
+    if (!mapSize || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        mapSize.call(x);
+        try {
+            setSize.call(x);
+        } catch (s) {
+            return true;
+        }
+        return x instanceof Map; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isWeakMap(x) {
+    if (!weakMapHas || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        weakMapHas.call(x, weakMapHas);
+        try {
+            weakSetHas.call(x, weakSetHas);
+        } catch (s) {
+            return true;
+        }
+        return x instanceof WeakMap; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isWeakRef(x) {
+    if (!weakRefDeref || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        weakRefDeref.call(x);
+        return true;
+    } catch (e) {}
+    return false;
+}
+
+function isSet(x) {
+    if (!setSize || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        setSize.call(x);
+        try {
+            mapSize.call(x);
+        } catch (m) {
+            return true;
+        }
+        return x instanceof Set; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isWeakSet(x) {
+    if (!weakSetHas || !x || typeof x !== 'object') {
+        return false;
+    }
+    try {
+        weakSetHas.call(x, weakSetHas);
+        try {
+            weakMapHas.call(x, weakMapHas);
+        } catch (s) {
+            return true;
+        }
+        return x instanceof WeakSet; // core-js workaround, pre-v2.5.0
+    } catch (e) {}
+    return false;
+}
+
+function isElement(x) {
+    if (!x || typeof x !== 'object') { return false; }
+    if (typeof HTMLElement !== 'undefined' && x instanceof HTMLElement) {
+        return true;
+    }
+    return typeof x.nodeName === 'string' && typeof x.getAttribute === 'function';
+}
+
+function inspectString(str, opts) {
+    if (str.length > opts.maxStringLength) {
+        var remaining = str.length - opts.maxStringLength;
+        var trailer = '... ' + remaining + ' more character' + (remaining > 1 ? 's' : '');
+        return inspectString(str.slice(0, opts.maxStringLength), opts) + trailer;
+    }
+    // eslint-disable-next-line no-control-regex
+    var s = str.replace(/(['\\])/g, '\\$1').replace(/[\x00-\x1f]/g, lowbyte);
+    return wrapQuotes(s, 'single', opts);
+}
+
+function lowbyte(c) {
+    var n = c.charCodeAt(0);
+    var x = {
+        8: 'b',
+        9: 't',
+        10: 'n',
+        12: 'f',
+        13: 'r'
+    }[n];
+    if (x) { return '\\' + x; }
+    return '\\x' + (n < 0x10 ? '0' : '') + n.toString(16).toUpperCase();
+}
+
+function markBoxed(str) {
+    return 'Object(' + str + ')';
+}
+
+function weakCollectionOf(type) {
+    return type + ' { ? }';
+}
+
+function collectionOf(type, size, entries, indent) {
+    var joinedEntries = indent ? indentedJoin(entries, indent) : entries.join(', ');
+    return type + ' (' + size + ') {' + joinedEntries + '}';
+}
+
+function singleLineValues(xs) {
+    for (var i = 0; i < xs.length; i++) {
+        if (indexOf(xs[i], '\n') >= 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getIndent(opts, depth) {
+    var baseIndent;
+    if (opts.indent === '\t') {
+        baseIndent = '\t';
+    } else if (typeof opts.indent === 'number' && opts.indent > 0) {
+        baseIndent = Array(opts.indent + 1).join(' ');
+    } else {
+        return null;
+    }
+    return {
+        base: baseIndent,
+        prev: Array(depth + 1).join(baseIndent)
+    };
+}
+
+function indentedJoin(xs, indent) {
+    if (xs.length === 0) { return ''; }
+    var lineJoiner = '\n' + indent.prev + indent.base;
+    return lineJoiner + xs.join(',' + lineJoiner) + '\n' + indent.prev;
+}
+
+function arrObjKeys(obj, inspect) {
+    var isArr = isArray(obj);
+    var xs = [];
+    if (isArr) {
+        xs.length = obj.length;
+        for (var i = 0; i < obj.length; i++) {
+            xs[i] = has(obj, i) ? inspect(obj[i], obj) : '';
+        }
+    }
+    var syms = typeof gOPS === 'function' ? gOPS(obj) : [];
+    var symMap;
+    if (hasShammedSymbols) {
+        symMap = {};
+        for (var k = 0; k < syms.length; k++) {
+            symMap['$' + syms[k]] = syms[k];
+        }
+    }
+
+    for (var key in obj) { // eslint-disable-line no-restricted-syntax
+        if (!has(obj, key)) { continue; } // eslint-disable-line no-restricted-syntax, no-continue
+        if (isArr && String(Number(key)) === key && key < obj.length) { continue; } // eslint-disable-line no-restricted-syntax, no-continue
+        if (hasShammedSymbols && symMap['$' + key] instanceof Symbol) {
+            // this is to prevent shammed Symbols, which are stored as strings, from being included in the string key section
+            continue; // eslint-disable-line no-restricted-syntax, no-continue
+        } else if ((/[^\w$]/).test(key)) {
+            xs.push(inspect(key, obj) + ': ' + inspect(obj[key], obj));
+        } else {
+            xs.push(key + ': ' + inspect(obj[key], obj));
+        }
+    }
+    if (typeof gOPS === 'function') {
+        for (var j = 0; j < syms.length; j++) {
+            if (isEnumerable.call(obj, syms[j])) {
+                xs.push('[' + inspect(syms[j]) + ']: ' + inspect(obj[syms[j]], obj));
+            }
+        }
+    }
+    return xs;
+}
+
+},{"./util.inspect":"../node_modules/parcel-bundler/src/builtins/_empty.js"}],"../node_modules/side-channel/index.js":[function(require,module,exports) {
+'use strict';
+
+var GetIntrinsic = require('get-intrinsic');
+var callBound = require('call-bind/callBound');
+var inspect = require('object-inspect');
+
+var $TypeError = GetIntrinsic('%TypeError%');
+var $WeakMap = GetIntrinsic('%WeakMap%', true);
+var $Map = GetIntrinsic('%Map%', true);
+
+var $weakMapGet = callBound('WeakMap.prototype.get', true);
+var $weakMapSet = callBound('WeakMap.prototype.set', true);
+var $weakMapHas = callBound('WeakMap.prototype.has', true);
+var $mapGet = callBound('Map.prototype.get', true);
+var $mapSet = callBound('Map.prototype.set', true);
+var $mapHas = callBound('Map.prototype.has', true);
+
+/*
+ * This function traverses the list returning the node corresponding to the
+ * given key.
+ *
+ * That node is also moved to the head of the list, so that if it's accessed
+ * again we don't need to traverse the whole list. By doing so, all the recently
+ * used nodes can be accessed relatively quickly.
+ */
+var listGetNode = function (list, key) { // eslint-disable-line consistent-return
+	for (var prev = list, curr; (curr = prev.next) !== null; prev = curr) {
+		if (curr.key === key) {
+			prev.next = curr.next;
+			curr.next = list.next;
+			list.next = curr; // eslint-disable-line no-param-reassign
+			return curr;
+		}
+	}
+};
+
+var listGet = function (objects, key) {
+	var node = listGetNode(objects, key);
+	return node && node.value;
+};
+var listSet = function (objects, key, value) {
+	var node = listGetNode(objects, key);
+	if (node) {
+		node.value = value;
+	} else {
+		// Prepend the new node to the beginning of the list
+		objects.next = { // eslint-disable-line no-param-reassign
+			key: key,
+			next: objects.next,
+			value: value
+		};
+	}
+};
+var listHas = function (objects, key) {
+	return !!listGetNode(objects, key);
+};
+
+module.exports = function getSideChannel() {
+	var $wm;
+	var $m;
+	var $o;
+	var channel = {
+		assert: function (key) {
+			if (!channel.has(key)) {
+				throw new $TypeError('Side channel does not contain ' + inspect(key));
+			}
+		},
+		get: function (key) { // eslint-disable-line consistent-return
+			if ($WeakMap && key && (typeof key === 'object' || typeof key === 'function')) {
+				if ($wm) {
+					return $weakMapGet($wm, key);
+				}
+			} else if ($Map) {
+				if ($m) {
+					return $mapGet($m, key);
+				}
+			} else {
+				if ($o) { // eslint-disable-line no-lonely-if
+					return listGet($o, key);
+				}
+			}
+		},
+		has: function (key) {
+			if ($WeakMap && key && (typeof key === 'object' || typeof key === 'function')) {
+				if ($wm) {
+					return $weakMapHas($wm, key);
+				}
+			} else if ($Map) {
+				if ($m) {
+					return $mapHas($m, key);
+				}
+			} else {
+				if ($o) { // eslint-disable-line no-lonely-if
+					return listHas($o, key);
+				}
+			}
+			return false;
+		},
+		set: function (key, value) {
+			if ($WeakMap && key && (typeof key === 'object' || typeof key === 'function')) {
+				if (!$wm) {
+					$wm = new $WeakMap();
+				}
+				$weakMapSet($wm, key, value);
+			} else if ($Map) {
+				if (!$m) {
+					$m = new $Map();
+				}
+				$mapSet($m, key, value);
+			} else {
+				if (!$o) {
+					/*
+					 * Initialize the linked list as an empty node, so that we don't have
+					 * to special-case handling of the first node: we can always refer to
+					 * it as (previous node).next, instead of something like (list).head
+					 */
+					$o = { key: {}, next: null };
+				}
+				listSet($o, key, value);
+			}
+		}
+	};
+	return channel;
+};
+
+},{"get-intrinsic":"../node_modules/get-intrinsic/index.js","call-bind/callBound":"../node_modules/call-bind/callBound.js","object-inspect":"../node_modules/object-inspect/index.js"}],"../node_modules/qs/lib/formats.js":[function(require,module,exports) {
+'use strict';
+
+var replace = String.prototype.replace;
+var percentTwenties = /%20/g;
+var Format = {
+  RFC1738: 'RFC1738',
+  RFC3986: 'RFC3986'
+};
+module.exports = {
+  'default': Format.RFC3986,
+  formatters: {
+    RFC1738: function (value) {
+      return replace.call(value, percentTwenties, '+');
+    },
+    RFC3986: function (value) {
+      return String(value);
+    }
+  },
+  RFC1738: Format.RFC1738,
+  RFC3986: Format.RFC3986
+};
+},{}],"../node_modules/qs/lib/utils.js":[function(require,module,exports) {
+'use strict';
+
+var formats = require('./formats');
+
+var has = Object.prototype.hasOwnProperty;
+var isArray = Array.isArray;
+
+var hexTable = function () {
+  var array = [];
+
+  for (var i = 0; i < 256; ++i) {
+    array.push('%' + ((i < 16 ? '0' : '') + i.toString(16)).toUpperCase());
+  }
+
+  return array;
+}();
+
+var compactQueue = function compactQueue(queue) {
+  while (queue.length > 1) {
+    var item = queue.pop();
+    var obj = item.obj[item.prop];
+
+    if (isArray(obj)) {
+      var compacted = [];
+
+      for (var j = 0; j < obj.length; ++j) {
+        if (typeof obj[j] !== 'undefined') {
+          compacted.push(obj[j]);
+        }
+      }
+
+      item.obj[item.prop] = compacted;
+    }
+  }
+};
+
+var arrayToObject = function arrayToObject(source, options) {
+  var obj = options && options.plainObjects ? Object.create(null) : {};
+
+  for (var i = 0; i < source.length; ++i) {
+    if (typeof source[i] !== 'undefined') {
+      obj[i] = source[i];
+    }
+  }
+
+  return obj;
+};
+
+var merge = function merge(target, source, options) {
+  /* eslint no-param-reassign: 0 */
+  if (!source) {
+    return target;
+  }
+
+  if (typeof source !== 'object') {
+    if (isArray(target)) {
+      target.push(source);
+    } else if (target && typeof target === 'object') {
+      if (options && (options.plainObjects || options.allowPrototypes) || !has.call(Object.prototype, source)) {
+        target[source] = true;
+      }
+    } else {
+      return [target, source];
+    }
+
+    return target;
+  }
+
+  if (!target || typeof target !== 'object') {
+    return [target].concat(source);
+  }
+
+  var mergeTarget = target;
+
+  if (isArray(target) && !isArray(source)) {
+    mergeTarget = arrayToObject(target, options);
+  }
+
+  if (isArray(target) && isArray(source)) {
+    source.forEach(function (item, i) {
+      if (has.call(target, i)) {
+        var targetItem = target[i];
+
+        if (targetItem && typeof targetItem === 'object' && item && typeof item === 'object') {
+          target[i] = merge(targetItem, item, options);
+        } else {
+          target.push(item);
+        }
+      } else {
+        target[i] = item;
+      }
+    });
+    return target;
+  }
+
+  return Object.keys(source).reduce(function (acc, key) {
+    var value = source[key];
+
+    if (has.call(acc, key)) {
+      acc[key] = merge(acc[key], value, options);
+    } else {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, mergeTarget);
+};
+
+var assign = function assignSingleSource(target, source) {
+  return Object.keys(source).reduce(function (acc, key) {
+    acc[key] = source[key];
+    return acc;
+  }, target);
+};
+
+var decode = function (str, decoder, charset) {
+  var strWithoutPlus = str.replace(/\+/g, ' ');
+
+  if (charset === 'iso-8859-1') {
+    // unescape never throws, no try...catch needed:
+    return strWithoutPlus.replace(/%[0-9a-f]{2}/gi, unescape);
+  } // utf-8
+
+
+  try {
+    return decodeURIComponent(strWithoutPlus);
+  } catch (e) {
+    return strWithoutPlus;
+  }
+};
+
+var encode = function encode(str, defaultEncoder, charset, kind, format) {
+  // This code was originally written by Brian White (mscdex) for the io.js core querystring library.
+  // It has been adapted here for stricter adherence to RFC 3986
+  if (str.length === 0) {
+    return str;
+  }
+
+  var string = str;
+
+  if (typeof str === 'symbol') {
+    string = Symbol.prototype.toString.call(str);
+  } else if (typeof str !== 'string') {
+    string = String(str);
+  }
+
+  if (charset === 'iso-8859-1') {
+    return escape(string).replace(/%u[0-9a-f]{4}/gi, function ($0) {
+      return '%26%23' + parseInt($0.slice(2), 16) + '%3B';
+    });
+  }
+
+  var out = '';
+
+  for (var i = 0; i < string.length; ++i) {
+    var c = string.charCodeAt(i);
+
+    if (c === 0x2D // -
+    || c === 0x2E // .
+    || c === 0x5F // _
+    || c === 0x7E // ~
+    || c >= 0x30 && c <= 0x39 // 0-9
+    || c >= 0x41 && c <= 0x5A // a-z
+    || c >= 0x61 && c <= 0x7A // A-Z
+    || format === formats.RFC1738 && (c === 0x28 || c === 0x29) // ( )
+    ) {
+        out += string.charAt(i);
+        continue;
+      }
+
+    if (c < 0x80) {
+      out = out + hexTable[c];
+      continue;
+    }
+
+    if (c < 0x800) {
+      out = out + (hexTable[0xC0 | c >> 6] + hexTable[0x80 | c & 0x3F]);
+      continue;
+    }
+
+    if (c < 0xD800 || c >= 0xE000) {
+      out = out + (hexTable[0xE0 | c >> 12] + hexTable[0x80 | c >> 6 & 0x3F] + hexTable[0x80 | c & 0x3F]);
+      continue;
+    }
+
+    i += 1;
+    c = 0x10000 + ((c & 0x3FF) << 10 | string.charCodeAt(i) & 0x3FF);
+    out += hexTable[0xF0 | c >> 18] + hexTable[0x80 | c >> 12 & 0x3F] + hexTable[0x80 | c >> 6 & 0x3F] + hexTable[0x80 | c & 0x3F];
+  }
+
+  return out;
+};
+
+var compact = function compact(value) {
+  var queue = [{
+    obj: {
+      o: value
+    },
+    prop: 'o'
+  }];
+  var refs = [];
+
+  for (var i = 0; i < queue.length; ++i) {
+    var item = queue[i];
+    var obj = item.obj[item.prop];
+    var keys = Object.keys(obj);
+
+    for (var j = 0; j < keys.length; ++j) {
+      var key = keys[j];
+      var val = obj[key];
+
+      if (typeof val === 'object' && val !== null && refs.indexOf(val) === -1) {
+        queue.push({
+          obj: obj,
+          prop: key
+        });
+        refs.push(val);
+      }
+    }
+  }
+
+  compactQueue(queue);
+  return value;
+};
+
+var isRegExp = function isRegExp(obj) {
+  return Object.prototype.toString.call(obj) === '[object RegExp]';
+};
+
+var isBuffer = function isBuffer(obj) {
+  if (!obj || typeof obj !== 'object') {
+    return false;
+  }
+
+  return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
+};
+
+var combine = function combine(a, b) {
+  return [].concat(a, b);
+};
+
+var maybeMap = function maybeMap(val, fn) {
+  if (isArray(val)) {
+    var mapped = [];
+
+    for (var i = 0; i < val.length; i += 1) {
+      mapped.push(fn(val[i]));
+    }
+
+    return mapped;
+  }
+
+  return fn(val);
+};
+
+module.exports = {
+  arrayToObject: arrayToObject,
+  assign: assign,
+  combine: combine,
+  compact: compact,
+  decode: decode,
+  encode: encode,
+  isBuffer: isBuffer,
+  isRegExp: isRegExp,
+  maybeMap: maybeMap,
+  merge: merge
+};
+},{"./formats":"../node_modules/qs/lib/formats.js"}],"../node_modules/qs/lib/stringify.js":[function(require,module,exports) {
+'use strict';
+
+var getSideChannel = require('side-channel');
+
+var utils = require('./utils');
+
+var formats = require('./formats');
+
+var has = Object.prototype.hasOwnProperty;
+var arrayPrefixGenerators = {
+  brackets: function brackets(prefix) {
+    return prefix + '[]';
+  },
+  comma: 'comma',
+  indices: function indices(prefix, key) {
+    return prefix + '[' + key + ']';
+  },
+  repeat: function repeat(prefix) {
+    return prefix;
+  }
+};
+var isArray = Array.isArray;
+var push = Array.prototype.push;
+
+var pushToArray = function (arr, valueOrArray) {
+  push.apply(arr, isArray(valueOrArray) ? valueOrArray : [valueOrArray]);
+};
+
+var toISO = Date.prototype.toISOString;
+var defaultFormat = formats['default'];
+var defaults = {
+  addQueryPrefix: false,
+  allowDots: false,
+  charset: 'utf-8',
+  charsetSentinel: false,
+  delimiter: '&',
+  encode: true,
+  encoder: utils.encode,
+  encodeValuesOnly: false,
+  format: defaultFormat,
+  formatter: formats.formatters[defaultFormat],
+  // deprecated
+  indices: false,
+  serializeDate: function serializeDate(date) {
+    return toISO.call(date);
+  },
+  skipNulls: false,
+  strictNullHandling: false
+};
+
+var isNonNullishPrimitive = function isNonNullishPrimitive(v) {
+  return typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' || typeof v === 'symbol' || typeof v === 'bigint';
+};
+
+var stringify = function stringify(object, prefix, generateArrayPrefix, strictNullHandling, skipNulls, encoder, filter, sort, allowDots, serializeDate, format, formatter, encodeValuesOnly, charset, sideChannel) {
+  var obj = object;
+
+  if (sideChannel.has(object)) {
+    throw new RangeError('Cyclic object value');
+  }
+
+  if (typeof filter === 'function') {
+    obj = filter(prefix, obj);
+  } else if (obj instanceof Date) {
+    obj = serializeDate(obj);
+  } else if (generateArrayPrefix === 'comma' && isArray(obj)) {
+    obj = utils.maybeMap(obj, function (value) {
+      if (value instanceof Date) {
+        return serializeDate(value);
+      }
+
+      return value;
+    });
+  }
+
+  if (obj === null) {
+    if (strictNullHandling) {
+      return encoder && !encodeValuesOnly ? encoder(prefix, defaults.encoder, charset, 'key', format) : prefix;
+    }
+
+    obj = '';
+  }
+
+  if (isNonNullishPrimitive(obj) || utils.isBuffer(obj)) {
+    if (encoder) {
+      var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults.encoder, charset, 'key', format);
+      return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults.encoder, charset, 'value', format))];
+    }
+
+    return [formatter(prefix) + '=' + formatter(String(obj))];
+  }
+
+  var values = [];
+
+  if (typeof obj === 'undefined') {
+    return values;
+  }
+
+  var objKeys;
+
+  if (generateArrayPrefix === 'comma' && isArray(obj)) {
+    // we need to join elements in
+    objKeys = [{
+      value: obj.length > 0 ? obj.join(',') || null : undefined
+    }];
+  } else if (isArray(filter)) {
+    objKeys = filter;
+  } else {
+    var keys = Object.keys(obj);
+    objKeys = sort ? keys.sort(sort) : keys;
+  }
+
+  for (var i = 0; i < objKeys.length; ++i) {
+    var key = objKeys[i];
+    var value = typeof key === 'object' && key.value !== undefined ? key.value : obj[key];
+
+    if (skipNulls && value === null) {
+      continue;
+    }
+
+    var keyPrefix = isArray(obj) ? typeof generateArrayPrefix === 'function' ? generateArrayPrefix(prefix, key) : prefix : prefix + (allowDots ? '.' + key : '[' + key + ']');
+    sideChannel.set(object, true);
+    var valueSideChannel = getSideChannel();
+    pushToArray(values, stringify(value, keyPrefix, generateArrayPrefix, strictNullHandling, skipNulls, encoder, filter, sort, allowDots, serializeDate, format, formatter, encodeValuesOnly, charset, valueSideChannel));
+  }
+
+  return values;
+};
+
+var normalizeStringifyOptions = function normalizeStringifyOptions(opts) {
+  if (!opts) {
+    return defaults;
+  }
+
+  if (opts.encoder !== null && opts.encoder !== undefined && typeof opts.encoder !== 'function') {
+    throw new TypeError('Encoder has to be a function.');
+  }
+
+  var charset = opts.charset || defaults.charset;
+
+  if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {
+    throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');
+  }
+
+  var format = formats['default'];
+
+  if (typeof opts.format !== 'undefined') {
+    if (!has.call(formats.formatters, opts.format)) {
+      throw new TypeError('Unknown format option provided.');
+    }
+
+    format = opts.format;
+  }
+
+  var formatter = formats.formatters[format];
+  var filter = defaults.filter;
+
+  if (typeof opts.filter === 'function' || isArray(opts.filter)) {
+    filter = opts.filter;
+  }
+
+  return {
+    addQueryPrefix: typeof opts.addQueryPrefix === 'boolean' ? opts.addQueryPrefix : defaults.addQueryPrefix,
+    allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,
+    charset: charset,
+    charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,
+    delimiter: typeof opts.delimiter === 'undefined' ? defaults.delimiter : opts.delimiter,
+    encode: typeof opts.encode === 'boolean' ? opts.encode : defaults.encode,
+    encoder: typeof opts.encoder === 'function' ? opts.encoder : defaults.encoder,
+    encodeValuesOnly: typeof opts.encodeValuesOnly === 'boolean' ? opts.encodeValuesOnly : defaults.encodeValuesOnly,
+    filter: filter,
+    format: format,
+    formatter: formatter,
+    serializeDate: typeof opts.serializeDate === 'function' ? opts.serializeDate : defaults.serializeDate,
+    skipNulls: typeof opts.skipNulls === 'boolean' ? opts.skipNulls : defaults.skipNulls,
+    sort: typeof opts.sort === 'function' ? opts.sort : null,
+    strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling
+  };
+};
+
+module.exports = function (object, opts) {
+  var obj = object;
+  var options = normalizeStringifyOptions(opts);
+  var objKeys;
+  var filter;
+
+  if (typeof options.filter === 'function') {
+    filter = options.filter;
+    obj = filter('', obj);
+  } else if (isArray(options.filter)) {
+    filter = options.filter;
+    objKeys = filter;
+  }
+
+  var keys = [];
+
+  if (typeof obj !== 'object' || obj === null) {
+    return '';
+  }
+
+  var arrayFormat;
+
+  if (opts && opts.arrayFormat in arrayPrefixGenerators) {
+    arrayFormat = opts.arrayFormat;
+  } else if (opts && 'indices' in opts) {
+    arrayFormat = opts.indices ? 'indices' : 'repeat';
+  } else {
+    arrayFormat = 'indices';
+  }
+
+  var generateArrayPrefix = arrayPrefixGenerators[arrayFormat];
+
+  if (!objKeys) {
+    objKeys = Object.keys(obj);
+  }
+
+  if (options.sort) {
+    objKeys.sort(options.sort);
+  }
+
+  var sideChannel = getSideChannel();
+
+  for (var i = 0; i < objKeys.length; ++i) {
+    var key = objKeys[i];
+
+    if (options.skipNulls && obj[key] === null) {
+      continue;
+    }
+
+    pushToArray(keys, stringify(obj[key], key, generateArrayPrefix, options.strictNullHandling, options.skipNulls, options.encode ? options.encoder : null, options.filter, options.sort, options.allowDots, options.serializeDate, options.format, options.formatter, options.encodeValuesOnly, options.charset, sideChannel));
+  }
+
+  var joined = keys.join(options.delimiter);
+  var prefix = options.addQueryPrefix === true ? '?' : '';
+
+  if (options.charsetSentinel) {
+    if (options.charset === 'iso-8859-1') {
+      // encodeURIComponent('&#10003;'), the "numeric entity" representation of a checkmark
+      prefix += 'utf8=%26%2310003%3B&';
+    } else {
+      // encodeURIComponent('✓')
+      prefix += 'utf8=%E2%9C%93&';
+    }
+  }
+
+  return joined.length > 0 ? prefix + joined : '';
+};
+},{"side-channel":"../node_modules/side-channel/index.js","./utils":"../node_modules/qs/lib/utils.js","./formats":"../node_modules/qs/lib/formats.js"}],"../node_modules/qs/lib/parse.js":[function(require,module,exports) {
+'use strict';
+
+var utils = require('./utils');
+
+var has = Object.prototype.hasOwnProperty;
+var isArray = Array.isArray;
+var defaults = {
+  allowDots: false,
+  allowPrototypes: false,
+  allowSparse: false,
+  arrayLimit: 20,
+  charset: 'utf-8',
+  charsetSentinel: false,
+  comma: false,
+  decoder: utils.decode,
+  delimiter: '&',
+  depth: 5,
+  ignoreQueryPrefix: false,
+  interpretNumericEntities: false,
+  parameterLimit: 1000,
+  parseArrays: true,
+  plainObjects: false,
+  strictNullHandling: false
+};
+
+var interpretNumericEntities = function (str) {
+  return str.replace(/&#(\d+);/g, function ($0, numberStr) {
+    return String.fromCharCode(parseInt(numberStr, 10));
+  });
+};
+
+var parseArrayValue = function (val, options) {
+  if (val && typeof val === 'string' && options.comma && val.indexOf(',') > -1) {
+    return val.split(',');
+  }
+
+  return val;
+}; // This is what browsers will submit when the ✓ character occurs in an
+// application/x-www-form-urlencoded body and the encoding of the page containing
+// the form is iso-8859-1, or when the submitted form has an accept-charset
+// attribute of iso-8859-1. Presumably also with other charsets that do not contain
+// the ✓ character, such as us-ascii.
+
+
+var isoSentinel = 'utf8=%26%2310003%3B'; // encodeURIComponent('&#10003;')
+// These are the percent-encoded utf-8 octets representing a checkmark, indicating that the request actually is utf-8 encoded.
+
+var charsetSentinel = 'utf8=%E2%9C%93'; // encodeURIComponent('✓')
+
+var parseValues = function parseQueryStringValues(str, options) {
+  var obj = {};
+  var cleanStr = options.ignoreQueryPrefix ? str.replace(/^\?/, '') : str;
+  var limit = options.parameterLimit === Infinity ? undefined : options.parameterLimit;
+  var parts = cleanStr.split(options.delimiter, limit);
+  var skipIndex = -1; // Keep track of where the utf8 sentinel was found
+
+  var i;
+  var charset = options.charset;
+
+  if (options.charsetSentinel) {
+    for (i = 0; i < parts.length; ++i) {
+      if (parts[i].indexOf('utf8=') === 0) {
+        if (parts[i] === charsetSentinel) {
+          charset = 'utf-8';
+        } else if (parts[i] === isoSentinel) {
+          charset = 'iso-8859-1';
+        }
+
+        skipIndex = i;
+        i = parts.length; // The eslint settings do not allow break;
+      }
+    }
+  }
+
+  for (i = 0; i < parts.length; ++i) {
+    if (i === skipIndex) {
+      continue;
+    }
+
+    var part = parts[i];
+    var bracketEqualsPos = part.indexOf(']=');
+    var pos = bracketEqualsPos === -1 ? part.indexOf('=') : bracketEqualsPos + 1;
+    var key, val;
+
+    if (pos === -1) {
+      key = options.decoder(part, defaults.decoder, charset, 'key');
+      val = options.strictNullHandling ? null : '';
+    } else {
+      key = options.decoder(part.slice(0, pos), defaults.decoder, charset, 'key');
+      val = utils.maybeMap(parseArrayValue(part.slice(pos + 1), options), function (encodedVal) {
+        return options.decoder(encodedVal, defaults.decoder, charset, 'value');
+      });
+    }
+
+    if (val && options.interpretNumericEntities && charset === 'iso-8859-1') {
+      val = interpretNumericEntities(val);
+    }
+
+    if (part.indexOf('[]=') > -1) {
+      val = isArray(val) ? [val] : val;
+    }
+
+    if (has.call(obj, key)) {
+      obj[key] = utils.combine(obj[key], val);
+    } else {
+      obj[key] = val;
+    }
+  }
+
+  return obj;
+};
+
+var parseObject = function (chain, val, options, valuesParsed) {
+  var leaf = valuesParsed ? val : parseArrayValue(val, options);
+
+  for (var i = chain.length - 1; i >= 0; --i) {
+    var obj;
+    var root = chain[i];
+
+    if (root === '[]' && options.parseArrays) {
+      obj = [].concat(leaf);
+    } else {
+      obj = options.plainObjects ? Object.create(null) : {};
+      var cleanRoot = root.charAt(0) === '[' && root.charAt(root.length - 1) === ']' ? root.slice(1, -1) : root;
+      var index = parseInt(cleanRoot, 10);
+
+      if (!options.parseArrays && cleanRoot === '') {
+        obj = {
+          0: leaf
+        };
+      } else if (!isNaN(index) && root !== cleanRoot && String(index) === cleanRoot && index >= 0 && options.parseArrays && index <= options.arrayLimit) {
+        obj = [];
+        obj[index] = leaf;
+      } else {
+        obj[cleanRoot] = leaf;
+      }
+    }
+
+    leaf = obj;
+  }
+
+  return leaf;
+};
+
+var parseKeys = function parseQueryStringKeys(givenKey, val, options, valuesParsed) {
+  if (!givenKey) {
+    return;
+  } // Transform dot notation to bracket notation
+
+
+  var key = options.allowDots ? givenKey.replace(/\.([^.[]+)/g, '[$1]') : givenKey; // The regex chunks
+
+  var brackets = /(\[[^[\]]*])/;
+  var child = /(\[[^[\]]*])/g; // Get the parent
+
+  var segment = options.depth > 0 && brackets.exec(key);
+  var parent = segment ? key.slice(0, segment.index) : key; // Stash the parent if it exists
+
+  var keys = [];
+
+  if (parent) {
+    // If we aren't using plain objects, optionally prefix keys that would overwrite object prototype properties
+    if (!options.plainObjects && has.call(Object.prototype, parent)) {
+      if (!options.allowPrototypes) {
+        return;
+      }
+    }
+
+    keys.push(parent);
+  } // Loop through children appending to the array until we hit depth
+
+
+  var i = 0;
+
+  while (options.depth > 0 && (segment = child.exec(key)) !== null && i < options.depth) {
+    i += 1;
+
+    if (!options.plainObjects && has.call(Object.prototype, segment[1].slice(1, -1))) {
+      if (!options.allowPrototypes) {
+        return;
+      }
+    }
+
+    keys.push(segment[1]);
+  } // If there's a remainder, just add whatever is left
+
+
+  if (segment) {
+    keys.push('[' + key.slice(segment.index) + ']');
+  }
+
+  return parseObject(keys, val, options, valuesParsed);
+};
+
+var normalizeParseOptions = function normalizeParseOptions(opts) {
+  if (!opts) {
+    return defaults;
+  }
+
+  if (opts.decoder !== null && opts.decoder !== undefined && typeof opts.decoder !== 'function') {
+    throw new TypeError('Decoder has to be a function.');
+  }
+
+  if (typeof opts.charset !== 'undefined' && opts.charset !== 'utf-8' && opts.charset !== 'iso-8859-1') {
+    throw new TypeError('The charset option must be either utf-8, iso-8859-1, or undefined');
+  }
+
+  var charset = typeof opts.charset === 'undefined' ? defaults.charset : opts.charset;
+  return {
+    allowDots: typeof opts.allowDots === 'undefined' ? defaults.allowDots : !!opts.allowDots,
+    allowPrototypes: typeof opts.allowPrototypes === 'boolean' ? opts.allowPrototypes : defaults.allowPrototypes,
+    allowSparse: typeof opts.allowSparse === 'boolean' ? opts.allowSparse : defaults.allowSparse,
+    arrayLimit: typeof opts.arrayLimit === 'number' ? opts.arrayLimit : defaults.arrayLimit,
+    charset: charset,
+    charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,
+    comma: typeof opts.comma === 'boolean' ? opts.comma : defaults.comma,
+    decoder: typeof opts.decoder === 'function' ? opts.decoder : defaults.decoder,
+    delimiter: typeof opts.delimiter === 'string' || utils.isRegExp(opts.delimiter) ? opts.delimiter : defaults.delimiter,
+    // eslint-disable-next-line no-implicit-coercion, no-extra-parens
+    depth: typeof opts.depth === 'number' || opts.depth === false ? +opts.depth : defaults.depth,
+    ignoreQueryPrefix: opts.ignoreQueryPrefix === true,
+    interpretNumericEntities: typeof opts.interpretNumericEntities === 'boolean' ? opts.interpretNumericEntities : defaults.interpretNumericEntities,
+    parameterLimit: typeof opts.parameterLimit === 'number' ? opts.parameterLimit : defaults.parameterLimit,
+    parseArrays: opts.parseArrays !== false,
+    plainObjects: typeof opts.plainObjects === 'boolean' ? opts.plainObjects : defaults.plainObjects,
+    strictNullHandling: typeof opts.strictNullHandling === 'boolean' ? opts.strictNullHandling : defaults.strictNullHandling
+  };
+};
+
+module.exports = function (str, opts) {
+  var options = normalizeParseOptions(opts);
+
+  if (str === '' || str === null || typeof str === 'undefined') {
+    return options.plainObjects ? Object.create(null) : {};
+  }
+
+  var tempObj = typeof str === 'string' ? parseValues(str, options) : str;
+  var obj = options.plainObjects ? Object.create(null) : {}; // Iterate over the keys and setup the new object
+
+  var keys = Object.keys(tempObj);
+
+  for (var i = 0; i < keys.length; ++i) {
+    var key = keys[i];
+    var newObj = parseKeys(key, tempObj[key], options, typeof str === 'string');
+    obj = utils.merge(obj, newObj, options);
+  }
+
+  if (options.allowSparse === true) {
+    return obj;
+  }
+
+  return utils.compact(obj);
+};
+},{"./utils":"../node_modules/qs/lib/utils.js"}],"../node_modules/qs/lib/index.js":[function(require,module,exports) {
+'use strict';
+
+var stringify = require('./stringify');
+
+var parse = require('./parse');
+
+var formats = require('./formats');
+
+module.exports = {
+  formats: formats,
+  parse: parse,
+  stringify: stringify
+};
+},{"./stringify":"../node_modules/qs/lib/stringify.js","./parse":"../node_modules/qs/lib/parse.js","./formats":"../node_modules/qs/lib/formats.js"}],"../node_modules/wpapi/lib/util/alphanumeric-sort.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Utility function for sorting arrays of numbers or strings.
+ *
+ * @module util/alphanumeric-sort
+ * @param {String|Number} a The first comparator operand
+ * @param {String|Number} a The second comparator operand
+ * @returns -1 if the values are backwards, 1 if they're ordered, and 0 if they're the same
+ */
+
+module.exports = (a, b) => {
+  if (a > b) {
+    return 1;
+  }
+
+  if (a < b) {
+    return -1;
+  }
+
+  return 0;
+};
+},{}],"../node_modules/wpapi/lib/util/key-val-to-obj.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Convert a (key, value) pair to a { key: value } object
+ *
+ * @module util/key-val-to-obj
+ * @param {string} key   The key to use in the returned object
+ * @param {}       value The value to assign to the provided key
+ * @returns {object} A dictionary object containing the key-value pair
+ */
+
+module.exports = (key, value) => {
+  const obj = {};
+  obj[key] = value;
+  return obj;
+};
+},{}],"../node_modules/wpapi/lib/util/parameter-setter.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Helper to create a simple parameter setter convenience method
+ *
+ * @module util/parameter-setter
+ * @param {String} param The string key of the parameter this method will set
+ * @returns {Function} A setter method that can be assigned to a request instance
+ */
+
+module.exports = param => {
+  /**
+   * A setter for a specific parameter
+   *
+   * @chainable
+   * @param {*} val The value to set for the the parameter
+   * @returns The request instance on which this method was called (for chaining)
+   */
+  return function (val) {
+    return this.param(param, val);
+  };
+};
+},{}],"../node_modules/wpapi/lib/util/unique.js":[function(require,module,exports) {
+/**
+ * Return an array with all duplicate items removed.
+ *
+ * This functionality was previously provided by lodash.uniq, but this
+ * modern JS solution yields a smaller bundle size.
+ *
+ * @param {Array} arr An array to de-duplicate
+ * @returns {Array} A de-duplicated array
+ */
+module.exports = arr => Array.from(new Set(arr));
+},{}],"../node_modules/wpapi/lib/constructors/wp-request.js":[function(require,module,exports) {
+var global = arguments[3];
+'use strict';
+
+const qs = require('qs');
+
+const alphaNumericSort = require('../util/alphanumeric-sort');
+
+const keyValToObj = require('../util/key-val-to-obj');
+
+const paramSetter = require('../util/parameter-setter');
+
+const objectReduce = require('../util/object-reduce');
+
+const unique = require('../util/unique');
+/**
+ * WPRequest is the base API request object constructor
+ *
+ * @constructor WPRequest
+ * @param {Object} options A hash of options for the WPRequest instance
+ * @param {String} options.endpoint The endpoint URI for the invoking WPAPI instance
+ * @param {Object} options.transport An object of http transport methods (get, post, etc)
+ * @param {String} [options.username] A username for authenticating API requests
+ * @param {String} [options.password] A password for authenticating API requests
+ * @param {String} [options.nonce] A WP nonce for use with cookie authentication
+ */
+
+
+function WPRequest(options) {
+  /**
+   * Configuration options for the request
+   *
+   * @property _options
+   * @type Object
+   * @private
+   * @default {}
+   */
+  this._options = [// Whitelisted options keys
+  'auth', 'endpoint', 'headers', 'username', 'password', 'nonce'].reduce((localOptions, key) => {
+    if (options && options[key]) {
+      localOptions[key] = options[key];
+    }
+
+    return localOptions;
+  }, {});
+  /**
+   * The HTTP transport methods (.get, .post, .put, .delete, .head) to use for this request
+   *
+   * @property transport
+   * @type {Object}
+   * @private
+   */
+
+  this.transport = options && options.transport;
+  /**
+   * A hash of query parameters
+   * This is used to store the values for supported query parameters like ?_embed
+   *
+   * @property _params
+   * @type Object
+   * @private
+   * @default {}
+   */
+
+  this._params = {};
+  /**
+   * Methods supported by this API request instance:
+   * Individual endpoint handlers specify their own subset of supported methods
+   *
+   * @property _supportedMethods
+   * @type Array
+   * @private
+   * @default [ 'head', 'get', 'put', 'post', 'delete' ]
+   */
+
+  this._supportedMethods = ['head', 'get', 'put', 'post', 'delete'];
+  /**
+   * A hash of values to assemble into the API request path
+   * (This will be overwritten by each specific endpoint handler constructor)
+   *
+   * @property _path
+   * @type Object
+   * @private
+   * @default {}
+   */
+
+  this._path = {};
+} // Private helper methods
+// ======================
+
+/**
+ * Identity function for use within invokeAndPromisify()
+ * @private
+ */
+
+
+const identity = value => value;
+/**
+ * Process arrays of taxonomy terms into query parameters.
+ * All terms listed in the arrays will be required (AND behavior).
+ *
+ * This method will not be called with any values unless we are handling
+ * an endpoint with the filter mixin; however, since parameter handling
+ * (and therefore `_renderQuery()`) are part of WPRequest itself, this
+ * helper method lives here alongside the code where it is used.
+ *
+ * @example
+ *     prepareTaxonomies({
+ *         tag: [ 'tag1 ', 'tag2' ], // by term slug
+ *         cat: [ 7 ] // by term ID
+ *     }) === {
+ *         tag: 'tag1+tag2',
+ *         cat: '7'
+ *     }
+ *
+ * @private
+ * @param {Object} taxonomyFilters An object of taxonomy term arrays, keyed by taxonomy name
+ * @returns {Object} An object of prepareFilters-ready query arg and query param value pairs
+ */
+
+
+function prepareTaxonomies(taxonomyFilters) {
+  if (!taxonomyFilters) {
+    return {};
+  }
+
+  return objectReduce(taxonomyFilters, (result, terms, key) => {
+    // Trim whitespace and concatenate multiple terms with +
+    result[key] = terms // Coerce term into a string so that trim() won't fail
+    .map(term => (term + '').trim().toLowerCase()).join('+');
+    return result;
+  }, {});
+}
+/**
+ * Return an object with any properties with undefined, null or empty string
+ * values removed.
+ *
+ * @example
+ *
+ *     populated({
+ *       a: 'a',
+ *       b: '',
+ *       c: null
+ *     }); // { a: 'a' }
+ *
+ * @private
+ * @param {Object} obj An object of key/value pairs
+ * @returns {Object} That object with all empty values removed
+ */
+
+
+const populated = obj => {
+  if (!obj) {
+    return obj;
+  }
+
+  return objectReduce(obj, (values, val, key) => {
+    if (val !== undefined && val !== null && val !== '') {
+      values[key] = val;
+    }
+
+    return values;
+  }, {});
+};
+/**
+ * Assert whether a provided URL component is "valid" by checking it against
+ * an array of registered path component validator methods for that level of
+ * the URL path.
+ *
+ * @private
+ * @param {object[]} levelDefinitions An array of Level Definition objects
+ * @param {string}   levelContents    The URL path string that has been specified
+ *                                    for use on the provided level
+ * @returns {boolean} Whether the provided input matches any of the provided
+ * level validation functions
+ */
+
+
+const validatePathLevel = (levelDefinitions, levelContents) => {
+  // One "level" may have multiple options, as a route tree is a branching
+  // structure. We consider a level "valid" if the provided levelContents
+  // match any of the available validators.
+  const valid = levelDefinitions.reduce((anyOptionValid, levelOption) => {
+    if (!levelOption.validate) {
+      // If there is no validator function, the level is implicitly valid
+      return true;
+    }
+
+    return anyOptionValid || levelOption.validate(levelContents);
+  }, false);
+
+  if (!valid) {
+    throw new Error(['Invalid path component:', levelContents, // awkward pluralization support:
+    'does not match' + (levelDefinitions.length > 1 ? ' any of' : ''), levelDefinitions.reduce((components, levelOption) => components.concat(levelOption.component), []).join(', ')].join(' '));
+  }
+}; // (Semi-)Private Prototype Methods
+// ================================
+
+/**
+ * Process the endpoint query's filter objects into a valid query string.
+ * Nested objects and Array properties are rendered with indexed array syntax.
+ *
+ * @example
+ *     _renderQuery({ p1: 'val1', p2: 'val2' });  // ?p1=val1&p2=val2
+ *     _renderQuery({ obj: { prop: 'val' } });    // ?obj[prop]=val
+ *     _renderQuery({ arr: [ 'val1', 'val2' ] }); // ?arr[0]=val1&arr[1]=val2
+ *
+ * @private
+ *
+ * @method _renderQuery
+ * @returns {String} A query string representing the specified filter parameters
+ */
+
+
+WPRequest.prototype._renderQuery = function () {
+  // Build the full query parameters object
+  const queryParams = { ...populated(this._params)
+  }; // Prepare any taxonomies and merge with other filter values
+
+  const taxonomies = prepareTaxonomies(this._taxonomyFilters);
+  queryParams.filter = { ...populated(this._filters),
+    ...taxonomies
+  }; // Parse query parameters object into a query string, sorting the object
+  // properties by alphabetical order (consistent property ordering can make
+  // for easier caching of request URIs)
+
+  const queryString = qs.stringify(queryParams, {
+    arrayFormat: 'brackets'
+  }).split('&').sort().join('&'); // Check if the endpoint contains a previous query and set the query character accordingly.
+
+  const queryCharacter = /\?/.test(this._options.endpoint) ? '&' : '?'; // Prepend a "?" (or a "&") if a query is present, and return.
+
+  return queryString === '' ? '' : queryCharacter + queryString;
+};
+/**
+ * Validate & assemble a path string from the request object's _path
+ *
+ * @private
+ * @returns {String} The rendered path
+ */
+
+
+WPRequest.prototype._renderPath = function () {
+  // Call validatePath: if the provided path components are not well-formed,
+  // an error will be thrown
+  this.validatePath();
+  const pathParts = this._path;
+  const orderedPathParts = Object.keys(pathParts).sort((a, b) => {
+    const intA = parseInt(a, 10);
+    const intB = parseInt(b, 10);
+    return intA - intB;
+  }).map(pathPartKey => pathParts[pathPartKey]); // Combine all parts of the path together, filtered to omit any components
+  // that are unspecified or empty strings, to create the full path template
+
+  const path = [this._namespace].concat(orderedPathParts).filter(identity).join('/');
+  return path;
+}; // Public Prototype Methods
+// ========================
+
+/**
+ * Parse the request into a WordPress API request URI string
+ *
+ * @method
+ * @returns {String} The URI for the HTTP request to be sent
+ */
+
+
+WPRequest.prototype.toString = function () {
+  // Render the path to a string
+  const path = this._renderPath(); // Render the query string
+
+
+  const queryStr = this._renderQuery();
+
+  return this._options.endpoint + path + queryStr;
+};
+/**
+ * Set a component of the resource URL itself (as opposed to a query parameter)
+ *
+ * If a path component has already been set at this level, throw an error:
+ * requests are meant to be transient, so any re-writing of a previously-set
+ * path part value is likely to be a mistake.
+ *
+ * @method
+ * @chainable
+ * @param {Number|String} level A "level" of the path to set, e.g. "1" or "2"
+ * @param {Number|String} val   The value to set at that path part level
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+
+WPRequest.prototype.setPathPart = function (level, val) {
+  if (this._path[level]) {
+    throw new Error('Cannot overwrite value ' + this._path[level]);
+  }
+
+  this._path[level] = val;
+  return this;
+};
+/**
+ * Validate whether the specified path parts are valid for this endpoint
+ *
+ * "Path parts" are non-query-string URL segments, like "some" "path" in the URL
+ * `mydomain.com/some/path?and=a&query=string&too`. Because a well-formed path
+ * is necessary to execute a successful API request, we throw an error if the
+ * user has omitted a value (such as `/some/[missing component]/url`) or has
+ * provided a path part value that does not match the regular expression the
+ * API uses to goven that segment.
+ *
+ * @method
+ * @chainable
+ * @returns {WPRequest} The WPRequest instance (for chaining), if no errors were found
+ */
+
+
+WPRequest.prototype.validatePath = function () {
+  // Iterate through all _specified_ levels of this endpoint
+  const specifiedLevels = Object.keys(this._path).map(level => parseInt(level, 10)).filter(pathPartKey => !isNaN(pathPartKey));
+  const maxLevel = Math.max.apply(null, specifiedLevels); // Ensure that all necessary levels are specified
+
+  const path = [];
+  let valid = true;
+
+  for (let level = 0; level <= maxLevel; level++) {
+    if (!this._levels || !this._levels[level]) {
+      continue;
+    }
+
+    if (this._path[level]) {
+      // Validate the provided path level against all available path validators
+      validatePathLevel(this._levels[level], this._path[level]); // Add the path value to the array
+
+      path.push(this._path[level]);
+    } else {
+      path.push(' ??? ');
+      valid = false;
+    }
+  }
+
+  if (!valid) {
+    throw new Error('Incomplete URL! Missing component: /' + path.join('/'));
+  }
+
+  return this;
+};
+/**
+ * Set a parameter to render into the final query URI.
+ *
+ * @method
+ * @chainable
+ * @param {String|Object} props The name of the parameter to set, or an object containing
+ *                              parameter keys and their corresponding values
+ * @param {String|Number|Array} [value] The value of the parameter being set
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+
+WPRequest.prototype.param = function (props, value) {
+  if (!props || typeof props === 'string' && value === undefined) {
+    // We have no property to set, or no value to set for that property
+    return this;
+  } // We can use the same iterator function below to handle explicit key-value
+  // pairs if we convert them into to an object we can iterate over:
+
+
+  if (typeof props === 'string') {
+    props = keyValToObj(props, value);
+  } // Iterate through the properties
+
+
+  Object.keys(props).forEach(key => {
+    let value = props[key]; // Arrays should be de-duped and sorted
+
+    if (Array.isArray(value)) {
+      value = unique(value).sort(alphaNumericSort);
+    } // Set the value
+
+
+    this._params[key] = value;
+  });
+  return this;
+}; // Globally-applicable parameters that impact the shape of the request or response
+// ===============================================================================
+
+/**
+ * Set the context of the request. Used primarily to expose private values on a
+ * request object by setting the context to "edit".
+ *
+ * @method
+ * @chainable
+ * @param {String} context The context to set on the request
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+
+WPRequest.prototype.context = paramSetter('context');
+/**
+ * Convenience wrapper for `.context( 'edit' )`
+ *
+ * @method
+ * @chainable
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+WPRequest.prototype.edit = function () {
+  return this.context('edit');
+};
+/**
+ * Return embedded resources as part of the response payload.
+ *
+ * @method
+ * @chainable
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+
+WPRequest.prototype.embed = function () {
+  return this.param('_embed', true);
+}; // Parameters supported by all/nearly all default collections
+// ==========================================================
+
+/**
+ * Set the pagination of a request. Use in conjunction with `.perPage()` for explicit
+ * pagination handling. (The number of pages in a response can be retrieved from the
+ * response's `_paging.totalPages` property.)
+ *
+ * @method
+ * @chainable
+ * @param {Number} pageNumber The page number of results to retrieve
+ * @returns The request instance (for chaining)
+ */
+
+
+WPRequest.prototype.page = paramSetter('page');
+/**
+ * Set the number of items to be returned in a page of responses.
+ *
+ * @method
+ * @chainable
+ * @param {Number} itemsPerPage The number of items to return in one page of results
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.perPage = paramSetter('per_page');
+/**
+ * Set an arbitrary offset to retrieve items from a specific point in a collection.
+ *
+ * @method
+ * @chainable
+ * @param {Number} offsetNumber The number of items by which to offset the response
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.offset = paramSetter('offset');
+/**
+ * Change the sort direction of a returned collection
+ *
+ * @example <caption>order comments chronologically (oldest first)</caption>
+ *
+ *     site.comments().order( 'asc' )...
+ *
+ * @method
+ * @chainable
+ * @param {String} direction The order to use when sorting the response
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.order = paramSetter('order');
+/**
+ * Order a collection by a specific field
+ *
+ * @method
+ * @chainable
+ * @param {String} field The field by which to order the response
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.orderby = paramSetter('orderby');
+/**
+ * Filter results to those matching the specified search terms.
+ *
+ * @method
+ * @chainable
+ * @param {String} searchString A string to search for within post content
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.search = paramSetter('search');
+/**
+ * Include specific resource IDs in the response collection.
+ *
+ * @method
+ * @chainable
+ * @param {Number|Number[]} ids An ID or array of IDs to include
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.include = paramSetter('include');
+/**
+ * Exclude specific resource IDs in the response collection.
+ *
+ * @method
+ * @chainable
+ * @param {Number|Number[]} ids An ID or array of IDs to exclude
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.exclude = paramSetter('exclude');
+/**
+ * Query a collection for members with a specific slug.
+ *
+ * @method
+ * @chainable
+ * @param {String} slug A post slug (slug), e.g. "hello-world"
+ * @returns The request instance (for chaining)
+ */
+
+WPRequest.prototype.slug = paramSetter('slug'); // HTTP Transport Prototype Methods
+// ================================
+// Chaining methods
+// ================
+
+/**
+ * Set the namespace of the request, e.g. to specify the API root for routes
+ * registered by wp core v2 ("wp/v2") or by any given plugin. Any previously-
+ * set namespace will be overwritten by subsequent calls to the method.
+ *
+ * @method
+ * @chainable
+ * @param {String} namespace A namespace string, e.g. "wp/v2"
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+WPRequest.prototype.namespace = function (namespace) {
+  this._namespace = namespace;
+  return this;
+};
+/**
+ * Set a request to use authentication, and optionally provide auth credentials
+ *
+ * If auth credentials were already specified when the WPAPI instance was created, calling
+ * `.auth` on the request chain will set that request to use the existing credentials:
+ *
+ * @example <caption>use existing credentials</caption>
+ *
+ *     request.auth().get...
+ *
+ * Alternatively, a username & password (or nonce) can be explicitly passed into `.auth`:
+ *
+ * @example <caption>use explicit basic authentication credentials</caption>
+ *
+ *     request.auth({
+ *       username: 'admin',
+ *       password: 'super secure'
+ *     }).get...
+ *
+ * @example <caption>use a nonce for cookie authentication</caption>
+ *
+ *     request.auth({
+ *       nonce: 'somenonce'
+ *     })...
+ *
+ * @method
+ * @chainable
+ * @param {Object} credentials            An object with 'username' and 'password' string
+ *                                        properties, or else a 'nonce' property
+ * @param {String} [credentials.username] A WP-API Basic HTTP Authentication username
+ * @param {String} [credentials.password] A WP-API Basic HTTP Authentication password
+ * @param {String} [credentials.nonce]    A WP nonce for use with cookie authentication
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+
+WPRequest.prototype.auth = function (credentials) {
+  if (typeof credentials === 'object') {
+    if (typeof credentials.username === 'string') {
+      this._options.username = credentials.username;
+    }
+
+    if (typeof credentials.password === 'string') {
+      this._options.password = credentials.password;
+    }
+
+    if (credentials.nonce) {
+      this._options.nonce = credentials.nonce;
+    }
+  } // Set the "auth" options flag that will force authentication on this request
+
+
+  this._options.auth = true;
+  return this;
+};
+/**
+ * Specify a file or a file buffer to attach to the request, for use when
+ * creating a new Media item
+ *
+ * @example <caption>within a server context</caption>
+ *
+ *     wp.media()
+ *       // Pass .file() the file system path to a file to upload
+ *       .file( '/path/to/file.jpg' )
+ *       .create({})...
+ *
+ *     wp.media()
+ *       // Pass .file() an image as a Buffer object, and a filename string
+ *       .file( imgBuffer, 'desired-title.jpg' )
+ *       .create({})...
+ *
+ * @example <caption>within a browser context</caption>
+ *
+ *     wp.media()
+ *       // Pass .file() the file reference from an HTML file input
+ *       .file( document.querySelector( 'input[type="file"]' ).files[0] )
+ *       .create({})...
+ *
+ * @method
+ * @chainable
+ * @param {string|object} file   A path to a file (in Node) or an file object
+ *                               (Node or Browser) to attach to the request
+ * @param {string}        [name] A filename to use for the file, required when
+ *                               providing file data as a Buffer object
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+
+WPRequest.prototype.file = function (file, name) {
+  if (global.Buffer && file instanceof global.Buffer && !name) {
+    throw new Error('.file(): File name is a required argument when uploading a Buffer');
+  }
+
+  this._attachment = file; // Explicitly set to undefined if not provided, to override any previously-
+  // set attachment name property that might exist from a prior `.file()` call
+
+  this._attachmentName = name ? name : undefined;
+  return this;
+}; // HTTP Methods: Public Interface
+// ==============================
+
+/**
+ * Specify one or more headers to send with the dispatched HTTP request.
+ *
+ * @example <caption>Set a single header to be used on this request</caption>
+ *
+ *     request.setHeaders( 'Authorization', 'Bearer trustme' )...
+ *
+ * @example <caption>Set multiple headers to be used by this request</caption>
+ *
+ *     request.setHeaders({
+ *       Authorization: 'Bearer comeonwereoldfriendsright',
+ *       'Accept-Language': 'en-CA'
+ *     })...
+ *
+ * @since 1.1.0
+ * @method
+ * @chainable
+ * @param {String|Object} headers The name of the header to set, or an object of
+ *                                header names and their associated string values
+ * @param {String}        [value] The value of the header being set
+ * @returns {WPRequest} The WPRequest instance (for chaining)
+ */
+
+
+WPRequest.prototype.setHeaders = function (headers, value) {
+  // We can use the same iterator function below to handle explicit key-value
+  // pairs if we convert them into to an object we can iterate over:
+  if (typeof headers === 'string') {
+    headers = keyValToObj(headers, value);
+  }
+
+  this._options.headers = { ...(this._options.headers || {}),
+    ...headers
+  };
+  return this;
+};
+/**
+ * Get (download the data for) the specified resource
+ *
+ * @method
+ * @async
+ * @param {Function} [callback] A callback to invoke with the results of the GET request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+WPRequest.prototype.get = function (callback) {
+  return this.transport.get(this, callback);
+};
+/**
+ * Get the headers for the specified resource
+ *
+ * @method
+ * @async
+ * @param {Function} [callback] A callback to invoke with the results of the HEAD request
+ * @returns {Promise} A promise to the header results of the HTTP request
+ */
+
+
+WPRequest.prototype.headers = function (callback) {
+  return this.transport.head(this, callback);
+};
+/**
+ * Create the specified resource with the provided data
+ *
+ * This is the public interface for creating POST requests
+ *
+ * @method
+ * @async
+ * @param {Object} data The data for the POST request
+ * @param {Function} [callback] A callback to invoke with the results of the POST request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+WPRequest.prototype.create = function (data, callback) {
+  return this.transport.post(this, data, callback);
+};
+/**
+ * Update the specified resource with the provided data
+ *
+ * This is the public interface for creating PUT requests
+ *
+ * @method
+ * @async
+ * @private
+ * @param {Object} data The data for the PUT request
+ * @param {Function} [callback] A callback to invoke with the results of the PUT request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+WPRequest.prototype.update = function (data, callback) {
+  return this.transport.put(this, data, callback);
+};
+/**
+ * Delete the specified resource
+ *
+ * @method
+ * @async
+ * @param {Object} [data] Data to send along with the DELETE request
+ * @param {Function} [callback] A callback to invoke with the results of the DELETE request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+WPRequest.prototype.delete = function (data, callback) {
+  return this.transport.delete(this, data, callback);
+};
+/**
+ * Calling .then on a query chain will invoke the query as a GET and return a promise
+ *
+ * @method
+ * @async
+ * @param {Function} [successCallback] A callback to handle the data returned from the GET request
+ * @param {Function} [failureCallback] A callback to handle any errors encountered by the request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+WPRequest.prototype.then = function (successCallback, failureCallback) {
+  return this.transport.get(this).then(successCallback, failureCallback);
+};
+
+module.exports = WPRequest;
+},{"qs":"../node_modules/qs/lib/index.js","../util/alphanumeric-sort":"../node_modules/wpapi/lib/util/alphanumeric-sort.js","../util/key-val-to-obj":"../node_modules/wpapi/lib/util/key-val-to-obj.js","../util/parameter-setter":"../node_modules/wpapi/lib/util/parameter-setter.js","../util/object-reduce":"../node_modules/wpapi/lib/util/object-reduce.js","../util/unique":"../node_modules/wpapi/lib/util/unique.js"}],"../node_modules/wpapi/lib/mixins/filters.js":[function(require,module,exports) {
+/**
+ * @module mixins/filters
+ */
+'use strict';
+
+const alphaNumericSort = require('../util/alphanumeric-sort');
+
+const keyValToObj = require('../util/key-val-to-obj');
+
+const unique = require('../util/unique');
+/**
+ * Filter methods that can be mixed in to a request constructor's prototype to
+ * allow that request to take advantage of the `?filter[]=` aliases for WP_Query
+ * parameters for collection endpoints, when available.
+ *
+ * @mixin filters
+ */
+
+
+const filterMixins = {}; // Filter Methods
+// ==============
+
+/**
+ * Specify key-value pairs by which to filter the API results (commonly used
+ * to retrieve only posts meeting certain criteria, such as posts within a
+ * particular category or by a particular author).
+ *
+ * @example
+ *
+ *     // Set a single property:
+ *     wp.filter( 'post_type', 'cpt_event' )...
+ *
+ *     // Set multiple properties at once:
+ *     wp.filter({
+ *         post_status: 'publish',
+ *         category_name: 'news'
+ *     })...
+ *
+ *     // Chain calls to .filter():
+ *     wp.filter( 'post_status', 'publish' ).filter( 'category_name', 'news' )...
+ *
+ * @method filter
+ * @chainable
+ * @param {String|Object} props A filter property name string, or object of name/value pairs
+ * @param {String|Number|Array} [value] The value(s) corresponding to the provided filter property
+ * @returns The request instance (for chaining)
+ */
+
+filterMixins.filter = function (props, value) {
+  if (!props || typeof props === 'string' && value === undefined) {
+    // We have no filter to set, or no value to set for that filter
+    return this;
+  } // convert the property name string `props` and value `value` into an object
+
+
+  if (typeof props === 'string') {
+    props = keyValToObj(props, value);
+  }
+
+  this._filters = { ...this._filters,
+    ...props
+  };
+  return this;
+};
+/**
+ * Restrict the query results to posts matching one or more taxonomy terms.
+ *
+ * @method taxonomy
+ * @chainable
+ * @param {String} taxonomy The name of the taxonomy to filter by
+ * @param {String|Number|Array} term A string or integer, or array thereof, representing terms
+ * @returns The request instance (for chaining)
+ */
+
+
+filterMixins.taxonomy = function (taxonomy, term) {
+  const termIsArray = Array.isArray(term);
+  const termIsNumber = termIsArray ? term.reduce((allAreNumbers, term) => allAreNumbers && typeof term === 'number', true) : typeof term === 'number';
+  const termIsString = termIsArray ? term.reduce((allAreStrings, term) => allAreStrings && typeof term === 'string', true) : typeof term === 'string';
+
+  if (!termIsString && !termIsNumber) {
+    throw new Error('term must be a number, string, or array of numbers or strings');
+  }
+
+  if (taxonomy === 'category') {
+    if (termIsString) {
+      // Query param for filtering by category slug is "category_name"
+      taxonomy = 'category_name';
+    } else {
+      // The boolean check above ensures that if taxonomy === 'category' and
+      // term is not a string, then term must be a number and therefore an ID:
+      // Query param for filtering by category ID is "cat"
+      taxonomy = 'cat';
+    }
+  } else if (taxonomy === 'post_tag') {
+    // tag is used in place of post_tag in the public query variables
+    taxonomy = 'tag';
+  } // Ensure the taxonomy filters object is available
+
+
+  this._taxonomyFilters = this._taxonomyFilters || {}; // Ensure there's an array of terms available for this taxonomy
+
+  const taxonomyTerms = (this._taxonomyFilters[taxonomy] || []). // Insert the provided terms into the specified taxonomy's terms array
+  concat(term) // Sort array
+  .sort(alphaNumericSort); // De-dupe
+
+  this._taxonomyFilters[taxonomy] = unique(taxonomyTerms, true);
+  return this;
+};
+/**
+ * Query for posts published in a given year.
+ *
+ * @method year
+ * @chainable
+ * @param {Number} year integer representation of year requested
+ * @returns The request instance (for chaining)
+ */
+
+
+filterMixins.year = function (year) {
+  return filterMixins.filter.call(this, 'year', year);
+};
+/**
+ * Query for posts published in a given month, either by providing the number
+ * of the requested month (e.g. 3), or the month's name as a string (e.g. "March")
+ *
+ * @method month
+ * @chainable
+ * @param {Number|String} month Integer for month (1) or month string ("January")
+ * @returns The request instance (for chaining)
+ */
+
+
+filterMixins.month = function (month) {
+  let monthDate;
+
+  if (typeof month === 'string') {
+    // Append a arbitrary day and year to the month to parse the string into a Date
+    monthDate = new Date(Date.parse(month + ' 1, 2012')); // If the generated Date is NaN, then the passed string is not a valid month
+
+    if (isNaN(monthDate)) {
+      return this;
+    } // JS Dates are 0 indexed, but the WP API requires a 1-indexed integer
+
+
+    month = monthDate.getMonth() + 1;
+  } // If month is a Number, add the monthnum filter to the request
+
+
+  if (typeof month === 'number') {
+    return filterMixins.filter.call(this, 'monthnum', month);
+  }
+
+  return this;
+};
+/**
+ * Add the day filter into the request to retrieve posts for a given day
+ *
+ * @method day
+ * @chainable
+ * @param {Number} day Integer representation of the day requested
+ * @returns The request instance (for chaining)
+ */
+
+
+filterMixins.day = function (day) {
+  return filterMixins.filter.call(this, 'day', day);
+};
+/**
+ * Specify that we are requesting a page by its path (specific to Page resources)
+ *
+ * @method path
+ * @chainable
+ * @param {String} path The root-relative URL path for a page
+ * @returns The request instance (for chaining)
+ */
+
+
+filterMixins.path = function (path) {
+  return filterMixins.filter.call(this, 'pagename', path);
+};
+
+module.exports = filterMixins;
+},{"../util/alphanumeric-sort":"../node_modules/wpapi/lib/util/alphanumeric-sort.js","../util/key-val-to-obj":"../node_modules/wpapi/lib/util/key-val-to-obj.js","../util/unique":"../node_modules/wpapi/lib/util/unique.js"}],"../node_modules/wpapi/lib/util/argument-is-numeric.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Return true if the provided argument is a number, a numeric string, or an
+ * array of numbers or numeric strings
+ *
+ * @module util/argument-is-numeric
+ * @param {Number|String|Number[]|String[]} val The value to inspect
+ * @param {String} key The property to which the mixin method should be assigned
+ * @param {Function} mixin The mixin method
+ * @returns {void}
+ */
+
+const argumentIsNumeric = val => {
+  if (typeof val === 'number') {
+    return true;
+  }
+
+  if (typeof val === 'string') {
+    return /^\d+$/.test(val);
+  }
+
+  if (Array.isArray(val)) {
+    for (let i = 0; i < val.length; i++) {
+      // Fail early if any argument isn't determined to be numeric
+      if (!argumentIsNumeric(val[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  } // If it's not an array, and not a string, and not a number, we don't
+  // know what to do with it
+
+
+  return false;
+};
+
+module.exports = argumentIsNumeric;
+},{}],"../node_modules/wpapi/lib/mixins/parameters.js":[function(require,module,exports) {
+/**
+ * Filter methods that can be mixed in to a request constructor's prototype to
+ * allow that request to take advantage of top-level query parameters for
+ * collection endpoints. These are most relevant to posts, pages and CPTs, but
+ * pagination helpers are applicable to any collection.
+ *
+ * @module mixins/parameters
+ */
+'use strict';
+
+const paramSetter = require('../util/parameter-setter');
+
+const argumentIsNumeric = require('../util/argument-is-numeric');
+/**
+ * @mixin parameters
+ */
+
+
+const parameterMixins = {};
+
+const filters = require('./filters'); // Needed for .author mixin, as author by ID is a parameter and by Name is a filter
+
+
+const filter = filters.filter; // Needed for .tag and .category mixin, for deprecated query-by-slug support
+
+const taxonomy = filters.taxonomy; // Parameter Methods
+// =================
+
+/**
+ * Query for posts by a specific author.
+ * This method will replace any previous 'author' query parameters that had been set.
+ *
+ * Note that this method will either set the "author" top-level query parameter,
+ * or else the "author_name" filter parameter (when querying by nicename): this is
+ * irregular as most parameter helper methods either set a top level parameter or a
+ * filter, not both.
+ *
+ * _Usage with the author nicename string is deprecated._ Query by author ID instead.
+ * If the "rest-filter" plugin is not installed, the name query will have no effect.
+ *
+ * @method author
+ * @chainable
+ * @param {String|Number} author The nicename or ID for a particular author
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.author = function (author) {
+  if (author === undefined) {
+    return this;
+  }
+
+  if (typeof author === 'string') {
+    this.param('author', null);
+    return filter.call(this, 'author_name', author);
+  }
+
+  if (typeof author === 'number') {
+    filter.call(this, 'author_name', null);
+    return this.param('author', author);
+  }
+
+  if (author === null) {
+    filter.call(this, 'author_name', null);
+    return this.param('author', null);
+  }
+
+  throw new Error('author must be either a nicename string or numeric ID');
+};
+/**
+ * Search for hierarchical taxonomy terms that are children of the parent term
+ * indicated by the provided term ID
+ *
+ * @example
+ *
+ *     wp.pages().parent( 3 ).then(function( pages ) {
+ *       // console.log( 'all of these pages are nested below page ID#3:' );
+ *       // console.log( pages );
+ *     });
+ *
+ *     wp.categories().parent( 42 ).then(function( categories ) {
+ *       console.log( 'all of these categories are sub-items of cat ID#42:' );
+ *       console.log( categories );
+ *     });
+ *
+ * @method parent
+ * @chainable
+ * @param {Number} parentId The ID of a (hierarchical) taxonomy term
+ * @returns The request instance (for chaining)
+ */
+
+
+parameterMixins.parent = paramSetter('parent');
+/**
+ * Specify the post for which to retrieve terms (relevant for *e.g.* taxonomy
+ * and comment collection endpoints).
+ *
+ * @method post
+ * @chainable
+ * @param {String|Number} post The ID of the post for which to retrieve terms
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.post = paramSetter('post');
+/**
+ * Specify the password to use to access the content of a password-protected post
+ *
+ * @method password
+ * @chainable
+ * @param {string} password A string password to access protected content within a post
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.password = paramSetter('password');
+/**
+ * Specify for which post statuses to return posts in a response collection
+ *
+ * See https://codex.wordpress.org/Post_Status -- the default post status
+ * values in WordPress which are most relevant to the API are 'publish',
+ * 'future', 'draft', 'pending', 'private', and 'trash'. This parameter also
+ * supports passing the special value "any" to return all statuses.
+ *
+ * @method status
+ * @chainable
+ * @param {string|string[]} status A status name string or array of strings
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.status = paramSetter('status');
+/**
+ * Specify whether to return only, or to completely exclude, sticky posts
+ *
+ * @method sticky
+ * @chainable
+ * @param {boolean} sticky A boolean value for whether ONLY sticky posts (true) or
+ *                         NO sticky posts (false) should be returned in the query
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.sticky = paramSetter('sticky'); // Taxonomy Term Filter Methods
+// ============================
+
+/**
+ * Retrieve only records associated with one of the provided categories
+ *
+ * @method categories
+ * @chainable
+ * @param {String|Number|Array} categories A term ID integer or numeric string, or array thereof
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.categories = paramSetter('categories');
+/**
+ * Legacy wrapper for `.categories()` that uses `?filter` to query by slug if available
+ *
+ * @method tag
+ * @deprecated Use `.categories()` and query by category IDs
+ * @chainable
+ * @param {String|Number|Array} tag A category term slug string, numeric ID, or array of numeric IDs
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.category = function (category) {
+  if (argumentIsNumeric(category)) {
+    return parameterMixins.categories.call(this, category);
+  }
+
+  return taxonomy.call(this, 'category', category);
+};
+/**
+ * Exclude records associated with any of the provided category IDs
+ *
+ * @method excludeCategories
+ * @chainable
+ * @param {String|Number|Array} category A term ID integer or numeric string, or array thereof
+ * @returns The request instance (for chaining)
+ */
+
+
+parameterMixins.excludeCategories = paramSetter('categories_exclude');
+/**
+ * Retrieve only records associated with one of the provided tag IDs
+ *
+ * @method tags
+ * @chainable
+ * @param {String|Number|Array} tags A term ID integer or numeric string, or array thereof
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.tags = paramSetter('tags');
+/**
+ * Legacy wrapper for `.tags()` that uses `?filter` to query by slug if available
+ *
+ * @method tag
+ * @deprecated Use `.tags()` and query by term IDs
+ * @chainable
+ * @param {String|Number|Array} tag A tag term slug string, numeric ID, or array of numeric IDs
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.tag = function (tag) {
+  if (argumentIsNumeric(tag)) {
+    return parameterMixins.tags.call(this, tag);
+  }
+
+  return taxonomy.call(this, 'tag', tag);
+};
+/**
+ * Exclude records associated with any of the provided tag IDs
+ *
+ * @method excludeTags
+ * @chainable
+ * @param {String|Number|Array} category A term ID integer or numeric string, or array thereof
+ * @returns The request instance (for chaining)
+ */
+
+
+parameterMixins.excludeTags = paramSetter('tags_exclude'); // Date Methods
+// ============
+
+/**
+ * Retrieve only records published before a specified date
+ *
+ * @example <caption>Provide an ISO 8601-compliant date string</caption>
+ *
+ *     wp.posts().before('2016-03-22')...
+ *
+ * @example <caption>Provide a JavaScript Date object</caption>
+ *
+ *     wp.posts().before( new Date( 2016, 03, 22 ) )...
+ *
+ * @method before
+ * @chainable
+ * @param {String|Date} date An ISO 8601-compliant date string, or Date object
+ * @returns The request instance (for chaining)
+ */
+
+parameterMixins.before = function (date) {
+  return this.param('before', new Date(date).toISOString());
+};
+/**
+ * Retrieve only records published after a specified date
+ *
+ * @example <caption>Provide an ISO 8601-compliant date string</caption>
+ *
+ *     wp.posts().after('1986-03-22')...
+ *
+ * @example <caption>Provide a JavaScript Date object</caption>
+ *
+ *     wp.posts().after( new Date( 1986, 03, 22 ) )...
+ *
+ * @method after
+ * @chainable
+ * @param {String|Date} date An ISO 8601-compliant date string, or Date object
+ * @returns The request instance (for chaining)
+ */
+
+
+parameterMixins.after = function (date) {
+  return this.param('after', new Date(date).toISOString());
+};
+
+module.exports = parameterMixins;
+},{"../util/parameter-setter":"../node_modules/wpapi/lib/util/parameter-setter.js","../util/argument-is-numeric":"../node_modules/wpapi/lib/util/argument-is-numeric.js","./filters":"../node_modules/wpapi/lib/mixins/filters.js"}],"../node_modules/wpapi/lib/mixins/index.js":[function(require,module,exports) {
+/**
+ * This module defines a mapping between supported GET request query parameter
+ * arguments and their corresponding mixin, if available.
+ */
+'use strict';
+
+const filterMixins = require('./filters');
+
+const parameterMixins = require('./parameters'); // `.context`, `.embed`, and `.edit` (a shortcut for `context(edit, true)`) are
+// supported by default in WPRequest, as is the base `.param` method. Any GET
+// argument parameters not covered here must be set directly by using `.param`.
+// The initial mixins we define are the ones where either a single property
+// accepted by the API endpoint corresponds to multiple individual mixin
+// functions, or where the name we use for the function diverges from that
+// of the query parameter that the mixin sets.
+
+
+const mixins = {
+  categories: {
+    categories: parameterMixins.categories,
+
+    /** @deprecated use .categories() */
+    category: parameterMixins.category
+  },
+  categories_exclude: {
+    excludeCategories: parameterMixins.excludeCategories
+  },
+  tags: {
+    tags: parameterMixins.tags,
+
+    /** @deprecated use .tags() */
+    tag: parameterMixins.tag
+  },
+  tags_exclude: {
+    excludeTags: parameterMixins.excludeTags
+  },
+  filter: filterMixins,
+  post: {
+    post: parameterMixins.post,
+
+    /** @deprecated use .post() */
+    forPost: parameterMixins.post
+  }
+}; // All of these parameter mixins use a setter function named identically to the
+// property that the function sets, but they must still be provided in wrapper
+// objects so that the mixin can be `.assign`ed correctly: wrap & assign each
+// setter to the mixins dictionary object.
+
+['after', 'author', 'before', 'parent', 'password', 'status', 'sticky'].forEach(mixinName => {
+  mixins[mixinName] = {};
+  mixins[mixinName][mixinName] = parameterMixins[mixinName];
+});
+module.exports = mixins;
+},{"./filters":"../node_modules/wpapi/lib/mixins/filters.js","./parameters":"../node_modules/wpapi/lib/mixins/parameters.js"}],"../node_modules/wpapi/lib/util/apply-mixin.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Augment an object (specifically a prototype) with a mixin method
+ * (the provided object is mutated by reference)
+ *
+ * @module util/apply-mixin
+ * @param {Object} obj The object (usually a prototype) to augment
+ * @param {String} key The property to which the mixin method should be assigned
+ * @param {Function} mixin The mixin method
+ * @returns {void}
+ */
+
+module.exports = (obj, key, mixin) => {
+  // Will not overwrite existing methods
+  if (typeof mixin === 'function' && !obj[key]) {
+    obj[key] = mixin;
+  }
+};
+},{}],"../node_modules/wpapi/lib/endpoint-request.js":[function(require,module,exports) {
+/**
+ * @module endpoint-request
+ */
+'use strict';
+
+const WPRequest = require('./constructors/wp-request');
+
+const mixins = require('./mixins');
+
+const applyMixin = require('./util/apply-mixin');
+/**
+ * Create an endpoint request handler constructor for a specific resource tree
+ *
+ * @method create
+ * @param {Object} handlerSpec A resource handler specification object
+ * @param {String} resource    The root resource of requests created from the returned factory
+ * @param {String} namespace   The namespace string for the returned factory's handlers
+ * @returns {Function} A constructor inheriting from {@link WPRequest}
+ */
+
+
+function createEndpointRequest(handlerSpec, resource, namespace) {
+  // Create the constructor function for this endpoint
+  class EndpointRequest extends WPRequest {
+    constructor(options) {
+      super(options);
+      /**
+       * Semi-private instance property specifying the available URL path options
+       * for this endpoint request handler, keyed by ascending whole numbers.
+       *
+       * @property _levels
+       * @type {object}
+       * @private
+       */
+
+      this._levels = handlerSpec._levels; // Configure handler for this endpoint's root URL path & set namespace
+
+      this.setPathPart(0, resource).namespace(namespace);
+    }
+
+  } // Mix in all available shortcut methods for GET request query parameters that
+  // are valid within this endpoint tree
+
+
+  if (typeof handlerSpec._getArgs === 'object') {
+    Object.keys(handlerSpec._getArgs).forEach(supportedQueryParam => {
+      const mixinsForParam = mixins[supportedQueryParam]; // Only proceed if there is a mixin available AND the specified mixins will
+      // not overwrite any previously-set prototype method
+
+      if (typeof mixinsForParam === 'object') {
+        Object.keys(mixinsForParam).forEach(methodName => {
+          applyMixin(EndpointRequest.prototype, methodName, mixinsForParam[methodName]);
+        });
+      }
+    });
+  }
+
+  Object.keys(handlerSpec._setters).forEach(setterFnName => {
+    // Only assign setter functions if they do not overwrite preexisting methods
+    if (!EndpointRequest.prototype[setterFnName]) {
+      EndpointRequest.prototype[setterFnName] = handlerSpec._setters[setterFnName];
+    }
+  });
+  return EndpointRequest;
+}
+
+module.exports = {
+  create: createEndpointRequest
+};
+},{"./constructors/wp-request":"../node_modules/wpapi/lib/constructors/wp-request.js","./mixins":"../node_modules/wpapi/lib/mixins/index.js","./util/apply-mixin":"../node_modules/wpapi/lib/util/apply-mixin.js"}],"../node_modules/wpapi/lib/endpoint-factories.js":[function(require,module,exports) {
+/**
+ * Take a WP route string (with PCRE named capture groups), `such as /author/(?P<id>\d+)`,
+ * and generate request handler factory methods for each represented endpoint.
+ *
+ * @module endpoint-factories
+ */
+'use strict';
+
+const createResourceHandlerSpec = require('./resource-handler-spec').create;
+
+const createEndpointRequest = require('./endpoint-request').create;
+
+const objectReduce = require('./util/object-reduce');
+/**
+ * Given an array of route definitions and a specific namespace for those routes,
+ * recurse through the node tree representing all possible routes within the
+ * provided namespace to define path value setters (and corresponding property
+ * validators) for all possible variants of each resource's API endpoints.
+ *
+ * @method generate
+ * @param {string} namespace         The namespace string for these routes
+ * @param {object} routesByNamespace A dictionary of namespace - route definition
+ *                                   object pairs as generated from buildRouteTree,
+ *                                   where each route definition object is a dictionary
+ *                                   keyed by route definition strings
+ * @returns {object} A dictionary of endpoint request handler factories
+ */
+
+
+function generateEndpointFactories(routesByNamespace) {
+  return objectReduce(routesByNamespace, (namespaces, routeDefinitions, namespace) => {
+    // Create
+    namespaces[namespace] = objectReduce(routeDefinitions, (handlers, routeDef, resource) => {
+      const handlerSpec = createResourceHandlerSpec(routeDef, resource);
+      const EndpointRequest = createEndpointRequest(handlerSpec, resource, namespace); // "handler" object is now fully prepared; create the factory method that
+      // will instantiate and return a handler instance
+
+      handlers[resource] = function (options) {
+        return new EndpointRequest({ ...this._options,
+          ...options
+        });
+      }; // Expose the constructor as a property on the factory function, so that
+      // auto-generated endpoint request constructors may be further customized
+      // when needed
+
+
+      handlers[resource].Ctor = EndpointRequest;
+      return handlers;
+    }, {});
+    return namespaces;
+  }, {});
+}
+
+module.exports = {
+  generate: generateEndpointFactories
+};
+},{"./resource-handler-spec":"../node_modules/wpapi/lib/resource-handler-spec.js","./endpoint-request":"../node_modules/wpapi/lib/endpoint-request.js","./util/object-reduce":"../node_modules/wpapi/lib/util/object-reduce.js"}],"../node_modules/li/lib/index.js":[function(require,module,exports) {
+var define;
+(function (name, definition, context) {
+
+  //try CommonJS, then AMD (require.js), then use global.
+
+  if (typeof module != 'undefined' && module.exports) module.exports = definition();
+  else if (typeof context['define'] == 'function' && context['define']['amd']) define(definition);
+  else context[name] = definition();
+
+})('li', function () {
+  // compile regular expressions ahead of time for efficiency
+  var relsRegExp = /^;\s*([^"=]+)=(?:"([^"]+)"|([^";,]+)(?:[;,]|$))/;
+  var sourceRegExp = /^<([^>]*)>/;
+  var delimiterRegExp = /^\s*,\s*/;
+
+  return {
+    parse: function (linksHeader, options) {
+      var match;
+      var source;
+      var rels;
+      var extended = options && options.extended || false;
+      var links = [];
+
+      while (linksHeader) {
+        linksHeader = linksHeader.trim();
+
+        // Parse `<link>`
+        source = sourceRegExp.exec(linksHeader);
+        if (!source) break;
+
+        var current = {
+          link: source[1]
+        };
+
+        // Move cursor
+        linksHeader = linksHeader.slice(source[0].length);
+
+        // Parse `; attr=relation` and `; attr="relation"`
+
+        var nextDelimiter = linksHeader.match(delimiterRegExp);
+        while(linksHeader && (!nextDelimiter || nextDelimiter.index > 0)) {
+          match = relsRegExp.exec(linksHeader);
+          if (!match) break;
+
+          // Move cursor
+          linksHeader = linksHeader.slice(match[0].length);
+          nextDelimiter = linksHeader.match(delimiterRegExp);
+
+
+          if (match[1] === 'rel' || match[1] === 'rev') {
+            // Add either quoted rel or unquoted rel
+            rels = (match[2] || match[3]).split(/\s+/);
+            current[match[1]] = rels;
+          } else {
+            current[match[1]] = match[2] || match[3];
+          }
+        }
+
+        links.push(current);
+        // Move cursor
+        linksHeader = linksHeader.replace(delimiterRegExp, '');
+      }
+
+      if (!extended) {
+        return links.reduce(function(result, currentLink) {
+          if (currentLink.rel) {
+            currentLink.rel.forEach(function(rel) {
+              result[rel] = currentLink.link;
+            });
+          }
+          return result;
+        }, {});
+      }
+
+      return links;
+    },
+    stringify: function (params) {
+      var grouped = Object.keys(params).reduce(function(grouped, key) {
+        grouped[params[key]] = grouped[params[key]] || [];
+        grouped[params[key]].push(key);
+        return grouped;
+      }, {});
+
+      var entries = Object.keys(grouped).reduce(function(result, link) {
+        return result.concat('<' + link + '>; rel="' + grouped[link].join(' ') + '"');
+      }, []);
+
+      return entries.join(', ');
+    }
+  };
+
+}, this);
+
+},{}],"../node_modules/wpapi/lib/autodiscovery.js":[function(require,module,exports) {
+/**
+ * Utility methods used when querying a site in order to discover its available
+ * API endpoints
+ *
+ * @module autodiscovery
+ */
+'use strict';
+
+const parseLinkHeader = require('li').parse;
+/**
+ * Attempt to locate a `rel="https://api.w.org"` link relation header
+ *
+ * @method locateAPIRootHeader
+ * @param {Object} response A response object with a link or headers property
+ * @returns {String} The URL of the located API root
+ */
+
+
+function locateAPIRootHeader(response) {
+  // See https://developer.wordpress.org/rest-api/using-the-rest-api/discovery/
+  const rel = 'https://api.w.org/'; // Extract & parse the response link headers
+
+  const link = response.link || response.headers && response.headers.link;
+  const headers = parseLinkHeader(link);
+  const apiHeader = headers && headers[rel];
+
+  if (apiHeader) {
+    return apiHeader;
+  }
+
+  throw new Error(`No header link found with rel="${rel}"`);
+}
+
+module.exports = {
+  locateAPIRootHeader: locateAPIRootHeader
+};
+},{"li":"../node_modules/li/lib/index.js"}],"../node_modules/component-emitter/index.js":[function(require,module,exports) {
+
+/**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+  module.exports = Emitter;
+}
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+
+  // Remove event specific arrays for event types that no
+  // one is subscribed for to avoid memory leak.
+  if (callbacks.length === 0) {
+    delete this._callbacks['$' + event];
+  }
+
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+
+  var args = new Array(arguments.length - 1)
+    , callbacks = this._callbacks['$' + event];
+
+  for (var i = 1; i < arguments.length; i++) {
+    args[i - 1] = arguments[i];
+  }
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+},{}],"../node_modules/superagent/lib/is-object.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Check if `obj` is an object.
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+function isObject(obj) {
+  return null !== obj && 'object' === typeof obj;
+}
+
+module.exports = isObject;
+},{}],"../node_modules/superagent/lib/request-base.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Module of mixed-in functions shared between node and client code
+ */
+
+const isObject = require('./is-object');
+/**
+ * Expose `RequestBase`.
+ */
+
+
+module.exports = RequestBase;
+/**
+ * Initialize a new `RequestBase`.
+ *
+ * @api public
+ */
+
+function RequestBase(obj) {
+  if (obj) return mixin(obj);
+}
+/**
+ * Mixin the prototype properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+
+function mixin(obj) {
+  for (const key in RequestBase.prototype) {
+    obj[key] = RequestBase.prototype[key];
+  }
+
+  return obj;
+}
+/**
+ * Clear previous timeout.
+ *
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.clearTimeout = function _clearTimeout() {
+  clearTimeout(this._timer);
+  clearTimeout(this._responseTimeoutTimer);
+  delete this._timer;
+  delete this._responseTimeoutTimer;
+  return this;
+};
+/**
+ * Override default response body parser
+ *
+ * This function will be called to convert incoming data into request.body
+ *
+ * @param {Function}
+ * @api public
+ */
+
+
+RequestBase.prototype.parse = function parse(fn) {
+  this._parser = fn;
+  return this;
+};
+/**
+ * Set format of binary response body.
+ * In browser valid formats are 'blob' and 'arraybuffer',
+ * which return Blob and ArrayBuffer, respectively.
+ *
+ * In Node all values result in Buffer.
+ *
+ * Examples:
+ *
+ *      req.get('/')
+ *        .responseType('blob')
+ *        .end(callback);
+ *
+ * @param {String} val
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.responseType = function (val) {
+  this._responseType = val;
+  return this;
+};
+/**
+ * Override default request body serializer
+ *
+ * This function will be called to convert data set via .send or .attach into payload to send
+ *
+ * @param {Function}
+ * @api public
+ */
+
+
+RequestBase.prototype.serialize = function serialize(fn) {
+  this._serializer = fn;
+  return this;
+};
+/**
+ * Set timeouts.
+ *
+ * - response timeout is time between sending request and receiving the first byte of the response. Includes DNS and connection time.
+ * - deadline is the time from start of the request to receiving response body in full. If the deadline is too short large files may not load at all on slow connections.
+ *
+ * Value of 0 or false means no timeout.
+ *
+ * @param {Number|Object} ms or {response, deadline}
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.timeout = function timeout(options) {
+  if (!options || 'object' !== typeof options) {
+    this._timeout = options;
+    this._responseTimeout = 0;
+    return this;
+  }
+
+  for (const option in options) {
+    switch (option) {
+      case 'deadline':
+        this._timeout = options.deadline;
+        break;
+
+      case 'response':
+        this._responseTimeout = options.response;
+        break;
+
+      default:
+        console.warn("Unknown timeout option", option);
+    }
+  }
+
+  return this;
+};
+/**
+ * Set number of retry attempts on error.
+ *
+ * Failed requests will be retried 'count' times if timeout or err.code >= 500.
+ *
+ * @param {Number} count
+ * @param {Function} [fn]
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.retry = function retry(count, fn) {
+  // Default to 1 if no count passed or true
+  if (arguments.length === 0 || count === true) count = 1;
+  if (count <= 0) count = 0;
+  this._maxRetries = count;
+  this._retries = 0;
+  this._retryCallback = fn;
+  return this;
+};
+
+const ERROR_CODES = ['ECONNRESET', 'ETIMEDOUT', 'EADDRINFO', 'ESOCKETTIMEDOUT'];
+/**
+ * Determine if a request should be retried.
+ * (Borrowed from segmentio/superagent-retry)
+ *
+ * @param {Error} err
+ * @param {Response} [res]
+ * @returns {Boolean}
+ */
+
+RequestBase.prototype._shouldRetry = function (err, res) {
+  if (!this._maxRetries || this._retries++ >= this._maxRetries) {
+    return false;
+  }
+
+  if (this._retryCallback) {
+    try {
+      const override = this._retryCallback(err, res);
+
+      if (override === true) return true;
+      if (override === false) return false; // undefined falls back to defaults
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  if (res && res.status && res.status >= 500 && res.status != 501) return true;
+
+  if (err) {
+    if (err.code && ~ERROR_CODES.indexOf(err.code)) return true; // Superagent timeout
+
+    if (err.timeout && err.code == 'ECONNABORTED') return true;
+    if (err.crossDomain) return true;
+  }
+
+  return false;
+};
+/**
+ * Retry request
+ *
+ * @return {Request} for chaining
+ * @api private
+ */
+
+
+RequestBase.prototype._retry = function () {
+  this.clearTimeout(); // node
+
+  if (this.req) {
+    this.req = null;
+    this.req = this.request();
+  }
+
+  this._aborted = false;
+  this.timedout = false;
+  return this._end();
+};
+/**
+ * Promise support
+ *
+ * @param {Function} resolve
+ * @param {Function} [reject]
+ * @return {Request}
+ */
+
+
+RequestBase.prototype.then = function then(resolve, reject) {
+  if (!this._fullfilledPromise) {
+    const self = this;
+
+    if (this._endCalled) {
+      console.warn("Warning: superagent request was sent twice, because both .end() and .then() were called. Never call .end() if you use promises");
+    }
+
+    this._fullfilledPromise = new Promise((innerResolve, innerReject) => {
+      self.on('error', innerReject);
+      self.on('abort', () => {
+        const err = new Error('Aborted');
+        err.code = "ABORTED";
+        err.status = this.status;
+        err.method = this.method;
+        err.url = this.url;
+        innerReject(err);
+      });
+      self.end((err, res) => {
+        if (err) innerReject(err);else innerResolve(res);
+      });
+    });
+  }
+
+  return this._fullfilledPromise.then(resolve, reject);
+};
+
+RequestBase.prototype['catch'] = function (cb) {
+  return this.then(undefined, cb);
+};
+/**
+ * Allow for extension
+ */
+
+
+RequestBase.prototype.use = function use(fn) {
+  fn(this);
+  return this;
+};
+
+RequestBase.prototype.ok = function (cb) {
+  if ('function' !== typeof cb) throw Error("Callback required");
+  this._okCallback = cb;
+  return this;
+};
+
+RequestBase.prototype._isResponseOK = function (res) {
+  if (!res) {
+    return false;
+  }
+
+  if (this._okCallback) {
+    return this._okCallback(res);
+  }
+
+  return res.status >= 200 && res.status < 300;
+};
+/**
+ * Get request header `field`.
+ * Case-insensitive.
+ *
+ * @param {String} field
+ * @return {String}
+ * @api public
+ */
+
+
+RequestBase.prototype.get = function (field) {
+  return this._header[field.toLowerCase()];
+};
+/**
+ * Get case-insensitive header `field` value.
+ * This is a deprecated internal API. Use `.get(field)` instead.
+ *
+ * (getHeader is no longer used internally by the superagent code base)
+ *
+ * @param {String} field
+ * @return {String}
+ * @api private
+ * @deprecated
+ */
+
+
+RequestBase.prototype.getHeader = RequestBase.prototype.get;
+/**
+ * Set header `field` to `val`, or multiple fields with one object.
+ * Case-insensitive.
+ *
+ * Examples:
+ *
+ *      req.get('/')
+ *        .set('Accept', 'application/json')
+ *        .set('X-API-Key', 'foobar')
+ *        .end(callback);
+ *
+ *      req.get('/')
+ *        .set({ Accept: 'application/json', 'X-API-Key': 'foobar' })
+ *        .end(callback);
+ *
+ * @param {String|Object} field
+ * @param {String} val
+ * @return {Request} for chaining
+ * @api public
+ */
+
+RequestBase.prototype.set = function (field, val) {
+  if (isObject(field)) {
+    for (const key in field) {
+      this.set(key, field[key]);
+    }
+
+    return this;
+  }
+
+  this._header[field.toLowerCase()] = val;
+  this.header[field] = val;
+  return this;
+};
+/**
+ * Remove header `field`.
+ * Case-insensitive.
+ *
+ * Example:
+ *
+ *      req.get('/')
+ *        .unset('User-Agent')
+ *        .end(callback);
+ *
+ * @param {String} field
+ */
+
+
+RequestBase.prototype.unset = function (field) {
+  delete this._header[field.toLowerCase()];
+  delete this.header[field];
+  return this;
+};
+/**
+ * Write the field `name` and `val`, or multiple fields with one object
+ * for "multipart/form-data" request bodies.
+ *
+ * ``` js
+ * request.post('/upload')
+ *   .field('foo', 'bar')
+ *   .end(callback);
+ *
+ * request.post('/upload')
+ *   .field({ foo: 'bar', baz: 'qux' })
+ *   .end(callback);
+ * ```
+ *
+ * @param {String|Object} name
+ * @param {String|Blob|File|Buffer|fs.ReadStream} val
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.field = function (name, val) {
+  // name should be either a string or an object.
+  if (null === name || undefined === name) {
+    throw new Error('.field(name, val) name can not be empty');
+  }
+
+  if (this._data) {
+    throw new Error(".field() can't be used if .send() is used. Please use only .send() or only .field() & .attach()");
+  }
+
+  if (isObject(name)) {
+    for (const key in name) {
+      this.field(key, name[key]);
+    }
+
+    return this;
+  }
+
+  if (Array.isArray(val)) {
+    for (const i in val) {
+      this.field(name, val[i]);
+    }
+
+    return this;
+  } // val should be defined now
+
+
+  if (null === val || undefined === val) {
+    throw new Error('.field(name, val) val can not be empty');
+  }
+
+  if ('boolean' === typeof val) {
+    val = '' + val;
+  }
+
+  this._getFormData().append(name, val);
+
+  return this;
+};
+/**
+ * Abort the request, and clear potential timeout.
+ *
+ * @return {Request}
+ * @api public
+ */
+
+
+RequestBase.prototype.abort = function () {
+  if (this._aborted) {
+    return this;
+  }
+
+  this._aborted = true;
+  this.xhr && this.xhr.abort(); // browser
+
+  this.req && this.req.abort(); // node
+
+  this.clearTimeout();
+  this.emit('abort');
+  return this;
+};
+
+RequestBase.prototype._auth = function (user, pass, options, base64Encoder) {
+  switch (options.type) {
+    case 'basic':
+      this.set('Authorization', `Basic ${base64Encoder(`${user}:${pass}`)}`);
+      break;
+
+    case 'auto':
+      this.username = user;
+      this.password = pass;
+      break;
+
+    case 'bearer':
+      // usage would be .auth(accessToken, { type: 'bearer' })
+      this.set('Authorization', `Bearer ${user}`);
+      break;
+  }
+
+  return this;
+};
+/**
+ * Enable transmission of cookies with x-domain requests.
+ *
+ * Note that for this to work the origin must not be
+ * using "Access-Control-Allow-Origin" with a wildcard,
+ * and also must set "Access-Control-Allow-Credentials"
+ * to "true".
+ *
+ * @api public
+ */
+
+
+RequestBase.prototype.withCredentials = function (on) {
+  // This is browser-only functionality. Node side is no-op.
+  if (on == undefined) on = true;
+  this._withCredentials = on;
+  return this;
+};
+/**
+ * Set the max redirects to `n`. Does noting in browser XHR implementation.
+ *
+ * @param {Number} n
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.redirects = function (n) {
+  this._maxRedirects = n;
+  return this;
+};
+/**
+ * Maximum size of buffered response body, in bytes. Counts uncompressed size.
+ * Default 200MB.
+ *
+ * @param {Number} n
+ * @return {Request} for chaining
+ */
+
+
+RequestBase.prototype.maxResponseSize = function (n) {
+  if ('number' !== typeof n) {
+    throw TypeError("Invalid argument");
+  }
+
+  this._maxResponseSize = n;
+  return this;
+};
+/**
+ * Convert to a plain javascript object (not JSON string) of scalar properties.
+ * Note as this method is designed to return a useful non-this value,
+ * it cannot be chained.
+ *
+ * @return {Object} describing method, url, and data of this request
+ * @api public
+ */
+
+
+RequestBase.prototype.toJSON = function () {
+  return {
+    method: this.method,
+    url: this.url,
+    data: this._data,
+    headers: this._header
+  };
+};
+/**
+ * Send `data` as the request body, defaulting the `.type()` to "json" when
+ * an object is given.
+ *
+ * Examples:
+ *
+ *       // manual json
+ *       request.post('/user')
+ *         .type('json')
+ *         .send('{"name":"tj"}')
+ *         .end(callback)
+ *
+ *       // auto json
+ *       request.post('/user')
+ *         .send({ name: 'tj' })
+ *         .end(callback)
+ *
+ *       // manual x-www-form-urlencoded
+ *       request.post('/user')
+ *         .type('form')
+ *         .send('name=tj')
+ *         .end(callback)
+ *
+ *       // auto x-www-form-urlencoded
+ *       request.post('/user')
+ *         .type('form')
+ *         .send({ name: 'tj' })
+ *         .end(callback)
+ *
+ *       // defaults to x-www-form-urlencoded
+ *      request.post('/user')
+ *        .send('name=tobi')
+ *        .send('species=ferret')
+ *        .end(callback)
+ *
+ * @param {String|Object} data
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.send = function (data) {
+  const isObj = isObject(data);
+  let type = this._header['content-type'];
+
+  if (this._formData) {
+    throw new Error(".send() can't be used if .attach() or .field() is used. Please use only .send() or only .field() & .attach()");
+  }
+
+  if (isObj && !this._data) {
+    if (Array.isArray(data)) {
+      this._data = [];
+    } else if (!this._isHost(data)) {
+      this._data = {};
+    }
+  } else if (data && this._data && this._isHost(this._data)) {
+    throw Error("Can't merge these send calls");
+  } // merge
+
+
+  if (isObj && isObject(this._data)) {
+    for (const key in data) {
+      this._data[key] = data[key];
+    }
+  } else if ('string' == typeof data) {
+    // default to x-www-form-urlencoded
+    if (!type) this.type('form');
+    type = this._header['content-type'];
+
+    if ('application/x-www-form-urlencoded' == type) {
+      this._data = this._data ? `${this._data}&${data}` : data;
+    } else {
+      this._data = (this._data || '') + data;
+    }
+  } else {
+    this._data = data;
+  }
+
+  if (!isObj || this._isHost(data)) {
+    return this;
+  } // default to json
+
+
+  if (!type) this.type('json');
+  return this;
+};
+/**
+ * Sort `querystring` by the sort function
+ *
+ *
+ * Examples:
+ *
+ *       // default order
+ *       request.get('/user')
+ *         .query('name=Nick')
+ *         .query('search=Manny')
+ *         .sortQuery()
+ *         .end(callback)
+ *
+ *       // customized sort function
+ *       request.get('/user')
+ *         .query('name=Nick')
+ *         .query('search=Manny')
+ *         .sortQuery(function(a, b){
+ *           return a.length - b.length;
+ *         })
+ *         .end(callback)
+ *
+ *
+ * @param {Function} sort
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+RequestBase.prototype.sortQuery = function (sort) {
+  // _sort default to true but otherwise can be a function or boolean
+  this._sort = typeof sort === 'undefined' ? true : sort;
+  return this;
+};
+/**
+ * Compose querystring to append to req.url
+ *
+ * @api private
+ */
+
+
+RequestBase.prototype._finalizeQueryString = function () {
+  const query = this._query.join('&');
+
+  if (query) {
+    this.url += (this.url.indexOf('?') >= 0 ? '&' : '?') + query;
+  }
+
+  this._query.length = 0; // Makes the call idempotent
+
+  if (this._sort) {
+    const index = this.url.indexOf('?');
+
+    if (index >= 0) {
+      const queryArr = this.url.substring(index + 1).split('&');
+
+      if ('function' === typeof this._sort) {
+        queryArr.sort(this._sort);
+      } else {
+        queryArr.sort();
+      }
+
+      this.url = this.url.substring(0, index) + '?' + queryArr.join('&');
+    }
+  }
+}; // For backwards compat only
+
+
+RequestBase.prototype._appendQueryString = () => {
+  console.trace("Unsupported");
+};
+/**
+ * Invoke callback with timeout error.
+ *
+ * @api private
+ */
+
+
+RequestBase.prototype._timeoutError = function (reason, timeout, errno) {
+  if (this._aborted) {
+    return;
+  }
+
+  const err = new Error(`${reason + timeout}ms exceeded`);
+  err.timeout = timeout;
+  err.code = 'ECONNABORTED';
+  err.errno = errno;
+  this.timedout = true;
+  this.abort();
+  this.callback(err);
+};
+
+RequestBase.prototype._setTimeouts = function () {
+  const self = this; // deadline
+
+  if (this._timeout && !this._timer) {
+    this._timer = setTimeout(() => {
+      self._timeoutError('Timeout of ', self._timeout, 'ETIME');
+    }, this._timeout);
+  } // response timeout
+
+
+  if (this._responseTimeout && !this._responseTimeoutTimer) {
+    this._responseTimeoutTimer = setTimeout(() => {
+      self._timeoutError('Response timeout of ', self._responseTimeout, 'ETIMEDOUT');
+    }, this._responseTimeout);
+  }
+};
+},{"./is-object":"../node_modules/superagent/lib/is-object.js"}],"../node_modules/superagent/lib/utils.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Return the mime type for the given `str`.
+ *
+ * @param {String} str
+ * @return {String}
+ * @api private
+ */
+
+exports.type = str => str.split(/ *; */).shift();
+/**
+ * Return header field parameters.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+
+exports.params = str => str.split(/ *; */).reduce((obj, str) => {
+  const parts = str.split(/ *= */);
+  const key = parts.shift();
+  const val = parts.shift();
+  if (key && val) obj[key] = val;
+  return obj;
+}, {});
+/**
+ * Parse Link header fields.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+
+exports.parseLinks = str => str.split(/ *, */).reduce((obj, str) => {
+  const parts = str.split(/ *; */);
+  const url = parts[0].slice(1, -1);
+  const rel = parts[1].split(/ *= */)[1].slice(1, -1);
+  obj[rel] = url;
+  return obj;
+}, {});
+/**
+ * Strip content related fields from `header`.
+ *
+ * @param {Object} header
+ * @return {Object} header
+ * @api private
+ */
+
+
+exports.cleanHeader = (header, changesOrigin) => {
+  delete header['content-type'];
+  delete header['content-length'];
+  delete header['transfer-encoding'];
+  delete header['host']; // secuirty
+
+  if (changesOrigin) {
+    delete header['authorization'];
+    delete header['cookie'];
+  }
+
+  return header;
+};
+},{}],"../node_modules/superagent/lib/response-base.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Module dependencies.
+ */
+
+const utils = require('./utils');
+/**
+ * Expose `ResponseBase`.
+ */
+
+
+module.exports = ResponseBase;
+/**
+ * Initialize a new `ResponseBase`.
+ *
+ * @api public
+ */
+
+function ResponseBase(obj) {
+  if (obj) return mixin(obj);
+}
+/**
+ * Mixin the prototype properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+
+function mixin(obj) {
+  for (const key in ResponseBase.prototype) {
+    obj[key] = ResponseBase.prototype[key];
+  }
+
+  return obj;
+}
+/**
+ * Get case-insensitive `field` value.
+ *
+ * @param {String} field
+ * @return {String}
+ * @api public
+ */
+
+
+ResponseBase.prototype.get = function (field) {
+  return this.header[field.toLowerCase()];
+};
+/**
+ * Set header related properties:
+ *
+ *   - `.type` the content type without params
+ *
+ * A response of "Content-Type: text/plain; charset=utf-8"
+ * will provide you with a `.type` of "text/plain".
+ *
+ * @param {Object} header
+ * @api private
+ */
+
+
+ResponseBase.prototype._setHeaderProperties = function (header) {
+  // TODO: moar!
+  // TODO: make this a util
+  // content-type
+  const ct = header['content-type'] || '';
+  this.type = utils.type(ct); // params
+
+  const params = utils.params(ct);
+
+  for (const key in params) this[key] = params[key];
+
+  this.links = {}; // links
+
+  try {
+    if (header.link) {
+      this.links = utils.parseLinks(header.link);
+    }
+  } catch (err) {// ignore
+  }
+};
+/**
+ * Set flags such as `.ok` based on `status`.
+ *
+ * For example a 2xx response will give you a `.ok` of __true__
+ * whereas 5xx will be __false__ and `.error` will be __true__. The
+ * `.clientError` and `.serverError` are also available to be more
+ * specific, and `.statusType` is the class of error ranging from 1..5
+ * sometimes useful for mapping respond colors etc.
+ *
+ * "sugar" properties are also defined for common cases. Currently providing:
+ *
+ *   - .noContent
+ *   - .badRequest
+ *   - .unauthorized
+ *   - .notAcceptable
+ *   - .notFound
+ *
+ * @param {Number} status
+ * @api private
+ */
+
+
+ResponseBase.prototype._setStatusProperties = function (status) {
+  const type = status / 100 | 0; // status / class
+
+  this.status = this.statusCode = status;
+  this.statusType = type; // basics
+
+  this.info = 1 == type;
+  this.ok = 2 == type;
+  this.redirect = 3 == type;
+  this.clientError = 4 == type;
+  this.serverError = 5 == type;
+  this.error = 4 == type || 5 == type ? this.toError() : false; // sugar
+
+  this.created = 201 == status;
+  this.accepted = 202 == status;
+  this.noContent = 204 == status;
+  this.badRequest = 400 == status;
+  this.unauthorized = 401 == status;
+  this.notAcceptable = 406 == status;
+  this.forbidden = 403 == status;
+  this.notFound = 404 == status;
+  this.unprocessableEntity = 422 == status;
+};
+},{"./utils":"../node_modules/superagent/lib/utils.js"}],"../node_modules/superagent/lib/agent-base.js":[function(require,module,exports) {
+function Agent() {
+  this._defaults = [];
+}
+
+["use", "on", "once", "set", "query", "type", "accept", "auth", "withCredentials", "sortQuery", "retry", "ok", "redirects", "timeout", "buffer", "serialize", "parse", "ca", "key", "pfx", "cert"].forEach(fn => {
+  /** Default setting for all requests from this agent */
+  Agent.prototype[fn] = function (...args) {
+    this._defaults.push({
+      fn,
+      args
+    });
+
+    return this;
+  };
+});
+
+Agent.prototype._setDefaults = function (req) {
+  this._defaults.forEach(def => {
+    req[def.fn].apply(req, def.args);
+  });
+};
+
+module.exports = Agent;
+},{}],"../node_modules/superagent/lib/client.js":[function(require,module,exports) {
+/**
+ * Root reference for iframes.
+ */
+let root;
+
+if (typeof window !== 'undefined') {
+  // Browser window
+  root = window;
+} else if (typeof self !== 'undefined') {
+  // Web Worker
+  root = self;
+} else {
+  // Other environments
+  console.warn("Using browser-only version of superagent in non-browser environment");
+  root = this;
+}
+
+const Emitter = require('component-emitter');
+
+const RequestBase = require('./request-base');
+
+const isObject = require('./is-object');
+
+const ResponseBase = require('./response-base');
+
+const Agent = require('./agent-base');
+/**
+ * Noop.
+ */
+
+
+function noop() {}
+
+;
+/**
+ * Expose `request`.
+ */
+
+const request = exports = module.exports = function (method, url) {
+  // callback
+  if ('function' == typeof url) {
+    return new exports.Request('GET', method).end(url);
+  } // url first
+
+
+  if (1 == arguments.length) {
+    return new exports.Request('GET', method);
+  }
+
+  return new exports.Request(method, url);
+};
+
+exports.Request = Request;
+/**
+ * Determine XHR.
+ */
+
+request.getXHR = () => {
+  if (root.XMLHttpRequest && (!root.location || 'file:' != root.location.protocol || !root.ActiveXObject)) {
+    return new XMLHttpRequest();
+  } else {
+    try {
+      return new ActiveXObject('Microsoft.XMLHTTP');
+    } catch (e) {}
+
+    try {
+      return new ActiveXObject('Msxml2.XMLHTTP.6.0');
+    } catch (e) {}
+
+    try {
+      return new ActiveXObject('Msxml2.XMLHTTP.3.0');
+    } catch (e) {}
+
+    try {
+      return new ActiveXObject('Msxml2.XMLHTTP');
+    } catch (e) {}
+  }
+
+  throw Error("Browser-only version of superagent could not find XHR");
+};
+/**
+ * Removes leading and trailing whitespace, added to support IE.
+ *
+ * @param {String} s
+ * @return {String}
+ * @api private
+ */
+
+
+const trim = ''.trim ? s => s.trim() : s => s.replace(/(^\s*|\s*$)/g, '');
+/**
+ * Serialize the given `obj`.
+ *
+ * @param {Object} obj
+ * @return {String}
+ * @api private
+ */
+
+function serialize(obj) {
+  if (!isObject(obj)) return obj;
+  const pairs = [];
+
+  for (const key in obj) {
+    pushEncodedKeyValuePair(pairs, key, obj[key]);
+  }
+
+  return pairs.join('&');
+}
+/**
+ * Helps 'serialize' with serializing arrays.
+ * Mutates the pairs array.
+ *
+ * @param {Array} pairs
+ * @param {String} key
+ * @param {Mixed} val
+ */
+
+
+function pushEncodedKeyValuePair(pairs, key, val) {
+  if (val != null) {
+    if (Array.isArray(val)) {
+      val.forEach(v => {
+        pushEncodedKeyValuePair(pairs, key, v);
+      });
+    } else if (isObject(val)) {
+      for (const subkey in val) {
+        pushEncodedKeyValuePair(pairs, `${key}[${subkey}]`, val[subkey]);
+      }
+    } else {
+      pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(val));
+    }
+  } else if (val === null) {
+    pairs.push(encodeURIComponent(key));
+  }
+}
+/**
+ * Expose serialization method.
+ */
+
+
+request.serializeObject = serialize;
+/**
+  * Parse the given x-www-form-urlencoded `str`.
+  *
+  * @param {String} str
+  * @return {Object}
+  * @api private
+  */
+
+function parseString(str) {
+  const obj = {};
+  const pairs = str.split('&');
+  let pair;
+  let pos;
+
+  for (let i = 0, len = pairs.length; i < len; ++i) {
+    pair = pairs[i];
+    pos = pair.indexOf('=');
+
+    if (pos == -1) {
+      obj[decodeURIComponent(pair)] = '';
+    } else {
+      obj[decodeURIComponent(pair.slice(0, pos))] = decodeURIComponent(pair.slice(pos + 1));
+    }
+  }
+
+  return obj;
+}
+/**
+ * Expose parser.
+ */
+
+
+request.parseString = parseString;
+/**
+ * Default MIME type map.
+ *
+ *     superagent.types.xml = 'application/xml';
+ *
+ */
+
+request.types = {
+  html: 'text/html',
+  json: 'application/json',
+  xml: 'text/xml',
+  urlencoded: 'application/x-www-form-urlencoded',
+  'form': 'application/x-www-form-urlencoded',
+  'form-data': 'application/x-www-form-urlencoded'
+};
+/**
+ * Default serialization map.
+ *
+ *     superagent.serialize['application/xml'] = function(obj){
+ *       return 'generated xml here';
+ *     };
+ *
+ */
+
+request.serialize = {
+  'application/x-www-form-urlencoded': serialize,
+  'application/json': JSON.stringify
+};
+/**
+  * Default parsers.
+  *
+  *     superagent.parse['application/xml'] = function(str){
+  *       return { object parsed from str };
+  *     };
+  *
+  */
+
+request.parse = {
+  'application/x-www-form-urlencoded': parseString,
+  'application/json': JSON.parse
+};
+/**
+ * Parse the given header `str` into
+ * an object containing the mapped fields.
+ *
+ * @param {String} str
+ * @return {Object}
+ * @api private
+ */
+
+function parseHeader(str) {
+  const lines = str.split(/\r?\n/);
+  const fields = {};
+  let index;
+  let line;
+  let field;
+  let val;
+
+  for (let i = 0, len = lines.length; i < len; ++i) {
+    line = lines[i];
+    index = line.indexOf(':');
+
+    if (index === -1) {
+      // could be empty line, just skip it
+      continue;
+    }
+
+    field = line.slice(0, index).toLowerCase();
+    val = trim(line.slice(index + 1));
+    fields[field] = val;
+  }
+
+  return fields;
+}
+/**
+ * Check if `mime` is json or has +json structured syntax suffix.
+ *
+ * @param {String} mime
+ * @return {Boolean}
+ * @api private
+ */
+
+
+function isJSON(mime) {
+  // should match /json or +json
+  // but not /json-seq
+  return /[\/+]json($|[^-\w])/.test(mime);
+}
+/**
+ * Initialize a new `Response` with the given `xhr`.
+ *
+ *  - set flags (.ok, .error, etc)
+ *  - parse header
+ *
+ * Examples:
+ *
+ *  Aliasing `superagent` as `request` is nice:
+ *
+ *      request = superagent;
+ *
+ *  We can use the promise-like API, or pass callbacks:
+ *
+ *      request.get('/').end(function(res){});
+ *      request.get('/', function(res){});
+ *
+ *  Sending data can be chained:
+ *
+ *      request
+ *        .post('/user')
+ *        .send({ name: 'tj' })
+ *        .end(function(res){});
+ *
+ *  Or passed to `.send()`:
+ *
+ *      request
+ *        .post('/user')
+ *        .send({ name: 'tj' }, function(res){});
+ *
+ *  Or passed to `.post()`:
+ *
+ *      request
+ *        .post('/user', { name: 'tj' })
+ *        .end(function(res){});
+ *
+ * Or further reduced to a single call for simple cases:
+ *
+ *      request
+ *        .post('/user', { name: 'tj' }, function(res){});
+ *
+ * @param {XMLHTTPRequest} xhr
+ * @param {Object} options
+ * @api private
+ */
+
+
+function Response(req) {
+  this.req = req;
+  this.xhr = this.req.xhr; // responseText is accessible only if responseType is '' or 'text' and on older browsers
+
+  this.text = this.req.method != 'HEAD' && (this.xhr.responseType === '' || this.xhr.responseType === 'text') || typeof this.xhr.responseType === 'undefined' ? this.xhr.responseText : null;
+  this.statusText = this.req.xhr.statusText;
+  let status = this.xhr.status; // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+
+  if (status === 1223) {
+    status = 204;
+  }
+
+  this._setStatusProperties(status);
+
+  this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders()); // getAllResponseHeaders sometimes falsely returns "" for CORS requests, but
+  // getResponseHeader still works. so we get content-type even if getting
+  // other headers fails.
+
+  this.header['content-type'] = this.xhr.getResponseHeader('content-type');
+
+  this._setHeaderProperties(this.header);
+
+  if (null === this.text && req._responseType) {
+    this.body = this.xhr.response;
+  } else {
+    this.body = this.req.method != 'HEAD' ? this._parseBody(this.text ? this.text : this.xhr.response) : null;
+  }
+}
+
+ResponseBase(Response.prototype);
+/**
+ * Parse the given body `str`.
+ *
+ * Used for auto-parsing of bodies. Parsers
+ * are defined on the `superagent.parse` object.
+ *
+ * @param {String} str
+ * @return {Mixed}
+ * @api private
+ */
+
+Response.prototype._parseBody = function (str) {
+  let parse = request.parse[this.type];
+
+  if (this.req._parser) {
+    return this.req._parser(this, str);
+  }
+
+  if (!parse && isJSON(this.type)) {
+    parse = request.parse['application/json'];
+  }
+
+  return parse && str && (str.length || str instanceof Object) ? parse(str) : null;
+};
+/**
+ * Return an `Error` representative of this response.
+ *
+ * @return {Error}
+ * @api public
+ */
+
+
+Response.prototype.toError = function () {
+  const req = this.req;
+  const method = req.method;
+  const url = req.url;
+  const msg = `cannot ${method} ${url} (${this.status})`;
+  const err = new Error(msg);
+  err.status = this.status;
+  err.method = method;
+  err.url = url;
+  return err;
+};
+/**
+ * Expose `Response`.
+ */
+
+
+request.Response = Response;
+/**
+ * Initialize a new `Request` with the given `method` and `url`.
+ *
+ * @param {String} method
+ * @param {String} url
+ * @api public
+ */
+
+function Request(method, url) {
+  const self = this;
+  this._query = this._query || [];
+  this.method = method;
+  this.url = url;
+  this.header = {}; // preserves header name case
+
+  this._header = {}; // coerces header names to lowercase
+
+  this.on('end', () => {
+    let err = null;
+    let res = null;
+
+    try {
+      res = new Response(self);
+    } catch (e) {
+      err = new Error('Parser is unable to parse the response');
+      err.parse = true;
+      err.original = e; // issue #675: return the raw response if the response parsing fails
+
+      if (self.xhr) {
+        // ie9 doesn't have 'response' property
+        err.rawResponse = typeof self.xhr.responseType == 'undefined' ? self.xhr.responseText : self.xhr.response; // issue #876: return the http status code if the response parsing fails
+
+        err.status = self.xhr.status ? self.xhr.status : null;
+        err.statusCode = err.status; // backwards-compat only
+      } else {
+        err.rawResponse = null;
+        err.status = null;
+      }
+
+      return self.callback(err);
+    }
+
+    self.emit('response', res);
+    let new_err;
+
+    try {
+      if (!self._isResponseOK(res)) {
+        new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
+      }
+    } catch (custom_err) {
+      new_err = custom_err; // ok() callback can throw
+    } // #1000 don't catch errors from the callback to avoid double calling it
+
+
+    if (new_err) {
+      new_err.original = err;
+      new_err.response = res;
+      new_err.status = res.status;
+      self.callback(new_err, res);
+    } else {
+      self.callback(null, res);
+    }
+  });
+}
+/**
+ * Mixin `Emitter` and `RequestBase`.
+ */
+
+
+Emitter(Request.prototype);
+RequestBase(Request.prototype);
+/**
+ * Set Content-Type to `type`, mapping values from `request.types`.
+ *
+ * Examples:
+ *
+ *      superagent.types.xml = 'application/xml';
+ *
+ *      request.post('/')
+ *        .type('xml')
+ *        .send(xmlstring)
+ *        .end(callback);
+ *
+ *      request.post('/')
+ *        .type('application/xml')
+ *        .send(xmlstring)
+ *        .end(callback);
+ *
+ * @param {String} type
+ * @return {Request} for chaining
+ * @api public
+ */
+
+Request.prototype.type = function (type) {
+  this.set('Content-Type', request.types[type] || type);
+  return this;
+};
+/**
+ * Set Accept to `type`, mapping values from `request.types`.
+ *
+ * Examples:
+ *
+ *      superagent.types.json = 'application/json';
+ *
+ *      request.get('/agent')
+ *        .accept('json')
+ *        .end(callback);
+ *
+ *      request.get('/agent')
+ *        .accept('application/json')
+ *        .end(callback);
+ *
+ * @param {String} accept
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+Request.prototype.accept = function (type) {
+  this.set('Accept', request.types[type] || type);
+  return this;
+};
+/**
+ * Set Authorization field value with `user` and `pass`.
+ *
+ * @param {String} user
+ * @param {String} [pass] optional in case of using 'bearer' as type
+ * @param {Object} options with 'type' property 'auto', 'basic' or 'bearer' (default 'basic')
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+Request.prototype.auth = function (user, pass, options) {
+  if (1 === arguments.length) pass = '';
+
+  if (typeof pass === 'object' && pass !== null) {
+    // pass is optional and can be replaced with options
+    options = pass;
+    pass = '';
+  }
+
+  if (!options) {
+    options = {
+      type: 'function' === typeof btoa ? 'basic' : 'auto'
+    };
+  }
+
+  const encoder = string => {
+    if ('function' === typeof btoa) {
+      return btoa(string);
+    }
+
+    throw new Error('Cannot use basic auth, btoa is not a function');
+  };
+
+  return this._auth(user, pass, options, encoder);
+};
+/**
+ * Add query-string `val`.
+ *
+ * Examples:
+ *
+ *   request.get('/shoes')
+ *     .query('size=10')
+ *     .query({ color: 'blue' })
+ *
+ * @param {Object|String} val
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+Request.prototype.query = function (val) {
+  if ('string' != typeof val) val = serialize(val);
+  if (val) this._query.push(val);
+  return this;
+};
+/**
+ * Queue the given `file` as an attachment to the specified `field`,
+ * with optional `options` (or filename).
+ *
+ * ``` js
+ * request.post('/upload')
+ *   .attach('content', new Blob(['<a id="a"><b id="b">hey!</b></a>'], { type: "text/html"}))
+ *   .end(callback);
+ * ```
+ *
+ * @param {String} field
+ * @param {Blob|File} file
+ * @param {String|Object} options
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+Request.prototype.attach = function (field, file, options) {
+  if (file) {
+    if (this._data) {
+      throw Error("superagent can't mix .send() and .attach()");
+    }
+
+    this._getFormData().append(field, file, options || file.name);
+  }
+
+  return this;
+};
+
+Request.prototype._getFormData = function () {
+  if (!this._formData) {
+    this._formData = new root.FormData();
+  }
+
+  return this._formData;
+};
+/**
+ * Invoke the callback with `err` and `res`
+ * and handle arity check.
+ *
+ * @param {Error} err
+ * @param {Response} res
+ * @api private
+ */
+
+
+Request.prototype.callback = function (err, res) {
+  if (this._shouldRetry(err, res)) {
+    return this._retry();
+  }
+
+  const fn = this._callback;
+  this.clearTimeout();
+
+  if (err) {
+    if (this._maxRetries) err.retries = this._retries - 1;
+    this.emit('error', err);
+  }
+
+  fn(err, res);
+};
+/**
+ * Invoke callback with x-domain error.
+ *
+ * @api private
+ */
+
+
+Request.prototype.crossDomainError = function () {
+  const err = new Error('Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc.');
+  err.crossDomain = true;
+  err.status = this.status;
+  err.method = this.method;
+  err.url = this.url;
+  this.callback(err);
+}; // This only warns, because the request is still likely to work
+
+
+Request.prototype.buffer = Request.prototype.ca = Request.prototype.agent = function () {
+  console.warn("This is not supported in browser version of superagent");
+  return this;
+}; // This throws, because it can't send/receive data as expected
+
+
+Request.prototype.pipe = Request.prototype.write = () => {
+  throw Error("Streaming is not supported in browser version of superagent");
+};
+/**
+ * Check if `obj` is a host object,
+ * we don't want to serialize these :)
+ *
+ * @param {Object} obj
+ * @return {Boolean}
+ * @api private
+ */
+
+
+Request.prototype._isHost = function _isHost(obj) {
+  // Native objects stringify to [object File], [object Blob], [object FormData], etc.
+  return obj && 'object' === typeof obj && !Array.isArray(obj) && Object.prototype.toString.call(obj) !== '[object Object]';
+};
+/**
+ * Initiate request, invoking callback `fn(res)`
+ * with an instanceof `Response`.
+ *
+ * @param {Function} fn
+ * @return {Request} for chaining
+ * @api public
+ */
+
+
+Request.prototype.end = function (fn) {
+  if (this._endCalled) {
+    console.warn("Warning: .end() was called twice. This is not supported in superagent");
+  }
+
+  this._endCalled = true; // store callback
+
+  this._callback = fn || noop; // querystring
+
+  this._finalizeQueryString();
+
+  this._end();
+};
+
+Request.prototype._end = function () {
+  if (this._aborted) return this.callback(Error("The request has been aborted even before .end() was called"));
+  const self = this;
+  const xhr = this.xhr = request.getXHR();
+  let data = this._formData || this._data;
+
+  this._setTimeouts(); // state change
+
+
+  xhr.onreadystatechange = () => {
+    const readyState = xhr.readyState;
+
+    if (readyState >= 2 && self._responseTimeoutTimer) {
+      clearTimeout(self._responseTimeoutTimer);
+    }
+
+    if (4 != readyState) {
+      return;
+    } // In IE9, reads to any property (e.g. status) off of an aborted XHR will
+    // result in the error "Could not complete the operation due to error c00c023f"
+
+
+    let status;
+
+    try {
+      status = xhr.status;
+    } catch (e) {
+      status = 0;
+    }
+
+    if (!status) {
+      if (self.timedout || self._aborted) return;
+      return self.crossDomainError();
+    }
+
+    self.emit('end');
+  }; // progress
+
+
+  const handleProgress = (direction, e) => {
+    if (e.total > 0) {
+      e.percent = e.loaded / e.total * 100;
+    }
+
+    e.direction = direction;
+    self.emit('progress', e);
+  };
+
+  if (this.hasListeners('progress')) {
+    try {
+      xhr.onprogress = handleProgress.bind(null, 'download');
+
+      if (xhr.upload) {
+        xhr.upload.onprogress = handleProgress.bind(null, 'upload');
+      }
+    } catch (e) {// Accessing xhr.upload fails in IE from a web worker, so just pretend it doesn't exist.
+      // Reported here:
+      // https://connect.microsoft.com/IE/feedback/details/837245/xmlhttprequest-upload-throws-invalid-argument-when-used-from-web-worker-context
+    }
+  } // initiate request
+
+
+  try {
+    if (this.username && this.password) {
+      xhr.open(this.method, this.url, true, this.username, this.password);
+    } else {
+      xhr.open(this.method, this.url, true);
+    }
+  } catch (err) {
+    // see #1149
+    return this.callback(err);
+  } // CORS
+
+
+  if (this._withCredentials) xhr.withCredentials = true; // body
+
+  if (!this._formData && 'GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !this._isHost(data)) {
+    // serialize stuff
+    const contentType = this._header['content-type'];
+    let serialize = this._serializer || request.serialize[contentType ? contentType.split(';')[0] : ''];
+
+    if (!serialize && isJSON(contentType)) {
+      serialize = request.serialize['application/json'];
+    }
+
+    if (serialize) data = serialize(data);
+  } // set header fields
+
+
+  for (const field in this.header) {
+    if (null == this.header[field]) continue;
+    if (this.header.hasOwnProperty(field)) xhr.setRequestHeader(field, this.header[field]);
+  }
+
+  if (this._responseType) {
+    xhr.responseType = this._responseType;
+  } // send stuff
+
+
+  this.emit('request', this); // IE11 xhr.send(undefined) sends 'undefined' string as POST payload (instead of nothing)
+  // We need null here if data is undefined
+
+  xhr.send(typeof data !== 'undefined' ? data : null);
+};
+
+request.agent = () => new Agent();
+
+["GET", "POST", "OPTIONS", "PATCH", "PUT", "DELETE"].forEach(method => {
+  Agent.prototype[method.toLowerCase()] = function (url, fn) {
+    const req = new request.Request(method, url);
+
+    this._setDefaults(req);
+
+    if (fn) {
+      req.end(fn);
+    }
+
+    return req;
+  };
+});
+Agent.prototype.del = Agent.prototype['delete'];
+/**
+ * GET `url` with optional callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.get = (url, data, fn) => {
+  const req = request('GET', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.query(data);
+  if (fn) req.end(fn);
+  return req;
+};
+/**
+ * HEAD `url` with optional callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+
+request.head = (url, data, fn) => {
+  const req = request('HEAD', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.query(data);
+  if (fn) req.end(fn);
+  return req;
+};
+/**
+ * OPTIONS query to `url` with optional callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+
+request.options = (url, data, fn) => {
+  const req = request('OPTIONS', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+/**
+ * DELETE `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed} [data]
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+
+function del(url, data, fn) {
+  const req = request('DELETE', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+}
+
+request['del'] = del;
+request['delete'] = del;
+/**
+ * PATCH `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed} [data]
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+request.patch = (url, data, fn) => {
+  const req = request('PATCH', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+/**
+ * POST `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed} [data]
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+
+request.post = (url, data, fn) => {
+  const req = request('POST', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+/**
+ * PUT `url` with optional `data` and callback `fn(res)`.
+ *
+ * @param {String} url
+ * @param {Mixed|Function} [data] or fn
+ * @param {Function} [fn]
+ * @return {Request}
+ * @api public
+ */
+
+
+request.put = (url, data, fn) => {
+  const req = request('PUT', url);
+  if ('function' == typeof data) fn = data, data = null;
+  if (data) req.send(data);
+  if (fn) req.end(fn);
+  return req;
+};
+},{"component-emitter":"../node_modules/component-emitter/index.js","./request-base":"../node_modules/superagent/lib/request-base.js","./is-object":"../node_modules/superagent/lib/is-object.js","./response-base":"../node_modules/superagent/lib/response-base.js","./agent-base":"../node_modules/superagent/lib/agent-base.js"}],"../node_modules/wpapi/lib/util/check-method-support.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Verify that a specific HTTP method is supported by the provided WPRequest
+ *
+ * @module util/check-method-support
+ * @param {String} method An HTTP method to check ('get', 'post', etc)
+ * @param {WPRequest} request A WPRequest object with a _supportedMethods array
+ * @returns true iff the method is within request._supportedMethods
+ */
+
+module.exports = (method, request) => {
+  if (request._supportedMethods.indexOf(method.toLowerCase()) === -1) {
+    throw new Error('Unsupported method; supported methods are: ' + request._supportedMethods.join(', '));
+  }
+
+  return true;
+};
+},{}],"../node_modules/wpapi/lib/util/is-empty-object.js":[function(require,module,exports) {
+'use strict';
+/**
+ * Determine whether an provided value is an empty object
+ *
+ * @module util/is-empty-object
+ * @param {} value A value to test for empty-object-ness
+ * @returns {boolean} Whether the provided value is an empty object
+ */
+
+module.exports = value => {
+  // If the value is not object-like, then it is certainly not an empty object
+  if (typeof value !== 'object') {
+    return false;
+  } // For our purposes an empty array should not be treated as an empty object
+  // (Since this is used to process invalid content-type responses, )
+
+
+  if (Array.isArray(value)) {
+    return false;
+  }
+
+  for (const key in value) {
+    if (value.hasOwnProperty(key)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+},{}],"../node_modules/wpapi/lib/http-transport.js":[function(require,module,exports) {
+/**
+ * @module http-transport
+ */
+'use strict';
+
+const agent = require('superagent');
+
+const parseLinkHeader = require('li').parse;
+
+const WPRequest = require('./constructors/wp-request');
+
+const checkMethodSupport = require('./util/check-method-support');
+
+const objectReduce = require('./util/object-reduce');
+
+const isEmptyObject = require('./util/is-empty-object');
+/**
+ * Set any provided headers on the outgoing request object. Runs after _auth.
+ *
+ * @method _setHeaders
+ * @private
+ * @param {Object} request A superagent request object
+ * @param {Object} options A WPRequest _options object
+ * @param {Object} A superagent request object, with any available headers set
+ */
+
+
+function _setHeaders(request, options) {
+  // If there's no headers, do nothing
+  if (!options.headers) {
+    return request;
+  }
+
+  return objectReduce(options.headers, (request, value, key) => request.set(key, value), request);
+}
+/**
+ * Conditionally set basic authentication on a server request object.
+ *
+ * @method _auth
+ * @private
+ * @param {Object} request A superagent request object
+ * @param {Object} options A WPRequest _options object
+ * @param {Boolean} forceAuthentication whether to force authentication on the request
+ * @param {Object} A superagent request object, conditionally configured to use basic auth
+ */
+
+
+function _auth(request, options, forceAuthentication) {
+  // If we're not supposed to authenticate, don't even start
+  if (!forceAuthentication && !options.auth && !options.nonce) {
+    return request;
+  } // Enable nonce in options for Cookie authentication http://wp-api.org/guides/authentication.html
+
+
+  if (options.nonce) {
+    request.set('X-WP-Nonce', options.nonce);
+    return request;
+  } // Retrieve the username & password from the request options if they weren't provided
+
+
+  const username = options.username;
+  const password = options.password; // If no username or no password, can't authenticate
+
+  if (!username || !password) {
+    return request;
+  } // Can authenticate: set basic auth parameters on the request
+
+
+  return request.auth(username, password);
+} // Pagination-Related Helpers
+// ==========================
+
+/**
+ * Extract the body property from the superagent response, or else try to parse
+ * the response text to get a JSON object.
+ *
+ * @private
+ * @param {Object} response      The response object from the HTTP request
+ * @param {String} response.text The response content as text
+ * @param {Object} response.body The response content as a JS object
+ * @returns {Object} The response content as a JS object
+ */
+
+
+function extractResponseBody(response) {
+  let responseBody = response.body;
+
+  if (isEmptyObject(responseBody) && response.type === 'text/html') {
+    // Response may have come back as HTML due to caching plugin; try to parse
+    // the response text into JSON
+    try {
+      responseBody = JSON.parse(response.text);
+    } catch (e) {// Swallow errors, it's OK to fall back to returning the body
+    }
+  }
+
+  return responseBody;
+}
+/**
+ * If the response is not paged, return the body as-is. If pagination
+ * information is present in the response headers, parse those headers into
+ * a custom `_paging` property on the response body. `_paging` contains links
+ * to the previous and next pages in the collection, as well as metadata
+ * about the size and number of pages in the collection.
+ *
+ * The structure of the `_paging` property is as follows:
+ *
+ * - `total` {Integer} The total number of records in the collection
+ * - `totalPages` {Integer} The number of pages available
+ * - `links` {Object} The parsed "links" headers, separated into individual URI strings
+ * - `next` {WPRequest} A WPRequest object bound to the "next" page (if page exists)
+ * - `prev` {WPRequest} A WPRequest object bound to the "previous" page (if page exists)
+ *
+ * @private
+ * @param {Object} result           The response object from the HTTP request
+ * @param {Object} options          The options hash from the original request
+ * @param {String} options.endpoint The base URL of the requested API endpoint
+ * @param {Object} httpTransport    The HTTP transport object used by the original request
+ * @returns {Object} The pagination metadata object for this HTTP request, or else null
+ */
+
+
+function createPaginationObject(result, options, httpTransport) {
+  let _paging = null;
+
+  if (!result.headers) {
+    // No headers: return as-is
+    return _paging;
+  } // Guard against capitalization inconsistencies in returned headers
+
+
+  Object.keys(result.headers).forEach(header => {
+    result.headers[header.toLowerCase()] = result.headers[header];
+  });
+
+  if (!result.headers['x-wp-totalpages']) {
+    // No paging: return as-is
+    return _paging;
+  }
+
+  const totalPages = +result.headers['x-wp-totalpages'];
+
+  if (!totalPages || totalPages === 0) {
+    // No paging: return as-is
+    return _paging;
+  } // Decode the link header object
+
+
+  const links = result.headers.link ? parseLinkHeader(result.headers.link) : {}; // Store pagination data from response headers on the response collection
+
+  _paging = {
+    total: +result.headers['x-wp-total'],
+    totalPages: totalPages,
+    links: links
+  }; // Create a WPRequest instance pre-bound to the "next" page, if available
+
+  if (links.next) {
+    _paging.next = new WPRequest({ ...options,
+      transport: httpTransport,
+      endpoint: links.next
+    });
+  } // Create a WPRequest instance pre-bound to the "prev" page, if available
+
+
+  if (links.prev) {
+    _paging.prev = new WPRequest({ ...options,
+      transport: httpTransport,
+      endpoint: links.prev
+    });
+  }
+
+  return _paging;
+} // HTTP-Related Helpers
+// ====================
+
+/**
+ * Submit the provided superagent request object, invoke a callback (if it was
+ * provided), and return a promise to the response from the HTTP request.
+ *
+ * @private
+ * @param {Object} request A superagent request object
+ * @param {Function} callback A callback function (optional)
+ * @param {Function} transform A function to transform the result data
+ * @returns {Promise} A promise to the superagent request
+ */
+
+
+function invokeAndPromisify(request, callback, transform) {
+  return new Promise((resolve, reject) => {
+    // Fire off the result
+    request.end((err, result) => {
+      // Return the results as a promise
+      if (err || result.error) {
+        reject(err || result.error);
+      } else {
+        resolve(result);
+      }
+    });
+  }).then(transform).then(result => {
+    // If a node-style callback was provided, call it, but also return the
+    // result value for use via the returned Promise
+    if (callback && typeof callback === 'function') {
+      callback(null, result);
+    }
+
+    return result;
+  }, err => {
+    // If the API provided an error object, it will be available within the
+    // superagent response object as response.body (containing the response
+    // JSON). If that object exists, it will have a .code property if it is
+    // truly an API error (non-API errors will not have a .code).
+    if (err.response && err.response.body && err.response.body.code) {
+      // Forward API error response JSON on to the calling method: omit
+      // all transport-specific (superagent-specific) properties
+      err = err.response.body;
+    } // If a callback was provided, ensure it is called with the error; otherwise
+    // re-throw the error so that it can be handled by a Promise .catch or .then
+
+
+    if (callback && typeof callback === 'function') {
+      callback(err);
+    } else {
+      throw err;
+    }
+  });
+}
+/**
+ * Return the body of the request, augmented with pagination information if the
+ * result is a paged collection.
+ *
+ * @private
+ * @param {WPRequest} wpreq The WPRequest representing the returned HTTP response
+ * @param {Object} result The results from the HTTP request
+ * @returns {Object} The "body" property of the result, conditionally augmented with
+ *                  pagination information if the result is a partial collection.
+ */
+
+
+function returnBody(wpreq, result) {
+  const body = extractResponseBody(result);
+
+  const _paging = createPaginationObject(result, wpreq._options, wpreq.transport);
+
+  if (_paging) {
+    body._paging = _paging;
+  }
+
+  return body;
+}
+/**
+ * Extract and return the headers property from a superagent response object
+ *
+ * @private
+ * @param {Object} result The results from the HTTP request
+ * @returns {Object} The "headers" property of the result
+ */
+
+
+function returnHeaders(result) {
+  return result.headers;
+} // HTTP Methods: Private HTTP-verb versions
+// ========================================
+
+/**
+ * @method get
+ * @async
+ * @param {WPRequest} wpreq A WPRequest query object
+ * @param {Function} [callback] A callback to invoke with the results of the GET request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+function _httpGet(wpreq, callback) {
+  checkMethodSupport('get', wpreq);
+  const url = wpreq.toString();
+
+  let request = _auth(agent.get(url), wpreq._options);
+
+  request = _setHeaders(request, wpreq._options);
+  return invokeAndPromisify(request, callback, returnBody.bind(null, wpreq));
+}
+/**
+ * Invoke an HTTP "POST" request against the provided endpoint
+ * @method post
+ * @async
+ * @param {WPRequest} wpreq A WPRequest query object
+ * @param {Object} data The data for the POST request
+ * @param {Function} [callback] A callback to invoke with the results of the POST request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+function _httpPost(wpreq, data, callback) {
+  checkMethodSupport('post', wpreq);
+  const url = wpreq.toString();
+  data = data || {};
+
+  let request = _auth(agent.post(url), wpreq._options, true);
+
+  request = _setHeaders(request, wpreq._options);
+
+  if (wpreq._attachment) {
+    // Data must be form-encoded alongside image attachment
+    request = objectReduce(data, (req, value, key) => req.field(key, value), request.attach('file', wpreq._attachment, wpreq._attachmentName));
+  } else {
+    request = request.send(data);
+  }
+
+  return invokeAndPromisify(request, callback, returnBody.bind(null, wpreq));
+}
+/**
+ * @method put
+ * @async
+ * @param {WPRequest} wpreq A WPRequest query object
+ * @param {Object} data The data for the PUT request
+ * @param {Function} [callback] A callback to invoke with the results of the PUT request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+function _httpPut(wpreq, data, callback) {
+  checkMethodSupport('put', wpreq);
+  const url = wpreq.toString();
+  data = data || {};
+
+  let request = _auth(agent.put(url), wpreq._options, true).send(data);
+
+  request = _setHeaders(request, wpreq._options);
+  return invokeAndPromisify(request, callback, returnBody.bind(null, wpreq));
+}
+/**
+ * @method delete
+ * @async
+ * @param {WPRequest} wpreq A WPRequest query object
+ * @param {Object} [data] Data to send along with the DELETE request
+ * @param {Function} [callback] A callback to invoke with the results of the DELETE request
+ * @returns {Promise} A promise to the results of the HTTP request
+ */
+
+
+function _httpDelete(wpreq, data, callback) {
+  if (!callback && typeof data === 'function') {
+    callback = data;
+    data = null;
+  }
+
+  checkMethodSupport('delete', wpreq);
+  const url = wpreq.toString();
+
+  let request = _auth(agent.del(url), wpreq._options, true).send(data);
+
+  request = _setHeaders(request, wpreq._options);
+  return invokeAndPromisify(request, callback, returnBody.bind(null, wpreq));
+}
+/**
+ * @method head
+ * @async
+ * @param {WPRequest} wpreq A WPRequest query object
+ * @param {Function} [callback] A callback to invoke with the results of the HEAD request
+ * @returns {Promise} A promise to the header results of the HTTP request
+ */
+
+
+function _httpHead(wpreq, callback) {
+  checkMethodSupport('head', wpreq);
+  const url = wpreq.toString();
+
+  let request = _auth(agent.head(url), wpreq._options);
+
+  request = _setHeaders(request, wpreq._options);
+  return invokeAndPromisify(request, callback, returnHeaders);
+}
+
+module.exports = {
+  delete: _httpDelete,
+  get: _httpGet,
+  head: _httpHead,
+  post: _httpPost,
+  put: _httpPut
+};
+},{"superagent":"../node_modules/superagent/lib/client.js","li":"../node_modules/li/lib/index.js","./constructors/wp-request":"../node_modules/wpapi/lib/constructors/wp-request.js","./util/check-method-support":"../node_modules/wpapi/lib/util/check-method-support.js","./util/object-reduce":"../node_modules/wpapi/lib/util/object-reduce.js","./util/is-empty-object":"../node_modules/wpapi/lib/util/is-empty-object.js"}],"../node_modules/wpapi/lib/wp-register-route.js":[function(require,module,exports) {
+'use strict';
+
+const buildRouteTree = require('./route-tree').build;
+
+const generateEndpointFactories = require('./endpoint-factories').generate;
+
+const paramSetter = require('./util/parameter-setter');
+
+const applyMixin = require('./util/apply-mixin');
+
+const mixins = require('./mixins');
+/**
+ * Create and return a handler for an arbitrary WP REST API endpoint.
+ *
+ * The first two parameters mirror `register_rest_route` in the REST API
+ * codebase:
+ *
+ * @memberof! WPAPI#
+ * @param {string}   namespace         A namespace string, e.g. 'myplugin/v1'
+ * @param {string}   restBase          A REST route string, e.g. '/author/(?P<id>\d+)'
+ * @param {object}   [options]         An (optional) options object
+ * @param {object}   [options.mixins]  A hash of functions to apply as mixins
+ * @param {string[]} [options.methods] An array of methods to whitelist (on the leaf node only)
+ * @returns {Function} An endpoint handler factory function for the specified route
+ */
+
+
+function registerRoute(namespace, restBase, options = {}) {
+  // Support all methods until requested to do otherwise
+  let supportedMethods = ['head', 'get', 'patch', 'put', 'post', 'delete'];
+
+  if (Array.isArray(options.methods)) {
+    // Permit supported methods to be specified as an array
+    supportedMethods = options.methods.map(method => method.trim().toLowerCase());
+  } else if (typeof options.methods === 'string') {
+    // Permit a supported method to be specified as a string
+    supportedMethods = [options.methods.trim().toLowerCase()];
+  } // Ensure that if GET is supported, then HEAD is as well, and vice-versa
+
+
+  if (supportedMethods.indexOf('get') !== -1 && supportedMethods.indexOf('head') === -1) {
+    supportedMethods.push('head');
+  } else if (supportedMethods.indexOf('head') !== -1 && supportedMethods.indexOf('get') === -1) {
+    supportedMethods.push('get');
+  }
+
+  const fullRoute = namespace // Route should always have preceding slash
+  .replace(/^[\s/]*/, '/') // Route should always be joined to namespace with a single slash
+  .replace(/[\s/]*$/, '/') + restBase.replace(/^[\s/]*/, '');
+  const routeObj = {};
+  routeObj[fullRoute] = {
+    namespace: namespace,
+    methods: supportedMethods
+  }; // Go through the same steps used to bootstrap the client to parse the
+  // provided route out into a handler request method
+
+  const routeTree = buildRouteTree(routeObj); // Parse the mock route object into endpoint factories
+
+  const endpointFactories = generateEndpointFactories(routeTree)[namespace];
+  const EndpointRequest = endpointFactories[Object.keys(endpointFactories)[0]].Ctor;
+
+  if (options && options.params) {
+    options.params.forEach(param => {
+      // Only accept string parameters
+      if (typeof param !== 'string') {
+        return;
+      } // If the parameter can be mapped to a mixin, apply that mixin
+
+
+      if (typeof mixins[param] === 'object') {
+        Object.keys(mixins[param]).forEach(key => {
+          applyMixin(EndpointRequest.prototype, key, mixins[param][key]);
+        });
+        return;
+      } // Attempt to create a simple setter for any parameters for which
+      // we do not already have a custom mixin
+
+
+      applyMixin(EndpointRequest.prototype, param, paramSetter(param));
+    });
+  } // Set any explicitly-provided object mixins
+
+
+  if (options && typeof options.mixins === 'object') {
+    // Set any specified mixin functions on the response
+    Object.keys(options.mixins).forEach(key => {
+      applyMixin(EndpointRequest.prototype, key, options.mixins[key]);
+    });
+  }
+
+  function endpointFactory(options = {}) {
+    return new EndpointRequest({ ...options,
+      ...(this ? this._options : {})
+    });
+  }
+
+  endpointFactory.Ctor = EndpointRequest;
+  return endpointFactory;
+}
+
+module.exports = registerRoute;
+},{"./route-tree":"../node_modules/wpapi/lib/route-tree.js","./endpoint-factories":"../node_modules/wpapi/lib/endpoint-factories.js","./util/parameter-setter":"../node_modules/wpapi/lib/util/parameter-setter.js","./util/apply-mixin":"../node_modules/wpapi/lib/util/apply-mixin.js","./mixins":"../node_modules/wpapi/lib/mixins/index.js"}],"../node_modules/wpapi/wpapi.js":[function(require,module,exports) {
+/**
+ * A WP REST API client for Node.js
+ *
+ * @example
+ *     var wp = new WPAPI({ endpoint: 'http://src.wordpress-develop.dev/wp-json' });
+ *     wp.posts().then(function( posts ) {
+ *         console.log( posts );
+ *     }).catch(function( err ) {
+ *         console.error( err );
+ *     });
+ *
+ * @license MIT
+ })
+ */
+'use strict';
+
+const objectReduce = require('./lib/util/object-reduce'); // This JSON file provides enough data to create handler methods for all valid
+// API routes in WordPress 4.7
+
+
+const defaultRoutes = require('./lib/data/default-routes.json');
+
+const buildRouteTree = require('./lib/route-tree').build;
+
+const generateEndpointFactories = require('./lib/endpoint-factories').generate; // The default endpoint factories will be lazy-loaded by parsing the default
+// route tree data if a default-mode WPAPI instance is created (i.e. one that
+// is to be bootstrapped with the handlers for all of the built-in routes)
+
+
+let defaultEndpointFactories; // Constant used to detect first-party WordPress REST API routes
+
+const apiDefaultNamespace = 'wp/v2'; // Pull in autodiscovery methods
+
+const autodiscovery = require('./lib/autodiscovery'); // Pull in base module constructors
+
+
+const WPRequest = require('./lib/constructors/wp-request'); // Pull in default HTTP transport
+
+
+const httpTransport = require('./lib/http-transport');
+/**
+ * Construct a REST API client instance object to create
+ *
+ * @constructor WPAPI
+ * @param {Object} options             An options hash to configure the instance
+ * @param {String} options.endpoint    The URI for a WP-API endpoint
+ * @param {String} [options.username]  A WP-API Basic Auth username
+ * @param {String} [options.password]  A WP-API Basic Auth password
+ * @param {String} [options.nonce]     A WP nonce for use with cookie authentication
+ * @param {Object} [options.routes]    A dictionary of API routes with which to
+ *                                     bootstrap the WPAPI instance: the instance will
+ *                                     be initialized with default routes only
+ *                                     if this property is omitted
+ * @param {String} [options.transport] An optional dictionary of HTTP transport
+ *                                     methods (.get, .post, .put, .delete, .head)
+ *                                     to use instead of the defaults, e.g. to use
+ *                                     a different HTTP library than superagent
+ */
+
+
+function WPAPI(options) {
+  // Enforce `new`
+  if (this instanceof WPAPI === false) {
+    return new WPAPI(options);
+  }
+
+  if (typeof options.endpoint !== 'string') {
+    throw new Error('options hash must contain an API endpoint URL string');
+  } // Dictionary to be filled by handlers for default namespaces
+
+
+  this._ns = {};
+  this._options = {
+    // Ensure trailing slash on endpoint URI
+    endpoint: options.endpoint.replace(/\/?$/, '/')
+  }; // If any authentication credentials were provided, assign them now
+
+  if (options && (options.username || options.password || options.nonce)) {
+    this.auth(options);
+  }
+
+  return this // Configure custom HTTP transport methods, if provided
+  .transport(options.transport) // Bootstrap with a specific routes object, if provided
+  .bootstrap(options && options.routes);
+}
+/**
+ * Set custom transport methods to use when making HTTP requests against the API
+ *
+ * Pass an object with a function for one or many of "get", "post", "put",
+ * "delete" and "head" and that function will be called when making that type
+ * of request. The provided transport functions should take a WPRequest handler
+ * instance (_e.g._ the result of a `wp.posts()...` chain or any other chaining
+ * request handler) as their first argument; a `data` object as their second
+ * argument (for POST, PUT and DELETE requests); and an optional callback as
+ * their final argument. Transport methods should invoke the callback with the
+ * response data (or error, as appropriate), and should also return a Promise.
+ *
+ * @example <caption>showing how a cache hit (keyed by URI) could short-circuit a get request</caption>
+ *
+ *     var site = new WPAPI({
+ *       endpoint: 'http://my-site.com/wp-json'
+ *     });
+ *
+ *     // Overwrite the GET behavior to inject a caching layer
+ *     site.transport({
+ *       get: function( wpreq, cb ) {
+ *         var result = cache[ wpreq ];
+ *         // If a cache hit is found, return it via the same callback/promise
+ *         // signature as the default transport method
+ *         if ( result ) {
+ *           if ( cb && typeof cb === 'function' ) {
+ *             cb( null, result );
+ *           }
+ *           return Promise.resolve( result );
+ *         }
+ *
+ *         // Delegate to default transport if no cached data was found
+ *         return WPAPI.transport.get( wpreq, cb ).then(function( result ) {
+ *           cache[ wpreq ] = result;
+ *           return result;
+ *         });
+ *       }
+ *     });
+ *
+ * This is advanced behavior; you will only need to utilize this functionality
+ * if your application has very specific HTTP handling or caching requirements.
+ * Refer to the "http-transport" module within this application for the code
+ * implementing the built-in transport methods.
+ *
+ * @memberof! WPAPI
+ * @method transport
+ * @chainable
+ * @param {Object}   transport          A dictionary of HTTP transport methods
+ * @param {Function} [transport.get]    The function to use for GET requests
+ * @param {Function} [transport.post]   The function to use for POST requests
+ * @param {Function} [transport.put]    The function to use for PUT requests
+ * @param {Function} [transport.delete] The function to use for DELETE requests
+ * @param {Function} [transport.head]   The function to use for HEAD requests
+ * @returns {WPAPI} The WPAPI instance, for chaining
+ */
+
+
+WPAPI.prototype.transport = function (transport) {
+  // Local reference to avoid need to reference via `this` inside forEach
+  const _options = this._options; // Create the default transport if it does not exist
+
+  if (!_options.transport) {
+    _options.transport = Object.create(WPAPI.transport);
+  } // Whitelist the methods that may be applied
+
+
+  ['get', 'head', 'post', 'put', 'delete'].forEach(key => {
+    if (transport && transport[key]) {
+      _options.transport[key] = transport[key];
+    }
+  });
+  return this;
+};
+/**
+ * Default HTTP transport methods object for all WPAPI instances
+ *
+ * These methods may be extended or replaced on an instance-by-instance basis
+ *
+ * @memberof! WPAPI
+ * @static
+ * @property transport
+ * @type {Object}
+ */
+
+
+WPAPI.transport = Object.create(httpTransport);
+Object.freeze(WPAPI.transport);
+/**
+ * Convenience method for making a new WPAPI instance
+ *
+ * @example
+ * These are equivalent:
+ *
+ *     var wp = new WPAPI({ endpoint: 'http://my.blog.url/wp-json' });
+ *     var wp = WPAPI.site( 'http://my.blog.url/wp-json' );
+ *
+ * `WPAPI.site` can take an optional API root response JSON object to use when
+ * bootstrapping the client's endpoint handler methods: if no second parameter
+ * is provided, the client instance is assumed to be using the default API
+ * with no additional plugins and is initialized with handlers for only those
+ * default API routes.
+ *
+ * @example
+ * These are equivalent:
+ *
+ *     // {...} means the JSON output of http://my.blog.url/wp-json
+ *     var wp = new WPAPI({
+ *       endpoint: 'http://my.blog.url/wp-json',
+ *       json: {...}
+ *     });
+ *     var wp = WPAPI.site( 'http://my.blog.url/wp-json', {...} );
+ *
+ * @memberof! WPAPI
+ * @static
+ * @param {String} endpoint The URI for a WP-API endpoint
+ * @param {Object} routes   The "routes" object from the JSON object returned
+ *                          from the root API endpoint of a WP site, which should
+ *                          be a dictionary of route definition objects keyed by
+ *                          the route's regex pattern
+ * @returns {WPAPI} A new WPAPI instance, bound to the provided endpoint
+ */
+
+WPAPI.site = function (endpoint, routes) {
+  return new WPAPI({
+    endpoint: endpoint,
+    routes: routes
+  });
+};
+/**
+ * Generate a request against a completely arbitrary endpoint, with no assumptions about
+ * or mutation of path, filtering, or query parameters. This request is not restricted to
+ * the endpoint specified during WPAPI object instantiation.
+ *
+ * @example
+ * Generate a request to the explicit URL "http://your.website.com/wp-json/some/custom/path"
+ *
+ *     wp.url( 'http://your.website.com/wp-json/some/custom/path' ).get()...
+ *
+ * @memberof! WPAPI
+ * @param {String} url The URL to request
+ * @returns {WPRequest} A WPRequest object bound to the provided URL
+ */
+
+
+WPAPI.prototype.url = function (url) {
+  return new WPRequest({ ...this._options,
+    endpoint: url
+  });
+};
+/**
+ * Generate a query against an arbitrary path on the current endpoint. This is useful for
+ * requesting resources at custom WP-API endpoints, such as WooCommerce's `/products`.
+ *
+ * @memberof! WPAPI
+ * @param {String} [relativePath] An endpoint-relative path to which to bind the request
+ * @returns {WPRequest} A request object
+ */
+
+
+WPAPI.prototype.root = function (relativePath) {
+  relativePath = relativePath || '';
+  const options = { ...this._options
+  }; // Request should be
+
+  const request = new WPRequest(options); // Set the path template to the string passed in
+
+  request._path = {
+    '0': relativePath
+  };
+  return request;
+};
+/**
+ * Set the default headers to use for all HTTP requests created from this WPAPI
+ * site instance. Accepts a header name and its associated value as two strings,
+ * or multiple headers as an object of name-value pairs.
+ *
+ * @example <caption>Set a single header to be used by all requests to this site</caption>
+ *
+ *     site.setHeaders( 'Authorization', 'Bearer trustme' )...
+ *
+ * @example <caption>Set multiple headers to be used by all requests to this site</caption>
+ *
+ *     site.setHeaders({
+ *       Authorization: 'Bearer comeonwereoldfriendsright',
+ *       'Accept-Language': 'en-CA'
+ *     })...
+ *
+ * @memberof! WPAPI
+ * @since 1.1.0
+ * @chainable
+ * @param {String|Object} headers The name of the header to set, or an object of
+ *                                header names and their associated string values
+ * @param {String}        [value] The value of the header being set
+ * @returns {WPAPI} The WPAPI site handler instance, for chaining
+ */
+
+
+WPAPI.prototype.setHeaders = WPRequest.prototype.setHeaders;
+/**
+ * Set the authentication to use for a WPAPI site handler instance. Accepts basic
+ * HTTP authentication credentials (string username & password) or a Nonce (for
+ * cookie authentication) by default; may be overloaded to accept OAuth credentials
+ * in the future.
+ *
+ * @example <caption>Basic Authentication</caption>
+ *
+ *     site.auth({
+ *       username: 'admin',
+ *       password: 'securepass55'
+ *     })...
+ *
+ * @example <caption>Cookie/Nonce Authentication</caption>
+ *
+ *     site.auth({
+ *       nonce: 'somenonce'
+ *     })...
+ *
+ * @memberof! WPAPI
+ * @method
+ * @chainable
+ * @param {Object} credentials            An authentication credentials object
+ * @param {String} [credentials.username] A WP-API Basic HTTP Authentication username
+ * @param {String} [credentials.password] A WP-API Basic HTTP Authentication password
+ * @param {String} [credentials.nonce]    A WP nonce for use with cookie authentication
+ * @returns {WPAPI} The WPAPI site handler instance, for chaining
+ */
+
+WPAPI.prototype.auth = WPRequest.prototype.auth; // Apply the registerRoute method to the prototype
+
+WPAPI.prototype.registerRoute = require('./lib/wp-register-route');
+/**
+ * Deduce request methods from a provided API root JSON response object's
+ * routes dictionary, and assign those methods to the current instance. If
+ * no routes dictionary is provided then the instance will be bootstrapped
+ * with route handlers for the default API endpoints only.
+ *
+ * This method is called automatically during WPAPI instance creation.
+ *
+ * @memberof! WPAPI
+ * @chainable
+ * @param {Object} routes The "routes" object from the JSON object returned
+ *                        from the root API endpoint of a WP site, which should
+ *                        be a dictionary of route definition objects keyed by
+ *                        the route's regex pattern
+ * @returns {WPAPI} The bootstrapped WPAPI client instance (for chaining or assignment)
+ */
+
+WPAPI.prototype.bootstrap = function (routes) {
+  let routesByNamespace;
+  let endpointFactoriesByNamespace;
+
+  if (!routes) {
+    // Auto-generate default endpoint factories if they are not already available
+    if (!defaultEndpointFactories) {
+      routesByNamespace = buildRouteTree(defaultRoutes);
+      defaultEndpointFactories = generateEndpointFactories(routesByNamespace);
+    }
+
+    endpointFactoriesByNamespace = defaultEndpointFactories;
+  } else {
+    routesByNamespace = buildRouteTree(routes);
+    endpointFactoriesByNamespace = generateEndpointFactories(routesByNamespace);
+  } // For each namespace for which routes were identified, store the generated
+  // route handlers on the WPAPI instance's private _ns dictionary. These namespaced
+  // handler methods can be accessed by calling `.namespace( str )` on the
+  // client instance and passing a registered namespace string.
+  // Handlers for default (wp/v2) routes will also be assigned to the WPAPI
+  // client instance object itself, for brevity.
+
+
+  return objectReduce(endpointFactoriesByNamespace, (wpInstance, endpointFactories, namespace) => {
+    // Set (or augment) the route handler factories for this namespace.
+    wpInstance._ns[namespace] = objectReduce(endpointFactories, (nsHandlers, handlerFn, methodName) => {
+      nsHandlers[methodName] = handlerFn;
+      return nsHandlers;
+    }, wpInstance._ns[namespace] || {
+      // Create all namespace dictionaries with a direct reference to the main WPAPI
+      // instance's _options property so that things like auth propagate properly
+      _options: wpInstance._options
+    }); // For the default namespace, e.g. "wp/v2" at the time this comment was
+    // written, ensure all methods are assigned to the root client object itself
+    // in addition to the private _ns dictionary: this is done so that these
+    // methods can be called with e.g. `wp.posts()` and not the more verbose
+    // `wp.namespace( 'wp/v2' ).posts()`.
+
+    if (namespace === apiDefaultNamespace) {
+      Object.keys(wpInstance._ns[namespace]).forEach(methodName => {
+        wpInstance[methodName] = wpInstance._ns[namespace][methodName];
+      });
+    }
+
+    return wpInstance;
+  }, this);
+};
+/**
+ * Access API endpoint handlers from a particular API namespace object
+ *
+ * @example
+ *
+ *     wp.namespace( 'myplugin/v1' ).author()...
+ *
+ *     // Default WP endpoint handlers are assigned to the wp instance itself.
+ *     // These are equivalent:
+ *     wp.namespace( 'wp/v2' ).posts()...
+ *     wp.posts()...
+ *
+ * @memberof! WPAPI
+ * @param {string} namespace A namespace string
+ * @returns {Object} An object of route endpoint handler methods for the
+ * routes within the specified namespace
+ */
+
+
+WPAPI.prototype.namespace = function (namespace) {
+  if (!this._ns[namespace]) {
+    throw new Error('Error: namespace ' + namespace + ' is not recognized');
+  }
+
+  return this._ns[namespace];
+};
+/**
+ * Take an arbitrary WordPress site, deduce the WP REST API root endpoint, query
+ * that endpoint, and parse the response JSON. Use the returned JSON response
+ * to instantiate a WPAPI instance bound to the provided site.
+ *
+ * @memberof! WPAPI
+ * @static
+ * @param {string} url A URL within a REST API-enabled WordPress website
+ * @returns {Promise} A promise that resolves to a configured WPAPI instance bound
+ * to the deduced endpoint, or rejected if an endpoint is not found or the
+ * library is unable to parse the provided endpoint.
+ */
+
+
+WPAPI.discover = url => {
+  // local placeholder for API root URL
+  let endpoint; // Try HEAD request first, for smaller payload: use WPAPI.site to produce
+  // a request that utilizes the defined HTTP transports
+
+  const req = WPAPI.site(url).root();
+  return req.headers().catch(() => {
+    // On the hypothesis that any error here is related to the HEAD request
+    // failing, provisionally try again using GET because that method is
+    // more widely supported
+    return req.get();
+  }) // Inspect response to find API location header
+  .then(autodiscovery.locateAPIRootHeader).then(apiRootURL => {
+    // Set the function-scope variable that will be used to instantiate
+    // the bound WPAPI instance,
+    endpoint = apiRootURL; // then GET the API root JSON object
+
+    return WPAPI.site(apiRootURL).root().get();
+  }).then(apiRootJSON => {
+    // Instantiate & bootstrap with the discovered methods
+    return new WPAPI({
+      endpoint: endpoint,
+      routes: apiRootJSON.routes
+    });
+  }).catch(err => {
+    /* eslint-disable no-console */
+    console.error(err);
+
+    if (endpoint) {
+      console.warn('Endpoint detected, proceeding despite error...');
+      console.warn('Binding to ' + endpoint + ' and assuming default routes');
+      return new WPAPI.site(endpoint);
+    }
+
+    throw new Error('Autodiscovery failed');
+  });
+};
+
+module.exports = WPAPI;
+},{"./lib/util/object-reduce":"../node_modules/wpapi/lib/util/object-reduce.js","./lib/data/default-routes.json":"../node_modules/wpapi/lib/data/default-routes.json","./lib/route-tree":"../node_modules/wpapi/lib/route-tree.js","./lib/endpoint-factories":"../node_modules/wpapi/lib/endpoint-factories.js","./lib/autodiscovery":"../node_modules/wpapi/lib/autodiscovery.js","./lib/constructors/wp-request":"../node_modules/wpapi/lib/constructors/wp-request.js","./lib/http-transport":"../node_modules/wpapi/lib/http-transport.js","./lib/wp-register-route":"../node_modules/wpapi/lib/wp-register-route.js"}],"utils.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46620,10 +56482,18 @@ exports.initContract = initContract;
 exports.logout = logout;
 exports.login = login;
 exports.createPixelArt = createPixelArt;
+exports.nft_mint = nft_mint;
+exports.nft_transfer = nft_transfer;
+exports.getWP = getWP;
+exports.getWPwithAuth = getWPwithAuth;
 
 var _nearApiJs = require("near-api-js");
 
+var _axios = _interopRequireDefault(require("axios"));
+
 var _config = _interopRequireDefault(require("./config"));
+
+var _wpapi = _interopRequireDefault(require("wpapi"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -46668,7 +56538,70 @@ function login() {
 function createPixelArt() {
   alert('createing pixel art <@');
 }
-},{"near-api-js":"../node_modules/near-api-js/lib/browser-index.js","./config":"config.js"}],"../node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js":[function(require,module,exports) {
+/**
+ * Mint NFT
+ */
+
+
+function nft_mint(token_id, imgurl, imghash, title, description) {
+  return _axios.default.post((0, _config.default)('nft_api_server'), {
+    token_id: token_id,
+    metadata: {
+      media: imgurl,
+      media_hash: imghash,
+      title: title,
+      description: description,
+      issued_at: Date.now()
+    }
+  }, {
+    crossdomain: true
+  });
+}
+/**
+ * Transfer NFT to other, only author can do that 
+ */
+
+
+function nft_transfer(receiver_id, token_id, nft_author, current_user_id) {
+  if (nft_author !== current_user_id) {
+    alert("failed! b ko phai author ");
+    return;
+  }
+
+  return _axios.default.post(nft_api_server, {
+    "receiver_id": receiver_id,
+    "token_id": token_id
+  }, {
+    crossdomain: true
+  });
+}
+/**
+ * get wp object
+ */
+
+
+function getWP() {
+  return new _wpapi.default({
+    endpoint: (0, _config.default)('wp_endpoint')
+  });
+}
+/**
+ * 
+ * @returns wp object with basic auth 
+ */
+
+
+function getWPwithAuth() {
+  return new _wpapi.default({
+    endpoint: (0, _config.default)('wp_endpoint'),
+    username: 'test2',
+    password: 'test'
+  });
+}
+/**
+ * Save to wallet, only if the image created by author 
+ */
+},{"near-api-js":"../node_modules/near-api-js/lib/browser-index.js","axios":"../node_modules/axios/index.js","./config":"config.js","wpapi":"../node_modules/wpapi/wpapi.js"}],"../node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -96283,10 +106216,11 @@ function (_super) {
       console.log("entity", entity);
       this.setState({
         status: STATUS_SAVING
-      });
-      window.contract.addEntity(entity, BOATLOAD_OF_GAS, 0).then(function (data) {
-        console.log("data returned :", data); // alert("Created!");
+      }); //save to WP server 
+      //save to NEAR
 
+      window.contract.addEntity(entity, BOATLOAD_OF_GAS, 0).then(function (data) {
+        console.log("Created! data returned :", data);
         location.href = "/v/" + entityUrl;
       }).finally(function () {
         console.log("finished the call! ");
@@ -96456,6 +106390,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var react_1 = __importStar(require("react"));
 
+var utils_1 = require("../utils");
+
 var config_1 = __importDefault(require("../config"));
 
 var networkId = config_1.default("development" || 'development').networkId;
@@ -96482,13 +106418,25 @@ var HomePage = function () {
   }
 
   react_1.useEffect(function () {
-    document.title = "Pixel Me - Home of pixel art on NEAR";
-    window.contract.getEntities({
-      from: 0,
-      to: 6
-    }).then(function (res) {
-      setPosts(res);
-      console.log("1 set entities:", res);
+    document.title = "Pixel Me - Home of pixel art on NEAR"; // window.contract.getEntities({ from: 0, to: 6 }).then((res) => {
+    //   setPosts(res);
+    //   console.log("1 set entities:", res);
+    // });
+    //get new posts from wp 
+
+    var wp = utils_1.getWP();
+    wp.posts().param("_embed", " ").then(function (data) {
+      var arrPosts = [];
+
+      for (var i = 0; i < data.length; i++) {
+        arrPosts.push(data[i]);
+      } // console.log("wp data" , data.splice( 0 , 1 ) );
+
+
+      console.log(arrPosts);
+      setPosts(arrPosts);
+    }).catch(function (err) {
+      console.log(err);
     });
   }, []);
   return /*#__PURE__*/React.createElement("div", {
@@ -96502,30 +106450,37 @@ var HomePage = function () {
     className: " mb-4 font-italic"
   }, " Discover, Create and Share your pixel arts to the world! \uD83C\uDF0E "), /*#__PURE__*/React.createElement("h5", null, "Powered by NEAR  blockchain \uD83D\uDE80\uD83D\uDE80\uD83D\uDE80")), /*#__PURE__*/React.createElement("div", {
     id: "home_list_image",
-    className: "row",
-    "data-masonry": "{\"percentPosition\": true }"
-  }, posts.length > 0 ? posts.map(function (entity) {
+    className: "row"
+  }, posts.length > 0 ? posts.map(function (_a, idx) {
+    var id = _a.id,
+        title = _a.title,
+        description = _a.description,
+        _embedded = _a._embedded,
+        excerpt = _a.excerpt;
     return /*#__PURE__*/React.createElement("div", {
       className: "col-md-4",
-      key: Math.random()
+      key: idx
     }, /*#__PURE__*/React.createElement("div", {
       className: "card",
-      href: "/v/" + entity.url
+      href: "/v/" + id
     }, /*#__PURE__*/React.createElement("a", {
-      href: "/v/" + entity.url
+      href: "/v/" + id
     }, /*#__PURE__*/React.createElement("img", {
       className: "card-img-top",
-      src: entity.image,
-      alt: "entity.title"
+      src: _embedded["wp:featuredmedia"][0].media_details.sizes.full.source_url,
+      alt: title.rendered
     })), /*#__PURE__*/React.createElement("div", {
       className: "card-body"
     }, /*#__PURE__*/React.createElement("h5", {
       className: "card-title border-bottom"
-    }, entity.title), /*#__PURE__*/React.createElement("div", {
+    }, title.rendered), /*#__PURE__*/React.createElement("div", {
       className: "author"
-    }, " ", /*#__PURE__*/React.createElement("span", null, entity.author, " ")), /*#__PURE__*/React.createElement("p", {
-      className: "card-text"
-    }, " ", shortenContent(entity.content), " "))));
+    }, " ", /*#__PURE__*/React.createElement("span", null, _embedded.author[0].name, " ")), /*#__PURE__*/React.createElement("div", {
+      className: "card-text",
+      dangerouslySetInnerHTML: {
+        __html: excerpt.rendered
+      }
+    }))));
   }) : /*#__PURE__*/React.createElement("a", {
     href: "/create",
     className: "btn btn-first-create"
@@ -96535,26 +106490,10 @@ var HomePage = function () {
       return loadMore();
     }
   }, "View more"))));
-}; // this component gets rendered by App after the form is submitted
-
-
-function Notification() {
-  var urlPrefix = "https://explorer." + networkId + ".near.org/accounts";
-  return /*#__PURE__*/React.createElement("aside", null, /*#__PURE__*/React.createElement("a", {
-    target: "_blank",
-    rel: "noreferrer",
-    href: urlPrefix + "/" + window.accountId
-  }, window.accountId), ' '
-  /* React trims whitespace around tags; insert literal space character when needed */
-  , "called method: 'setGreeting' in contract:", ' ', /*#__PURE__*/React.createElement("a", {
-    target: "_blank",
-    rel: "noreferrer",
-    href: urlPrefix + "/" + window.contract.contractId
-  }, window.contract.contractId), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("div", null, "\u2714 Succeeded"), /*#__PURE__*/React.createElement("div", null, "Just now")));
-}
+};
 
 exports.default = HomePage;
-},{"react":"../node_modules/react/index.js","../config":"config.js"}],"../node_modules/chain-function/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../utils":"utils.js","../config":"config.js"}],"../node_modules/chain-function/index.js":[function(require,module,exports) {
 
 module.exports = function chain(){
   var len = arguments.length
@@ -97703,6 +107642,8 @@ var crypto_js_1 = __importDefault(require("crypto-js"));
 
 var react_addons_css_transition_group_1 = __importDefault(require("react-addons-css-transition-group"));
 
+var utils_1 = require("../utils");
+
 function CommentSection() {
   var _a = react_1.useState([]),
       comments = _a[0],
@@ -97715,26 +107656,35 @@ function CommentSection() {
     }
   };
   react_1.useEffect(function () {
-    window.contract.getComments({
-      url: id
-    }).then(function (res) {
-      console.log("cmt list", res);
+    // get comments from blockchain NEAR
+    // window.contract.getComments( {url: id} ).then( (res)=>{
+    // console.log("cmt list", res);
+    // if( !res ){
+    //     console.log("0 comment!");
+    //     return;
+    // }
+    //     let strcomment = res.base64cmt;
+    //     let arrCmt = [];
+    //     strcomment.split("|").map( base64cmt => {
+    //         if( base64cmt && base64cmt.length > 0  ){
+    //             let cmtObject =  JSON.parse( CryptoJS.enc.Base64.parse( base64cmt ).toString( CryptoJS.enc.Utf8 ) );
+    //             if( cmtObject.text &&  cmtObject.text.length > 0 ) arrCmt.push(  cmtObject); 
+    //         }
+    //     } );
+    //     setComments( arrCmt );
+    //     console.log("arrcmt" , arrCmt);
+    // } );
+    // get comment from WP 
+    var wp = utils_1.getWP();
+    wp.comments().param("post", id).then(function (data) {
+      console.log(data);
+      var arrCmts = [];
 
-      if (!res) {
-        console.log("0 comment!");
-        return;
+      for (var i = 0; i < data.length; i++) {
+        arrCmts.push(data[i]);
       }
 
-      var strcomment = res.base64cmt;
-      var arrCmt = [];
-      strcomment.split("|").map(function (base64cmt) {
-        if (base64cmt && base64cmt.length > 0) {
-          var cmtObject = JSON.parse(crypto_js_1.default.enc.Base64.parse(base64cmt).toString(crypto_js_1.default.enc.Utf8));
-          if (cmtObject.text && cmtObject.text.length > 0) arrCmt.push(cmtObject);
-        }
-      });
-      setComments(arrCmt);
-      console.log("arrcmt", arrCmt);
+      setComments(arrCmts);
     });
   }, []);
 
@@ -97747,9 +107697,11 @@ function CommentSection() {
     }
 
     var cmtObject = {
-      text: cmtText,
-      author: window.accountId,
-      time: Date.now()
+      content: {
+        rendered: cmtText
+      },
+      author_name: window.accountId,
+      date: Date.now()
     };
     var wordArray = crypto_js_1.default.enc.Utf8.parse(JSON.stringify(cmtObject));
     var base64cmt = crypto_js_1.default.enc.Base64.stringify(wordArray);
@@ -97758,12 +107710,21 @@ function CommentSection() {
     setComments(__spreadArray([cmtObject], comments));
     console.log(comments);
     document.getElementById("cmtTextarea").value = "";
-    document.getElementById("btnSubmit").disabled = true;
-    window.contract.addComment({
-      url: id,
-      base64cmt: base64cmt
-    }).then(function (res) {
-      console.log(res);
+    document.getElementById("btnSubmit").disabled = true; //save to NEAR 
+    // window.contract.addComment( { url: id, base64cmt } ).then((res)=>{
+    //     console.log(res);
+    // });
+    //save to WP instead
+
+    var wpauth = utils_1.getWPwithAuth();
+    wpauth.comments().create({
+      author: 2,
+      content: cmtText,
+      post: id
+    }).then(function (data) {
+      console.log(data);
+    }).catch(function (data) {
+      console.log(data);
     });
   }
 
@@ -97825,22 +107786,26 @@ function CommentSection() {
         className: "col-md-12 col-md-offset-0"
       }, /*#__PURE__*/React.createElement("div", {
         className: "forumText forumMax"
-      }, /*#__PURE__*/React.createElement("p", null, cmt.text)), /*#__PURE__*/React.createElement("p", {
+      }, /*#__PURE__*/React.createElement("p", {
+        dangerouslySetInnerHTML: {
+          __html: cmt.content.rendered
+        }
+      })), /*#__PURE__*/React.createElement("p", {
         className: "forumTagline"
       }, /*#__PURE__*/React.createElement("span", {
         className: "forumName"
-      }, cmt.author, " "), /*#__PURE__*/React.createElement("span", {
+      }, cmt.author_name, " "), /*#__PURE__*/React.createElement("span", {
         className: "text-muted"
       }, " ", /*#__PURE__*/React.createElement("i", {
         className: "fa fa-clock",
         style: inlineStyle.cmtDate
-      }), getDateFromTimeStamp(cmt.time))))));
+      }), cmt.date)))));
     }))))
   );
 }
 
 exports.default = CommentSection;
-},{"react":"../node_modules/react/index.js","crypto-js":"../node_modules/crypto-js/index.js","react-addons-css-transition-group":"../node_modules/react-addons-css-transition-group/index.js"}],"pages/view-image.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","crypto-js":"../node_modules/crypto-js/index.js","react-addons-css-transition-group":"../node_modules/react-addons-css-transition-group/index.js","../utils":"utils.js"}],"pages/view-image.tsx":[function(require,module,exports) {
 "use strict";
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -97889,7 +107854,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var react_1 = __importStar(require("react"));
 
+var utils_1 = require("../utils");
+
 var comment_section_1 = __importDefault(require("./comment-section"));
+
+var utils_2 = require("../utils");
 
 var ViewImagePage = function () {
   var _a = react_1.useState([]),
@@ -97904,19 +107873,57 @@ var ViewImagePage = function () {
   };
   react_1.useEffect(function () {
     if (id.length <= 0) {
-      alert('not found! ');
+      window.location.href = '/404';
       return;
     }
 
-    console.log("id: " + id);
-    window.contract.getEntity({
-      url: id
-    }).then(function (res) {
-      console.log(res);
-      setEntity(res);
-      document.title = res.title;
+    console.log("id: " + id); // window.contract.getEntity( {url: id } ).then((res) => {
+    //     console.log(res);
+    //     setEntity(res);
+    //     document.title = res.title;
+    // });
+
+    var wp = utils_1.getWP();
+    wp.posts().id(id).param("_embed", " ").get().then(function (data) {
+      var post = {
+        title: data.title.rendered,
+        description: data.content.rendered,
+        image: data._embedded["wp:featuredmedia"][0].source_url,
+        author: 'author~~~'
+      };
+      console.log("posts", post);
+      setEntity(post);
+    }).catch(function (data) {
+      console.log("error", data);
     });
-  }, []);
+  }, []); //use effect 
+  //mint nft 
+
+  var save_nft_to_wallet = function () {
+    console.log("save nft to wallet! "); // token_id, imgurl, imghash, title, description
+
+    var nftitem = {
+      token_id: id,
+      imgurl: entity.image,
+      imghash: 'hash!',
+      description: entity.description,
+      author: 'tientien.testnet'
+    }; //mint first, then transfer 
+
+    utils_2.nft_mint(nftitem).then(function (data) {
+      console.log("minted nft", data); //mint success, start transfer to current logged in account 
+      // receiver_id, token_id , nft_author, current_user_id
+
+      utils_1.nft_transfer("tientien2.testnet", id, "tientien2.testnet", "tientien2.testnet").then(function (data) {
+        console.log("transfer to author wallet success ", data);
+      }).catch(function (err) {
+        console.log(err);
+      });
+    }).catch(function (data) {
+      console.log("err", data);
+    });
+  };
+
   return (
     /*#__PURE__*/
     //view image section 
@@ -97939,7 +107946,17 @@ var ViewImagePage = function () {
       src: entity.image,
       className: "image_main_view",
       id: "canvas"
-    }, react_1.useRef("canvas"))))), /*#__PURE__*/React.createElement("div", {
+    }, react_1.useRef("canvas")))), /*#__PURE__*/React.createElement("div", {
+      id: "canvas-utils",
+      className: ""
+    }, /*#__PURE__*/React.createElement("button", {
+      id: "btn-mint",
+      onClick: function () {
+        return save_nft_to_wallet();
+      }
+    }, "Save to my wallet as NFT"), /*#__PURE__*/React.createElement("button", {
+      id: "btn-transfer"
+    }, "Transfer"))), /*#__PURE__*/React.createElement("div", {
       className: "col-md-6"
     }, /*#__PURE__*/React.createElement("div", {
       className: "social"
@@ -97965,9 +107982,9 @@ var ViewImagePage = function () {
       className: "post_title fw-bolder col-12"
     }, react_1.useRef("post_title")), entity.title), /*#__PURE__*/React.createElement("div", {
       className: "author"
-    }, "Artist: ", /*#__PURE__*/React.createElement("span", null, entity.author, " ")), /*#__PURE__*/React.createElement("div", _extends({
+    }, "Artist: ", /*#__PURE__*/React.createElement("span", null, "author~ ")), /*#__PURE__*/React.createElement("div", _extends({
       className: "post_content col-12"
-    }, react_1.useRef("post_content")), entity.content))), /*#__PURE__*/React.createElement("div", {
+    }, react_1.useRef("post_content")), entity.description))), /*#__PURE__*/React.createElement("div", {
       className: "commentList"
     }, /*#__PURE__*/React.createElement(comment_section_1.default, null))))) //end all section 
 
@@ -97975,7 +107992,7 @@ var ViewImagePage = function () {
 };
 
 exports.default = ViewImagePage;
-},{"react":"../node_modules/react/index.js","./comment-section":"pages/comment-section.tsx"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../utils":"utils.js","./comment-section":"pages/comment-section.tsx"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -98156,7 +108173,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62949" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58202" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
